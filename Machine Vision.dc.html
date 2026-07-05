@@ -134,6 +134,41 @@
   .bb-scope{margin-top:50px;color:var(--bb-muted);font-size:9px;line-height:1.55;}
   @media (min-width:600px){.bb-shell{padding-left:32px;padding-right:32px}.bb-input-dock{top:42px}}
 
+  /* Bits & Bytes challenge layer */
+  .bbc-module.alarm{--bb-hud:#ff2a22;}
+  .bbc-module.alarm .bb-hud{animation:mv-alarm .7s steps(2) 2;}
+  .bbc-objective{position:fixed;left:50%;top:54px;transform:translateX(-50%);z-index:74;width:min(calc(100% - 44px),620px);border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);padding:7px 9px;display:grid;grid-template-columns:1fr auto;gap:5px 10px;font-size:7px;letter-spacing:.7px;overflow:hidden;}
+  .bbc-shell{padding-top:104px;}
+  .bbc-caption{min-height:48px;color:var(--bb-ink);font-size:13px;line-height:1.5;margin:12px 0 20px;max-width:36ch;}
+  .bbc-target{position:absolute;right:24px;top:108px;width:92px;border:1px solid var(--bb-hud);background:var(--bb-bg);padding:9px;text-align:center;}
+  .bbc-target strong{display:block;font:900 38px 'Archivo',sans-serif;color:var(--bb-ink);line-height:1;}
+  .bbc-target span{display:block;color:var(--bb-hud);font-size:7px;letter-spacing:.8px;margin-top:7px;}
+  .bbc-glyph{font:900 clamp(96px,32vw,156px) 'Archivo',sans-serif;line-height:.8;text-align:center;color:var(--bb-ink);margin:44px 0 14px;min-height:126px;overflow:hidden;}
+  .bbc-dec{text-align:center;color:var(--bb-hud);font-size:11px;letter-spacing:2px;margin-bottom:18px;}
+  .bbc-bank{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;}
+  .bbc-switch{height:78px;min-width:0;border:1px solid var(--bb-hud);font-family:'IBM Plex Mono',monospace;padding:6px 1px;}
+  .bbc-switch strong{display:block;font:900 27px 'Archivo',sans-serif;line-height:1;}
+  .bbc-switch span{display:block;font-size:7px;margin-top:9px;}
+  .bbc-switch em{display:block;color:var(--bb-hud);font-size:7px;font-style:normal;margin-top:11px;}
+  .bbc-telemetry{border-left:2px solid var(--bb-hud);padding:10px 12px;margin-top:16px;color:var(--bb-muted);font-size:9px;line-height:1.6;min-height:48px;}
+  .bbc-lock{margin-top:28px;border:1px solid var(--bb-hud);padding:20px 16px;animation:mv-converge .35s steps(4) both;}
+  .bbc-lock h2{font:900 29px 'Archivo',sans-serif;line-height:.95;margin:0;color:var(--bb-ink);text-transform:uppercase;}
+  .bbc-next{width:100%;margin-top:16px;border:1px solid var(--bb-hud);background:var(--bb-hud);color:var(--bb-bg);padding:13px;font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;}
+  .bbc-meter{height:8px;border:1px solid var(--bb-hud);position:relative;margin-top:18px;}
+  .bbc-word{display:flex;justify-content:center;gap:7px;margin:18px 0;}
+  .bbc-word span{width:46px;border:1px solid var(--bb-hud);padding:12px 3px;text-align:center;font:900 23px 'Archivo',sans-serif;color:var(--bb-muted);}
+  .bbc-word span.on{color:var(--bb-ink);box-shadow:0 0 0 2px rgba(245,21,14,.2);}
+  .bbc-word span.done{background:var(--bb-ink);color:var(--bb-bg);}
+  .bbc-message{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;margin:16px 0;}
+  .bbc-char{border:0;background:transparent;color:var(--bb-ink);font:800 18px 'Archivo',sans-serif;min-width:18px;padding:5px 2px;}
+  .bbc-char.selected{outline:1px solid var(--bb-hud);color:var(--bb-hud);}
+  .bbc-diff{border:1px solid #ff2a22;padding:13px;margin-top:18px;color:#ff2a22;}
+  .bbc-diff-row{display:grid;grid-template-columns:48px repeat(8,1fr);gap:3px;align-items:center;margin:5px 0;font-size:7px;}
+  .bbc-diff-bit{border:1px solid currentColor;padding:7px 1px;text-align:center;}
+  .bbc-diff-bit.bad{background:#ff2a22;color:#050505;}
+  .bbc-end{border:1px solid var(--bb-hud);padding:22px 16px;margin-top:24px;}
+  .bbc-score{display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px solid rgba(245,21,14,.25);padding:7px 0;font-size:9px;}
+
   /* How the Internet Works: one request, scrubbed through the full conversation */
   .iw-shell{width:min(100%,620px);}
   .iw-control{position:sticky;top:46px;z-index:73;background:var(--bb-bg);padding:10px 0 14px;border-bottom:1px solid rgba(245,21,14,.35);}
@@ -449,8 +484,81 @@
     </div>
   </sc-if>
 
-  <!-- ============ BITS & BYTES // LIVE MODULE ============ -->
+  <!-- ============ BITS & BYTES // CHALLENGE MODULE ============ -->
   <sc-if value="{{ bitsOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="{{ bitsModuleClass }}">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span><span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FD-01 // SIGNAL ACQUISITION</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>TARGET {{ bitsTargetCode }} // {{ bitsTimerText }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ bitsStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">FLIPS {{ bitsFlips }}</div>
+      </div>
+
+      <div class="bbc-objective"><span>OBJECTIVE: {{ bitsObjective }}</span><span>STATE: {{ bitsState }}</span><span>LOCKS {{ bitsLocks }}/5</span><span>T+{{ bitsElapsedText }}</span></div>
+      <sc-if value="{{ bitsHasTarget }}" hint-placeholder-val="{{ false }}"><div class="bbc-target"><strong>{{ bitsTargetGlyph }}</strong><span>{{ bitsTargetState }}</span></div></sc-if>
+
+      <main class="bb-shell bbc-shell">
+        <div class="bb-kicker">ROUND {{ bitsRoundLabel }} // {{ bitsRoundName }}</div>
+        <div class="bbc-caption">{{ bitsCaption }}</div>
+
+        <sc-if value="{{ bitsRound4 }}" hint-placeholder-val="{{ false }}">
+          <div class="bbc-word"><sc-for list="{{ bitsWord }}" as="ch" hint-placeholder-count="3"><span class="{{ ch.className }}">{{ ch.glyph }}</span></sc-for></div>
+        </sc-if>
+
+        <sc-if value="{{ bitsRound5 }}" hint-placeholder-val="{{ false }}">
+          <div class="bb-kicker">SEND / {{ bitsOriginalMessage }}</div>
+          <div class="bb-kicker" style="margin-top:14px;">RECEIVED // SELECT THE CORRUPTED CHARACTER</div>
+          <div class="bbc-message"><sc-for list="{{ bitsMessageChars }}" as="ch" hint-placeholder-count="12"><button class="{{ ch.className }}" data-reticle-target="char" data-index="{{ ch.idx }}" onClick="{{ selectCorruptChar }}">{{ ch.glyph }}</button></sc-for></div>
+        </sc-if>
+
+        <sc-if value="{{ bitsShowBank }}" hint-placeholder-val="{{ true }}">
+          <div class="bbc-glyph">{{ bitsGlyph }}</div>
+          <div class="bbc-dec">DEC {{ bitsCodeText }} // {{ bitsBinary }}</div>
+          <div class="bbc-bank"><sc-for list="{{ bitsSwitches }}" as="bit" hint-placeholder-count="8"><button class="bbc-switch" style="{{ bit.style }}" data-reticle-target="bit" data-bit="{{ bit.idx }}" onClick="{{ flipBit }}" aria-label="{{ bit.aria }}"><strong>{{ bit.value }}</strong><span>{{ bit.state }}</span><em>{{ bit.weight }}</em></button></sc-for></div>
+          <div class="bbc-telemetry">{{ bitsTelemetry }}</div>
+        </sc-if>
+
+        <sc-if value="{{ bitsLost }}" hint-placeholder-val="{{ false }}">
+          <div class="bbc-diff">
+            <div style="font:900 22px 'Archivo',sans-serif;">SIGNAL LOST</div>
+            <div class="bbc-diff-row"><span>YOURS</span><sc-for list="{{ bitsCurrentDiff }}" as="b" hint-placeholder-count="8"><span class="{{ b.className }}">{{ b.value }}</span></sc-for></div>
+            <div class="bbc-diff-row"><span>TARGET</span><sc-for list="{{ bitsTargetDiff }}" as="b" hint-placeholder-count="8"><span class="{{ b.className }}">{{ b.value }}</span></sc-for></div>
+            <button class="bbc-next" data-reticle-target="reacquire" onClick="{{ reacquireBits }}">&gt; REACQUIRE</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ bitsLocked }}" hint-placeholder-val="{{ false }}">
+          <section class="bbc-lock">
+            <div class="bb-kicker">SIGNAL ACQUIRED // CONF 100%</div><h2>{{ bitsDebriefTitle }}</h2><p class="bb-friendly">{{ bitsDebrief }}</p>
+            <sc-if value="{{ bitsCaseLock }}" hint-placeholder-val="{{ false }}"><div class="sy-compare"><div class="sy-compare-card"><strong>A // DEC 65</strong><code>01000001</code></div><div class="sy-compare-card"><strong>a // DEC 97</strong><code>01100001</code></div></div><div class="bb-readout">DELTA: 1 BIT // WEIGHT: 32</div></sc-if>
+            <sc-if value="{{ bitsShowMeter }}" hint-placeholder-val="{{ false }}"><div class="bbc-meter"><div style="{{ bitsMeterStyle }}"></div></div><div style="display:flex;justify-content:space-between;color:var(--bb-hud);font-size:7px;margin-top:5px;"><span>0</span><span>255</span></div></sc-if>
+            <button class="bbc-next" data-reticle-target="next-round" onClick="{{ nextBitsRound }}">{{ bitsNextLabel }}</button>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ bitsEnd }}" hint-placeholder-val="{{ false }}">
+          <section class="bbc-end">
+            <div class="bb-kicker">ACQUISITION COMPLETE // INTEGRITY RESTORED</div><h2 class="bb-statement">ONE BIT CHANGED THE MEANING.</h2>
+            <p class="bb-friendly">Nothing screamed. A message, a bank balance, a photo — all just switches, and any switch can flip. So how would a machine know something was tampered with?</p>
+            <div class="bbc-score"><span>SIGNALS ACQUIRED</span><strong>5/5</strong></div><div class="bbc-score"><span>TIME</span><strong>{{ bitsElapsedText }}</strong></div><div class="bbc-score"><span>EFFICIENCY</span><strong>{{ bitsEfficiency }}%</strong></div><div class="bbc-score"><span>INTEGRITY</span><strong>RESTORED</strong></div>
+            <button class="bbc-next" data-reticle-target="next" data-node="hashing" onClick="{{ openBitsBridge }}">&gt; NEXT DETECTED NODE: HASHING // TAMPER DETECTION</button>
+            <button data-reticle-target="restart" onClick="{{ restartBits }}" style="width:100%;margin-top:8px;border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);padding:11px;font:8px 'IBM Plex Mono',monospace;">REPLAY SIGNAL ACQUISITION</button>
+          </section>
+          <div class="bb-scope">BYTE MODE // Simplified one-byte values from 0–255. Modern text may use several UTF-8 bytes per character. Corruption is simulated to teach why integrity checking exists; no real tampering occurs.</div>
+        </sc-if>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- Legacy analyzer retained outside the live path during challenge migration -->
+  <sc-if value="{{ bitsLegacyOpen }}" hint-placeholder-val="{{ false }}">
     <div class="bb-module">
       <div class="bb-hud">
         <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
@@ -857,7 +965,10 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;VECTOR&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;motionIntensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:45,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;number&quot;}}">
 class Component extends DCLogic {
   state = { bootStage: 0, view: 'boot', sheetId: null, stubId: null, ctaHover: false, fieldEnter: false, theme: 'light', legendOpen: false,
-    bitsText: '', bitsIndex: 0, bitsFlips: 0, bitsNote: '',
+    bitsText: '', bitsIndex: 0, bitsNote: '',
+    bitsRound:0, bitsValue:0, bitsFlips:0, bitsCalibrationFlips:0, bitsLocks:0, bitsLocked:false, bitsLost:false, bitsTimer:0, bitsElapsed:0,
+    bitsTimedIndex:0, bitsLastFlip:'AWAITING FIRST FLIP', bitsMessageReceived:'PAY BOB $900', bitsCorruptIndex:-1,
+    bitsCorruptionLevel:0, bitsEnd:false, bitsHint:false, bitsRoundElapsed:0,
     internetUrl: '', internetStage: 0, internetRequestBack: false, internetTrace: null, internetFailure: null,
     symMessage:'', symKey:'', symSealed:false, symSealedMessage:'', symSealedKey:'', symSealProgress:0,
     symResult:'', symFailure:false, symIntercepted:false, symMutation:1, symFriendHasKey:true };
@@ -1231,6 +1342,7 @@ class Component extends DCLogic {
     removeEventListener('hashchange', this._onHash);
     removeEventListener('scroll', this._onScroll);
     clearInterval(this._iv);
+    clearInterval(this._bitsClock);
     clearInterval(this._symSealIv);
     (this._t||[]).forEach(clearTimeout);
     document.body.style.overflow = '';
@@ -1245,8 +1357,9 @@ class Component extends DCLogic {
       this.typeInto('mv-stub-name', n ? n.name : '', 45);
     }
     if (this.state.stubId === 'bits' && ps.stubId !== 'bits') {
-      setTimeout(() => { const e = document.getElementById('bb-input'); if (e) e.focus(); }, 80);
+      this.startBitsClock();
     }
+    if (ps.stubId === 'bits' && this.state.stubId !== 'bits') clearInterval(this._bitsClock);
     if (this.state.stubId === 'internet' && ps.stubId !== 'internet') {
       setTimeout(() => { const e = document.getElementById('iw-url'); if (e) e.focus(); }, 80);
     }
@@ -1376,7 +1489,7 @@ class Component extends DCLogic {
       const ret = document.getElementById('mv-reticle');
       if (ret) ret.dataset.near = best ? '1' : '';
       const label = document.querySelector('#mv-reticle .mv-ret-label');
-      const labels = { scan:'INITIATE', lock:'LOCK ON', key:'KEY', theme:'MODE', exit:'EXIT', input:'TYPE', clear:'CLEAR', char:'SELECT', bit:'FLIP', load:'LOAD', preset:'PRESET', scrub:'SCRUB', chunk:'INSPECT', request:'FLIP', resource:'TRACE', page:'TRACE', failure:'SIMULATE', next:'OPEN', seal:'HOLD', intercept:'SCAN', decrypt:'APPLY', keycard:'TRY KEY', handoff:'TOGGLE' };
+      const labels = { scan:'INITIATE', lock:'LOCK ON', key:'KEY', theme:'MODE', exit:'EXIT', input:'TYPE', clear:'CLEAR', char:'SELECT', bit:'FLIP', load:'LOAD', preset:'PRESET', scrub:'SCRUB', chunk:'INSPECT', request:'FLIP', resource:'TRACE', page:'TRACE', failure:'SIMULATE', next:'OPEN', seal:'HOLD', intercept:'SCAN', decrypt:'APPLY', keycard:'TRY KEY', handoff:'TOGGLE', reacquire:'RETRY', 'next-round':'CONTINUE', restart:'REPLAY' };
       if (label) label.textContent = best ? (labels[best.dataset.reticleTarget] || 'SELECT') : 'SELECT';
       this.setStatus(best ? (best.dataset.reticleTarget ? 'TARGET READY' : 'TRACKING') : 'SCANNING');
     }
@@ -1463,21 +1576,45 @@ class Component extends DCLogic {
     const stage = st.bootStage;
     const showHome = st.view !== 'field';
     const sel = st.sheetId ? gr.byId[st.sheetId] : null;
-    const bitsText = st.bitsText || '';
-    const bitsHasText = bitsText.length > 0;
-    const bitsIndex = bitsHasText ? Math.min(st.bitsIndex || 0, bitsText.length - 1) : 0;
-    const bitsCode = bitsHasText ? bitsText.charCodeAt(bitsIndex) & 255 : 0;
+    const bitsCode = Math.max(0, Math.min(255, Number(st.bitsValue) || 0));
     const bitsBinary = bitsCode.toString(2).padStart(8,'0');
-    const bitsGlyph = bitsHasText ? this.byteGlyph(bitsCode) : '—';
-    const bitsChars = Array.from(bitsText).map((ch, idx) => {
-      const code = ch.charCodeAt(0) & 255;
-      return { idx, code, glyph:this.byteGlyph(code), className:'bb-target' + (idx === bitsIndex ? ' on' : '') };
-    });
+    const bitsGlyph = this.byteGlyph(bitsCode);
     const bitsSwitches = bitsBinary.split('').map((value, idx) => ({
       idx, value, weight:1 << (7-idx), state:value === '1' ? 'ON' : 'OFF',
       aria:'Bit ' + (7-idx) + ', ' + (value === '1' ? 'on' : 'off') + ', value ' + (1 << (7-idx)),
       style:{ background:value === '1' ? 'var(--bb-ink)' : 'var(--bb-bg)', color:value === '1' ? 'var(--bb-bg)' : 'var(--bb-ink)' },
     }));
+    const bitsRound = Number(st.bitsRound) || 0;
+    const roundTargets = [null,65,66,97,null,null];
+    const timedWord = 'HI!';
+    const originalIntegrityMessage = 'PAY BOB $100';
+    const bitsTarget = bitsRound === 4 ? timedWord.charCodeAt(st.bitsTimedIndex || 0) : (bitsRound === 5 ? (st.bitsCorruptIndex >= 0 ? originalIntegrityMessage.charCodeAt(st.bitsCorruptIndex) : 49) : roundTargets[bitsRound]);
+    const bitsHasTarget = bitsRound > 0 && bitsRound < 5 || (bitsRound === 5 && st.bitsCorruptIndex >= 0);
+    const bitsTargetBinary = (bitsTarget ?? 0).toString(2).padStart(8,'0');
+    const bitsCurrentDiff = bitsBinary.split('').map((value, i) => ({ value, className:'bbc-diff-bit' + (value !== bitsTargetBinary[i] ? ' bad' : '') }));
+    const bitsTargetDiff = bitsTargetBinary.split('').map((value, i) => ({ value, className:'bbc-diff-bit' + (value !== bitsBinary[i] ? ' bad' : '') }));
+    const roundNames = ['CALIBRATION','FIRST LOCK','BINARY CARRY','CASE BIT','TIMED ACQUISITION','CORRUPTION'];
+    const captions = [
+      'Eight switches. One signal. Find out what they do.',
+      'The machine wants an A. Get it there.',
+      'Now B. Watch what counting does at the edge of a bit.',
+      'Same letter. Small this time.',
+      'Three signals. The machine is impatient.',
+      st.bitsCorruptIndex < 0 ? 'Somewhere in transit, one switch flipped. Nobody noticed. Find the changed character.' : 'Now fix that byte. One switch changed the amount.',
+    ];
+    const debriefTitles = ['', 'EIGHT SWITCHES REACH 256 VALUES.', 'BINARY COUNTING CARRIES.', 'UPPERCASE TO LOWERCASE: ONE BIT.', 'YOU HAND-ENCODED THREE CHARACTERS.', 'INTEGRITY RESTORED.'];
+    const debriefs = ['',
+      'You felt the weights: each switch is worth double the one to its right. 1, 2, 4, 8…128. Together they reach 0 through 255.',
+      'A is 65 and B is 66. That +1 carries: the 1-switch turns off while the 2-switch turns on. Binary counts just like decimal, with different columns.',
+      'A is 65. a is 97. The entire difference is the 32-switch—one bit separating uppercase and lowercase.',
+      'You just hand-encoded HI! the way keyboards do automatically—only considerably slower.',
+      'One bit changed $100 into $900 and nothing announced the change. This is why systems need a way to detect tampering.',
+    ];
+    const received = st.bitsMessageReceived || 'PAY BOB $900';
+    const bitsMessageChars = Array.from(received).map((ch, idx) => ({ idx, glyph:ch === ' ' ? '·' : ch, className:'bbc-char' + (idx === st.bitsCorruptIndex ? ' selected' : '') }));
+    const bitsWord = Array.from(timedWord).map((ch, idx) => ({ glyph:ch, className:idx < st.bitsTimedIndex ? 'done' : (idx === st.bitsTimedIndex ? 'on' : '') }));
+    const activeFlips = Math.max(1, (st.bitsFlips || 0) - (st.bitsCalibrationFlips || 0));
+    const bitsEfficiency = Math.min(100, Math.round(13 / activeFlips * 100));
     const internetStage = Math.max(0, Math.min(10, Number(st.internetStage) || 0));
     const internetParsedUrl = this.parseInternetUrl(st.internetUrl);
     const internetIp = this.internetIpFor(internetParsedUrl.domain);
@@ -1601,13 +1738,24 @@ class Component extends DCLogic {
 
       sheetOpen: !!sel, sel: sel || {},
       bitsOpen: st.stubId === 'bits',
+      bitsLegacyOpen:false,
       stubOpen: !!st.stubId && st.stubId !== 'bits' && st.stubId !== 'internet' && st.stubId !== 'symmetric',
-      bitsText, bitsHasText, bitsEmpty: !bitsHasText, bitsLength: bitsText.length,
-      bitsChars, bitsIndex, bitsCode, bitsBinary, bitsGlyph, bitsSwitches,
-      bitsHasFlips: st.bitsFlips > 0, bitsHasNote: !!st.bitsNote, bitsNote: st.bitsNote,
-      bitsStatus: bitsHasText ? (st.bitsFlips ? 'RECOMPOSING BYTE' : 'BYTE LOCKED') : 'AWAITING INPUT',
-      bitsConf: bitsHasText ? '100' : '000',
-      bitsHud: bitsHasText ? ('BYTE ' + String(bitsIndex+1).padStart(2,'0') + '/' + String(bitsText.length).padStart(2,'0') + ' · DEC ' + String(bitsCode).padStart(3,'0')) : 'NO SIGNAL',
+      bitsModuleClass:'bb-module bbc-module' + (st.bitsLost || (bitsRound === 5 && st.bitsCorruptionLevel > 0 && !st.bitsEnd) ? ' alarm' : ''),
+      bitsRoundLabel:String(bitsRound).padStart(2,'0'), bitsRoundName:roundNames[bitsRound], bitsCaption:captions[bitsRound],
+      bitsCode, bitsCodeText:String(bitsCode).padStart(3,'0'), bitsBinary, bitsGlyph, bitsSwitches,
+      bitsFlips:st.bitsFlips || 0, bitsLocks:st.bitsLocks || 0,
+      bitsObjective:bitsRound === 0 ? 'DISCOVER THE SWITCH BANK' : (bitsRound === 5 ? (st.bitsCorruptIndex < 0 ? 'FIND THE CORRUPTED CHARACTER' : 'RESTORE $100') : ('ACQUIRE ' + (bitsTarget !== null ? "'" + this.byteGlyph(bitsTarget) + "'" : 'SIGNAL'))),
+      bitsState:st.bitsEnd ? 'COMPLETE' : (st.bitsLost ? 'SIGNAL LOST' : (st.bitsLocked ? 'LOCKED' : 'SCANNING')),
+      bitsElapsedText:this.formatBitsTime(st.bitsElapsed || 0), bitsTimerText:(bitsRound >= 4 && !st.bitsEnd) ? ('T-' + String(st.bitsTimer).padStart(2,'0')) : 'NO LIMIT',
+      bitsStatus:st.bitsLost ? 'SIGNAL LOST' : (st.bitsLocked ? 'SIGNAL ACQUIRED' : (bitsRound === 5 ? 'INTEGRITY SCAN' : 'SCANNING')),
+      bitsHasTarget, bitsTargetGlyph:bitsHasTarget ? this.byteGlyph(bitsTarget) : '—', bitsTargetCode:bitsTarget === null || (bitsRound === 5 && st.bitsCorruptIndex < 0) ? '---' : String(bitsTarget).padStart(3,'0'), bitsTargetState:st.bitsLocked ? 'SIGNAL ACQUIRED' : 'SIGNAL UNRESOLVED',
+      bitsShowBank:!st.bitsEnd && !(bitsRound === 5 && st.bitsCorruptIndex < 0), bitsRound4:bitsRound === 4, bitsRound5:bitsRound === 5,
+      bitsWord, bitsOriginalMessage:'PAY BOB $100', bitsMessageChars,
+      bitsTelemetry:(st.bitsLastFlip || 'AWAITING FIRST FLIP') + (bitsRound === 1 && st.bitsHint ? ' // TARGET DEC: 065' : ''),
+      bitsLost:!!st.bitsLost, bitsCurrentDiff, bitsTargetDiff,
+      bitsLocked:!!st.bitsLocked && !st.bitsEnd, bitsDebriefTitle:debriefTitles[bitsRound], bitsDebrief:debriefs[bitsRound],
+      bitsShowMeter:bitsRound === 1, bitsCaseLock:bitsRound === 3, bitsNextLabel:bitsRound === 4 ? '> ENTER CORRUPTION TEST' : '> ACQUIRE NEXT SIGNAL',
+      bitsEnd:!!st.bitsEnd, bitsEfficiency,
       bitsMeterStyle:{ position:'absolute', left:0, top:0, bottom:0, width:(bitsCode/255*100).toFixed(1)+'%', background:'var(--bb-hud)' },
 
       internetOpen: st.stubId === 'internet', internetUrl: st.internetUrl,
@@ -1655,10 +1803,10 @@ class Component extends DCLogic {
       closeSheet: () => this.closeSheet(),
       lockOn: () => { const id = this.state.sheetId; this.setStatus('LOCKED'); const fr = document.getElementById('mv-select'); if (fr) fr.style.opacity = '0'; this.setState({ stubId: id, sheetId: null }); },
       closeStub: () => this.closeStub(),
-      bitsInput: (e) => this.updateBitsInput(e),
-      selectBitChar: (e) => this.selectBitChar(e),
       flipBit: (e) => this.flipBit(e),
-      clearBits: () => this.clearBits(),
+      nextBitsRound: () => this.nextBitsRound(), reacquireBits: () => this.reacquireBits(),
+      selectCorruptChar: (e) => this.selectCorruptChar(e),
+      restartBits: () => this.restartBits(), openBitsBridge: (e) => this.openInternetBridge(e),
       internetUrlInput: (e) => this.updateInternetUrl(e),
       chooseInternetPreset: (e) => this.chooseInternetPreset(e),
       loadInternet: () => this.loadInternet(),
@@ -1719,35 +1867,85 @@ class Component extends DCLogic {
     this.setStatus(this.state.view === 'field' ? 'TRACKING' : 'SCANNING');
     this.setState({ sheetId: null });
   }
-  updateBitsInput(e) {
-    const raw = e.currentTarget.value || '';
-    const chars = Array.from(raw);
-    const singleByte = chars.filter(ch => ch.codePointAt(0) <= 255).slice(0, 8);
-    const rejected = chars.some(ch => ch.codePointAt(0) > 255);
-    const text = singleByte.join('');
-    this.setState({
-      bitsText: text,
-      bitsIndex: text.length ? text.length - 1 : 0,
-      bitsNote: rejected ? 'BYTE LIMIT // THAT CHARACTER NEEDS MORE THAN ONE BYTE' : '',
-    });
+  formatBitsTime(seconds) {
+    const s = Math.max(0, Number(seconds) || 0);
+    return String(Math.floor(s/60)).padStart(1,'0') + ':' + String(s%60).padStart(2,'0');
   }
-  selectBitChar(e) {
-    const idx = Number(e.currentTarget.dataset.index);
-    if (!Number.isFinite(idx)) return;
-    this.setState({ bitsIndex: idx, bitsNote: '' });
+  startBitsClock() {
+    clearInterval(this._bitsClock);
+    this._bitsClock = setInterval(() => {
+      if (this.state.stubId !== 'bits' || this.state.bitsEnd) return;
+      const patch = { bitsElapsed:(this.state.bitsElapsed || 0)+1, bitsRoundElapsed:(this.state.bitsRoundElapsed || 0)+1 };
+      if (this.state.bitsRound === 1 && patch.bitsRoundElapsed >= 20) patch.bitsHint = true;
+      if (this.state.bitsRound >= 4 && !this.state.bitsLocked && !this.state.bitsLost) {
+        patch.bitsTimer = Math.max(0, (this.state.bitsTimer || 0)-1);
+        if (patch.bitsTimer === 0) { this.setState(patch); this.loseBitsSignal(); return; }
+      }
+      this.setState(patch);
+    }, 1000);
+  }
+  loseBitsSignal() {
+    const patch = { bitsLost:true };
+    if (this.state.bitsRound === 5 && this.state.bitsCorruptIndex < 0) {
+      patch.bitsCorruptIndex = 9; patch.bitsValue = (this.state.bitsMessageReceived || 'PAY BOB $900').charCodeAt(9);
+    }
+    this.setState(patch);
   }
   flipBit(e) {
     const bit = Number(e.currentTarget.dataset.bit);
-    const text = this.state.bitsText || '';
-    if (!text || bit < 0 || bit > 7) return;
-    const idx = Math.min(this.state.bitsIndex || 0, text.length - 1);
-    const code = (text.charCodeAt(idx) & 255) ^ (1 << (7-bit));
-    const next = text.slice(0, idx) + String.fromCharCode(code) + text.slice(idx + 1);
-    this.setState({ bitsText: next, bitsFlips: (this.state.bitsFlips || 0) + 1, bitsNote: '' });
+    if (bit < 0 || bit > 7 || this.state.bitsLocked || this.state.bitsLost || this.state.bitsEnd) return;
+    if (this.state.bitsRound === 5 && this.state.bitsCorruptIndex < 0) return;
+    const value = (this.state.bitsValue || 0) ^ (1 << (7-bit));
+    const flips = (this.state.bitsFlips || 0) + 1;
+    const patch = { bitsValue:value, bitsFlips:flips, bitsLastFlip:'FLIP b' + (7-bit) + ' → DEC ' + String(value).padStart(3,'0') + " → '" + this.byteGlyph(value) + "'" };
+    if (this.state.bitsRound === 0) {
+      if (flips >= 4) Object.assign(patch, { bitsRound:1, bitsValue:0, bitsCalibrationFlips:flips, bitsRoundElapsed:0, bitsHint:false, bitsLastFlip:'PATTERN UNDERSTOOD // INITIATING ACQUISITION' });
+      this.setState(patch); return;
+    }
+    if (this.state.bitsRound >= 1 && this.state.bitsRound <= 3) {
+      this.setState(patch); if (value === [0,65,66,97][this.state.bitsRound]) setTimeout(() => this.lockBitsRound(), 0); return;
+    }
+    if (this.state.bitsRound === 4) {
+      const word = 'HI!', idx = this.state.bitsTimedIndex || 0;
+      if (value === word.charCodeAt(idx)) {
+        if (idx < word.length-1) Object.assign(patch, { bitsTimedIndex:idx+1, bitsValue:0, bitsTimer:idx===0?16:13, bitsLastFlip:'SIGNAL ' + word[idx] + ' LOCKED // NEXT BYTE' });
+        else Object.assign(patch, { bitsLocked:true, bitsLocks:4, bitsTimer:0, bitsLastFlip:'WORD LOCKED // HI!' });
+      }
+      this.setState(patch); return;
+    }
+    if (this.state.bitsRound === 5) {
+      const idx = this.state.bitsCorruptIndex, original = 'PAY BOB $100';
+      let received = this.state.bitsMessageReceived || 'PAY BOB $900';
+      received = received.slice(0,idx) + String.fromCharCode(value) + received.slice(idx+1);
+      patch.bitsMessageReceived = received;
+      if (received === original) Object.assign(patch, { bitsEnd:true, bitsLocks:5, bitsTimer:0, bitsCorruptionLevel:0, bitsLastFlip:'INTEGRITY RESTORED // SIGNAL ACQUIRED' });
+      else patch.bitsCorruptionLevel = (this.state.bitsCorruptionLevel || 0) + 1;
+      this.setState(patch);
+    }
   }
-  clearBits() {
-    this.setState({ bitsText:'', bitsIndex:0, bitsFlips:0, bitsNote:'' });
-    setTimeout(() => { const e = document.getElementById('bb-input'); if (e) e.focus(); }, 30);
+  lockBitsRound() {
+    if (this.state.bitsLocked) return;
+    this.setState({ bitsLocked:true, bitsLocks:this.state.bitsRound, bitsLastFlip:'SIGNAL ACQUIRED // CONF 100%' });
+  }
+  nextBitsRound() {
+    const next = Math.min(5, (this.state.bitsRound || 0)+1);
+    const starts = { 2:65, 3:65, 4:0, 5:0 };
+    this.setState({ bitsRound:next, bitsValue:starts[next] ?? 0, bitsLocked:false, bitsLost:false, bitsRoundElapsed:0, bitsHint:false,
+      bitsTimedIndex:0, bitsTimer:next===4?20:(next===5?30:0), bitsLastFlip:'SCANNING // AWAITING FLIP', bitsCorruptIndex:next===5?-1:this.state.bitsCorruptIndex });
+  }
+  selectCorruptChar(e) {
+    if (this.state.bitsLost || this.state.bitsEnd) return;
+    const idx = Number(e.currentTarget.dataset.index), received = this.state.bitsMessageReceived || 'PAY BOB $900';
+    if (!Number.isFinite(idx) || idx < 0 || idx >= received.length) return;
+    this.setState({ bitsCorruptIndex:idx, bitsValue:received.charCodeAt(idx), bitsLastFlip:'BYTE SELECTED // INDEX ' + String(idx).padStart(2,'0') });
+  }
+  reacquireBits() {
+    this.setState({ bitsLost:false, bitsTimer:this.state.bitsRound===4?15:25, bitsRoundElapsed:0, bitsLastFlip:'SIGNAL REACQUIRED // TRY AGAIN' });
+  }
+  restartBits() {
+    this.setState({ bitsRound:0, bitsValue:0, bitsFlips:0, bitsCalibrationFlips:0, bitsLocks:0, bitsLocked:false, bitsLost:false,
+      bitsTimer:0, bitsElapsed:0, bitsTimedIndex:0, bitsLastFlip:'AWAITING FIRST FLIP', bitsMessageReceived:'PAY BOB $900',
+      bitsCorruptIndex:-1, bitsCorruptionLevel:0, bitsEnd:false, bitsHint:false, bitsRoundElapsed:0 });
   }
   updateInternetUrl(e) {
     this.setState({ internetUrl:e.currentTarget.value || '', internetStage:0, internetTrace:null, internetFailure:null, internetRequestBack:false });
