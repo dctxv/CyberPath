@@ -151,6 +151,10 @@
   .bbc-target span{display:block;color:var(--bb-hud);font-size:7px;letter-spacing:.8px;margin-top:7px;}
   .bbc-glyph{font:900 clamp(96px,32vw,156px) 'Archivo',sans-serif;line-height:.8;text-align:center;color:var(--bb-ink);margin:44px 0 14px;min-height:126px;overflow:hidden;}
   .bbc-dec{text-align:center;color:var(--bb-hud);font-size:11px;letter-spacing:2px;margin-bottom:18px;}
+  .bbc-wire{position:relative;border:1px solid var(--bb-hud);background:var(--bb-bg);margin:0 0 10px;overflow:hidden;
+    background-image:linear-gradient(90deg,rgba(245,21,14,.05) 1px,transparent 1px);background-size:12.5% 100%;}
+  :root[data-theme="dark"] .bbc-wire{background-image:linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);}
+  .bbc-wire canvas{display:block;width:100%;height:auto;aspect-ratio:820/200;}
   .bbc-bank{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px;}
   .bbc-switch{height:78px;min-width:0;border:1px solid var(--bb-hud);font-family:'IBM Plex Mono',monospace;padding:6px 1px;}
   .bbc-switch strong{display:block;font:900 27px 'Archivo',sans-serif;line-height:1;}
@@ -670,6 +674,7 @@
         <sc-if value="{{ bitsShowBank }}" hint-placeholder-val="{{ true }}">
           <div class="bbc-glyph">{{ bitsGlyph }}</div>
           <div class="bbc-dec">DEC {{ bitsCodeText }} // {{ bitsBinary }}</div>
+          <div class="bbc-wire"><canvas id="bits-canvas" width="820" height="200" aria-label="The current byte drawn as a high/low signal on a wire"></canvas></div>
           <div class="bbc-bank"><sc-for list="{{ bitsSwitches }}" as="bit" hint-placeholder-count="8"><button class="bbc-switch" style="{{ bit.style }}" data-reticle-target="bit" data-bit="{{ bit.idx }}" onClick="{{ flipBit }}" aria-label="{{ bit.aria }}"><strong>{{ bit.value }}</strong><span>{{ bit.state }}</span><em>{{ bit.weight }}</em></button></sc-for></div>
           <div class="bbc-telemetry">{{ bitsTelemetry }}</div>
         </sc-if>
@@ -1934,6 +1939,7 @@ class Component extends DCLogic {
       if (this.state.stubId === 'tls') this.drawTlCanvas();
       if (this.state.stubId === 'quantum') this.drawQbCanvas();
       if (this.state.stubId === 'quantum-rsa') this.drawQrCanvas();
+      if (this.state.stubId === 'bits') this.drawBitsCanvas();
       requestAnimationFrame(this._loop);
     };
     requestAnimationFrame(this._loop);
@@ -3692,6 +3698,57 @@ class Component extends DCLogic {
 
     const tag = document.getElementById('qr-tag');
     if (tag) tag.textContent = shor ? 'FACTORED' : (spacing === truePeriod && revealed ? 'RESONANT' : (revealed ? 'SEARCHING' : 'SEALED'));
+  }
+  // ---------- FD-01 // the signal wire (oscilloscope over the byte game) ----------
+  drawBitsCanvas() {
+    const canvas = document.getElementById('bits-canvas');
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const W = Math.max(240, rect.width || 820), H = Math.max(100, rect.height || W*200/820);
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    const wantW = Math.round(W*dpr), wantH = Math.round(H*dpr);
+    if (canvas.width !== wantW || canvas.height !== wantH) { canvas.width = wantW; canvas.height = wantH; }
+    const ctx = canvas.getContext('2d'); if (!ctx) return;
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+    const hud = this.qrColor(canvas,'--bb-hud','#F5150E');
+    const ink = this.qrColor(canvas,'--bb-ink','#171717');
+    const bg = this.qrColor(canvas,'--bb-bg','#F7F7F4');
+    const val = Math.max(0, Math.min(255, Number(this.state.bitsValue) || 0));
+    const bits = val.toString(2).padStart(8,'0').split('').map(Number);
+    const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    const hi = H*0.24, lo = H*0.72, cell = W/8;
+    // baseline rails
+    ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .25; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, hi); ctx.lineTo(W, hi); ctx.moveTo(0, lo); ctx.lineTo(W, lo); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.fillStyle = hud; ctx.font = "7px 'IBM Plex Mono', monospace"; ctx.textAlign = 'left';
+    ctx.fillText('1 / HIGH', 4, hi - 4); ctx.fillText('0 / LOW', 4, lo + 12); ctx.restore();
+    // the square wave for the current byte
+    ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 2.5; ctx.lineJoin = 'miter'; ctx.beginPath();
+    let py = bits[0] ? hi : lo; ctx.moveTo(0, py);
+    for (let i = 0; i < 8; i++) {
+      const y = bits[i] ? hi : lo, x0 = i*cell, x1 = (i+1)*cell;
+      if (y !== py) ctx.lineTo(x0, y);   // vertical transition edge
+      ctx.lineTo(x1, y); py = y;
+    }
+    ctx.stroke(); ctx.restore();
+    // per-bit weight labels + tick columns
+    const weights = [128,64,32,16,8,4,2,1];
+    ctx.save(); ctx.font = "8px 'IBM Plex Mono', monospace"; ctx.textAlign = 'center';
+    for (let i = 0; i < 8; i++) {
+      const cx = i*cell + cell/2;
+      ctx.strokeStyle = hud; ctx.globalAlpha = .18; ctx.beginPath(); ctx.moveTo(i*cell, 0); ctx.lineTo(i*cell, H); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.fillStyle = bits[i] ? hud : ink;
+      ctx.fillText(String(bits[i]), cx, H*0.50);
+      ctx.fillStyle = hud; ctx.globalAlpha = .6; ctx.font = "6px 'IBM Plex Mono', monospace"; ctx.fillText(weights[i], cx, H - 4);
+      ctx.globalAlpha = 1; ctx.font = "8px 'IBM Plex Mono', monospace";
+    }
+    ctx.restore();
+    // a sweeping scan line so the wire reads as live signal
+    if (!this._reduceMotion) {
+      const sx = (now/12 % W);
+      ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .35; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, H); ctx.stroke(); ctx.restore();
+    }
   }
   startQrBrute() {
     clearInterval(this._qrIv);
