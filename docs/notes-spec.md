@@ -1,7 +1,33 @@
 # VECTOR // NOTES SPEC — one living diagram per node
 
-Status: v1 draft · Covers all 10 live modules (Phase 0 FOUNDATIONS, Phase 1 CRYPTO, FRONTIER)
+Status: **v2 — BUILT.** All 10 live modules rebuilt in the cinematic style below.
 Reference implementation: **FR-03 POST-QUANTUM CRYPTOGRAPHY** ("The Lock That Survives")
+
+## Build log (what shipped)
+
+Every module now has its own bespoke, animated canvas centerpiece with chapter
+tabs, a per-chapter DO THIS, an explainer that narrates each beat, and at least
+one felt-proof + fizzle. No two share a mechanic.
+
+| Node | Built as | Signature interaction |
+|---|---|---|
+| FD-01 Bits & Bytes | **The Signal Wire** | live square-wave oscilloscope over the byte game; flip a switch → its segment snaps high/low |
+| FD-02 How the Internet Works | **Send a Message** | type a message → packet animates the machine map, slow-mo halts at each hop with narration |
+| CR-01 Symmetric | *(unchanged — see §3.3 for the planned rotor rebuild)* | — |
+| CR-02 Hashing | **The Grinder** | text falls through spinning rollers into a fingerprint; nudge→avalanche; reverse→jam |
+| CR-03 Public-Key | **The Bench** | public key snaps the padlock shut / shudders; private key springs it open |
+| CR-04 Signatures | **The Seal Desk** | stamp a wax seal embossed with the message print; edit the letter → the seal cracks |
+| CR-05 TLS | **The Handshake Theater** | attacker's live feed on the wire degrades from plaintext to static as you order the steps |
+| FR-01 Qubit | **The Arrow Stage** | one draggable arrow-on-a-dial across all chapters; measure slams it; two arrows cancel |
+| FR-02 Quantum vs RSA | **The Comb** | tune a comb's spacing until it resonates at the hidden period; Shor tries all at once |
+| FR-03 Post-Quantum | **The Lattice** (reference, polished) | intro chapter, auto-advancing tabs, animated nearest-dot snap, cleaner quantum fizzle |
+
+Only **CR-01 Symmetric Encryption** still uses the original scroll-of-sections;
+its "rotor machine" rebuild (§3.3) is the one remaining piece.
+
+---
+
+## Original spec (v1) follows below.
 
 ---
 
