@@ -404,6 +404,70 @@
     </div>
   </sc-if>
 
+  <!-- ============ MODULE: ASYMMETRIC (CR-03) ============ -->
+  <sc-if value="{{ asymOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:60;background:#F7F7F4;color:#171717;font-family:'IBM Plex Mono',monospace;overflow-y:auto;">
+      <span style="position:absolute;left:16px;top:16px;width:30px;height:30px;border-top:1.5px solid #F5150E;border-left:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+      <span style="position:absolute;right:16px;top:16px;width:30px;height:30px;border-top:1.5px solid #F5150E;border-right:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+      <span style="position:absolute;left:16px;bottom:16px;width:30px;height:30px;border-bottom:1.5px solid #F5150E;border-left:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+      <span style="position:absolute;right:16px;bottom:16px;width:30px;height:30px;border-bottom:1.5px solid #F5150E;border-right:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+
+      <div style="max-width:520px;margin:0 auto;width:100%;padding:26px 24px 40px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div style="font-size:9px;color:#F5150E;letter-spacing:.5px;">CR-03 · ASYMMETRIC</div>
+          <div onClick="{{ closeModule }}" style="font-size:9px;color:#555;cursor:pointer;letter-spacing:.5px;">[ ABORT ]</div>
+        </div>
+        <div style="font-family:'Archivo',sans-serif;font-weight:800;text-transform:uppercase;font-size:22px;line-height:1;letter-spacing:-.5px;margin:6px 0 12px;">{{ asym.phaseTag }}</div>
+
+        <div style="font-size:9px;color:#F5150E;letter-spacing:.5px;border:1px solid rgba(245,21,14,.5);padding:8px 10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <span>{{ asym.ribbon }}</span><span style="white-space:nowrap;">T+<span id="mv-mod-timer">0:00</span></span>
+        </div>
+
+        <div style="font-size:11px;color:#444;line-height:1.55;margin:16px 0 16px;">{{ asym.caption }}</div>
+
+        <div style="display:flex;gap:6px;align-items:stretch;">
+          <sc-for list="{{ asym.chips }}" as="c" hint-placeholder-count="3">
+            <div style="{{ c.style }}">
+              <div style="font-size:7.5px;color:#777;letter-spacing:.5px;">{{ c.label }}</div>
+              <div style="{{ c.valStyle }}">{{ c.val }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ asym.info }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px;font-size:9.5px;color:#6E1B16;letter-spacing:.5px;line-height:1.5;">{{ asym.info }}</div>
+        </sc-if>
+
+        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+          <sc-for list="{{ asym.acts }}" as="a" hint-placeholder-count="2">
+            <button data-act="{{ a.act }}" onClick="{{ asymAct }}" style="{{ a.style }}">{{ a.label }}</button>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ asym.alarm }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px;border:1px dashed #F5150E;padding:11px 13px;font-size:10px;color:#6E1B16;line-height:1.5;animation:mv-shake .4s steps(4) 1;">SEALED // {{ asym.alarm }}</div>
+        </sc-if>
+
+        <sc-if value="{{ asym.showDebrief }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:18px;border-top:1px solid rgba(245,21,14,.3);padding-top:13px;">
+            <div style="font-size:9px;color:#F5150E;letter-spacing:1px;margin-bottom:7px;">// DEBRIEF</div>
+            <div style="font-size:11px;color:#444;line-height:1.6;">{{ asym.debriefText }}</div>
+            <sc-if value="{{ asym.cliff }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:10px;color:#6E1B16;line-height:1.55;margin-top:11px;letter-spacing:.3px;">{{ asym.cliff }}</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;">
+          <sc-if value="{{ asym.showNext }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ asymNext }}" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:#000;background:#F5150E;border:none;padding:12px 20px;cursor:pointer;font-weight:600;">{{ asym.nextLabel }}</button>
+          </sc-if>
+          <button onClick="{{ closeModule }}" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:#F5150E;background:transparent;border:1px solid #F5150E;padding:12px 20px;cursor:pointer;">&lt; FIELD</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;VECTOR&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;motionIntensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:45,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;number&quot;}}">
@@ -419,7 +483,7 @@ class Component extends DCLogic {
       ['crypto','head',180,90,'CRYPTOGRAPHY','the locks that protect everything','detected',54,'CRYPTO'],
       ['symmetric','node',64,185,'SYMMETRIC ENCRYPTION','crack the intercept','live',41,'CRYPTO'],
       ['hashing','node',296,185,'HASHING','tamper & get caught','signal',12,'CRYPTO'],
-      ['rsa','node',64,275,'PUBLIC-KEY CRYPTO','lock without the key','detected',38,'CRYPTO'],
+      ['rsa','node',64,275,'PUBLIC-KEY CRYPTO','lock without the key','live',38,'CRYPTO'],
       ['sig','node',296,275,'DIGITAL SIGNATURES','forge & get caught','signal',14,'CRYPTO'],
       ['tls','synth',180,370,'TLS / HTTPS','assemble under attack','signal',19,'CRYPTO'],
 
@@ -460,7 +524,7 @@ class Component extends DCLogic {
     raw.forEach(r => { r[3] += 120; });
     raw.unshift(['internet','live',180,84,'HOW THE INTERNET WORKS','trace a broken request','live',60,'FOUNDATIONS']);
     const codes = { internet:'FD-02', symmetric:'CR-01', hashing:'CR-02', rsa:'CR-03', sig:'CR-04', tls:'CR-05' };
-    const modules = { internet:'incident', symmetric:'cipher' };
+    const modules = { internet:'incident', symmetric:'cipher', rsa:'asym' };
     const pal = {
       live:    { m:'#F5150E', n:'#171717', border:'1px solid #F5150E', op:1,   badge:'LIVE',        badgeC:'#F5150E' },
       detected:{ m:'#F5150E', n:'#333', border:'1px dashed #F5150E', op:.92, badge:'DETECTED',    badgeC:'#F5150E' },
@@ -740,6 +804,11 @@ class Component extends DCLogic {
       this.setState({ moduleId: key, sheetId: null, stubId: null,
         mod: { round: 1, keyInput: '', msgInput: '', bruteStarted: false, brforced: false, keysTried: 0,
                r4stage: 'encrypt', r4key: '', wrongs: 0 } });
+    } else if (key === 'asym') {
+      this.setView('VECTOR // ASYMMETRIC');
+      this.setState({ moduleId: key, sheetId: null, stubId: null,
+        mod: { round: 0, padState: 'open', padTriedNoKey: false, padOpened: false,
+               r1sealed: false, r1triedPub: false, r2published: false, r2attempts: 0, r3step: 0 } });
     } else {
       this.setView('VECTOR // INCIDENT TRACE');
       this.setState({ moduleId: key, sheetId: null, stubId: null,
@@ -1003,6 +1072,107 @@ class Component extends DCLogic {
     };
   }
 
+  // ---------- module: ASYMMETRIC (CR-03) ----------
+  asymAct(e) {
+    const act = e.currentTarget.dataset.act, m = this.state.mod; if (!m) return;
+    const p = { ...m };
+    if (act === 'shut') { p.padState = 'shut'; this.setStatus('SEALED'); }
+    else if (act === 'tryopen') { p.padTriedNoKey = true; this.setStatus('LOCKED'); }
+    else if (act === 'usekey') { p.padOpened = true; this.setStatus('OPEN'); }
+    else if (act === 'lock') { p.r1sealed = true; this.setStatus('SEALED'); }
+    else if (act === 'trypub') { p.r1triedPub = true; this.setStatus('SEALED'); }
+    else if (act === 'publish') { p.r2published = true; this.setStatus('PUBLISHED'); }
+    else if (act === 'eaves') { p.r2attempts = m.r2attempts + 1; this.setStatus('LOCKED OUT'); }
+    else if (act === 'rt') { p.r3step = Math.min(4, m.r3step + 1); this.setStatus(p.r3step >= 4 ? 'LOCK-ON' : 'ROUND TRIP'); }
+    this.setState({ mod: p });
+  }
+  asymNext() {
+    const m = this.state.mod; if (!m) return;
+    const next = m.round + 1;
+    this.setStatus(next >= 4 ? 'RESOLVED' : 'TRACING');
+    this.setState({ mod: { ...m, round: next } });
+  }
+  buildAsymView(m) {
+    const round = m.round;
+    const RED = '#F5150E', DIM = '#6E1B16', INK = '#171717';
+    const chip = (label, val, on) => ({ label, val,
+      style: { flex:'1', minWidth:'0', border:'1px solid ' + (on ? RED : '#999'), background: on ? 'rgba(245,21,14,.06)' : '#F7F7F4',
+               padding:'9px 8px', textAlign:'center' },
+      valStyle: { fontFamily:"'Archivo',sans-serif", fontWeight:800, fontSize:'11px', letterSpacing:'-.2px', color: on ? RED : '#555', marginTop:'3px' } });
+    const act = (label, a, primary) => ({ label, act: a,
+      style: primary
+        ? { fontFamily:"'IBM Plex Mono',monospace", fontSize:'10px', letterSpacing:'1.5px', color:'#000', background:RED, border:'none', padding:'11px 16px', cursor:'pointer', fontWeight:600 }
+        : { fontFamily:"'IBM Plex Mono',monospace", fontSize:'10px', letterSpacing:'1.5px', color:RED, background:'transparent', border:'1px solid ' + RED, padding:'11px 16px', cursor:'pointer' } });
+
+    let phaseTag = '', ribbon = '', caption = '', info = '', alarm = '', debriefText = '', cliff = '';
+    let chips = [], acts = [], showNext = false, showDebrief = false, nextLabel = '> CONTINUE';
+    const isEnd = round >= 4;
+
+    if (round === 0) {
+      phaseTag = 'ROUND 0 // THE PADLOCK';
+      ribbon = 'OBJECTIVE: MEET AN ASYMMETRIC OBJECT · STATE: ' + (m.padOpened ? 'OPEN' : (m.padState === 'shut' ? 'SHUT' : 'OPEN'));
+      caption = 'A padlock is strange if you think about it. Anyone can click it shut with bare hands. Only the key opens it. Prove it to yourself.';
+      chips = [ chip('PADLOCK', (m.padState === 'shut' && !m.padOpened) ? 'SHUT' : 'OPEN', m.padState === 'shut' && !m.padOpened),
+                chip('KEY', 'IN HAND', false) ];
+      if (m.padState === 'open') acts = [ act('CLICK PADLOCK SHUT', 'shut', true) ];
+      else if (!m.padOpened) acts = [ act('TRY: CLICK TO OPEN', 'tryopen', false), act('USE KEY', 'usekey', true) ];
+      if (m.padTriedNoKey && !m.padOpened) alarm = 'A padlock has no open-by-clicking. It only closes. Opening takes the key.';
+      if (m.padOpened && m.padTriedNoKey) { showNext = true; showDebrief = true; nextLabel = '> TWO KEYS';
+        debriefText = 'Closing and opening turned out to be different powers. Anyone can shut it; only the key opens it. Hold that — it is the entire idea of public-key cryptography.'; }
+    } else if (round === 1) {
+      phaseTag = 'ROUND 01 // TWO KEYS';
+      ribbon = 'OBJECTIVE: SEND SEALED · KEYS HELD: PUB+PRIV · STATE: ' + (m.r1sealed ? 'SEALED' : 'PLAINTEXT');
+      caption = 'You have a message for SERVER. You hold the server’s PUBLIC key, which locks. Lock the message with it — then try to unlock your own box with that same key.';
+      chips = [ chip('MESSAGE', m.r1sealed ? 'SEALED' : 'PLAINTEXT', m.r1sealed),
+                chip('SERVER PUBLIC', 'LOCKS ONLY', false),
+                chip('SERVER PRIVATE', 'HELD BY SERVER', false) ];
+      if (!m.r1sealed) acts = [ act('LOCK WITH SERVER PUBLIC KEY', 'lock', true) ];
+      else if (!m.r1triedPub) acts = [ act('TRY: UNLOCK WITH THE PUBLIC KEY', 'trypub', false) ];
+      if (m.r1triedPub) alarm = 'That key only closes. It cannot open. The box stays sealed — only the server’s PRIVATE key opens it, and you do not hold it.';
+      if (m.r1sealed && m.r1triedPub) { showNext = true; showDebrief = true; nextLabel = '> PUBLISH THE LOCK';
+        debriefText = 'You locked a message with a key that cannot unlock it. Sealing and opening are genuinely separate abilities held by different keys.'; }
+    } else if (round === 2) {
+      phaseTag = 'ROUND 02 // PUBLISH THE LOCK';
+      ribbon = 'OBJECTIVE: STAY SAFE IN THE OPEN · EAVESDROPPER: ' + (m.r2attempts ? 'LOCKED OUT' : 'WATCHING') + ' · STATE: ' + (m.r2published ? 'PUBLISHED' : 'PRIVATE');
+      caption = 'Here is the wild part. Take the public key and throw it into the open — hand it to everyone, including the eavesdropper on the wire. Then let them try it.';
+      chips = [ chip('WIRE', 'OBSERVER PRESENT', true),
+                chip('PUBLIC KEY', m.r2published ? 'PUBLISHED' : 'PRIVATE TO YOU', m.r2published),
+                chip('INTERCEPTED BOX', 'SEALED', true) ];
+      if (!m.r2published) acts = [ act('PUBLISH SERVER PUBLIC KEY TO THE WIRE', 'publish', true) ];
+      else acts = [ act('EAVESDROPPER: TRY TO OPEN A BOX', 'eaves', false) ];
+      if (m.r2attempts) info = 'EAVESDROPPER OPEN ATTEMPTS: ' + m.r2attempts + ' — ALL SEALED. The public key only closes locks.';
+      if (m.r2published && m.r2attempts >= 1) { showNext = true; showDebrief = true; nextLabel = '> ROUND TRIP';
+        debriefText = 'A public key is safe to publish precisely because it only closes locks. The eavesdropper holds it and still opens nothing.'; }
+    } else if (round === 3) {
+      phaseTag = 'ROUND 03 // THE ROUND TRIP';
+      const s = m.r3step;
+      const steps = [
+        'LOCK MESSAGE WITH SERVER’S PUBLIC KEY',
+        'SERVER OPENS IT WITH ITS OWN PRIVATE KEY',
+        'SERVER LOCKS A REPLY WITH YOUR PUBLIC KEY',
+        'YOU OPEN THE REPLY WITH YOUR PRIVATE KEY',
+      ];
+      ribbon = 'OBJECTIVE: SECRET BOTH WAYS · SHARED SECRETS USED: 0 · STATE: ' + (s >= 4 ? 'LOCK-ON' : 'ROUND TRIP');
+      caption = 'Send a secret to the server and get one back — four keys, two directions, and no shared secret ever exchanged. Step through it.';
+      chips = [ chip('YOU → SERVER', s >= 2 ? 'DELIVERED' : 'SEALED …', s >= 2),
+                chip('SERVER → YOU', s >= 4 ? 'READ' : (s >= 2 ? 'SEALED …' : 'WAITING'), s >= 4) ];
+      info = s < 4 ? ('NEXT STEP: ' + steps[s]) : 'BOTH MESSAGES MOVED IN SECRET — WITH ZERO SHARED KEYS.';
+      if (s < 4) acts = [ act(steps[s], 'rt', true) ];
+      if (s >= 4) { showNext = true; showDebrief = true; nextLabel = '> COMPLETE';
+        debriefText = 'Two secrets crossed the open wire in both directions, and the two of you never agreed a shared key in advance. The key-exchange problem from the last module is solved.'; }
+    } else {
+      phaseTag = 'ASYMMETRIC COMPLETE';
+      ribbon = 'OBJECTIVE: SEND SEALED · EAVESDROPPER: LOCKED OUT · STATE: RESOLVED';
+      caption = 'You met a lock you can close but not open, published it safely in the open, and traded secrets with a stranger using nothing agreed in advance.';
+      showDebrief = true;
+      debriefText = 'You sent a secret to someone you had never shared a key with. Secrecy: solved.';
+      cliff = 'But when you grabbed the server’s public key off the open wire — how do you know it was really theirs, and not the eavesdropper’s lock swapped in? You solved secrecy. You have NOT solved identity.  →  NEXT: DIGITAL SIGNATURES // PROVING WHO SENT IT';
+    }
+
+    return { phaseTag, ribbon, caption, chips, acts, info, alarm, debriefText, cliff,
+             showNext, showDebrief, nextLabel, isEnd };
+  }
+
   // ---------- render ----------
   renderVals() {
     const st = this.state, gr = this.g();
@@ -1057,6 +1227,8 @@ class Component extends DCLogic {
       mod: (st.moduleId === 'incident' && st.mod) ? this.buildModView(st.mod) : {},
       cipherOpen: st.moduleId === 'cipher' && !!st.mod,
       cip: (st.moduleId === 'cipher' && st.mod) ? this.buildCipherView(st.mod) : {},
+      asymOpen: st.moduleId === 'asym' && !!st.mod,
+      asym: (st.moduleId === 'asym' && st.mod) ? this.buildAsymView(st.mod) : {},
 
       initiateScan: () => this.initiateScan(),
       selectNode: (e) => this.selectNode(e),
@@ -1078,6 +1250,8 @@ class Component extends DCLogic {
       cipherRunBrute: () => this.cipherRunBrute(),
       cipherSend: () => this.cipherSend(),
       cipherNext: () => this.cipherNext(),
+      asymAct: (e) => this.asymAct(e),
+      asymNext: () => this.asymNext(),
       ctaEnter: () => this.setState({ ctaHover: true }),
       ctaLeave: () => this.setState({ ctaHover: false }),
     };
