@@ -48,6 +48,7 @@
   @keyframes mv-boxin{0%{clip-path:inset(0 100% 0 0);opacity:0}40%{opacity:1}100%{clip-path:inset(0 0 0 0);opacity:1}}
   @keyframes mv-converge{0%{transform:scale(1.9);opacity:0}60%{opacity:1}100%{transform:scale(1);opacity:1}}
   @keyframes mv-ping{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+  @keyframes mv-scanner-breathe{0%,100%{opacity:.42}45%{opacity:.72}52%{opacity:.34}58%{opacity:.68}}
   /* the day/night sensor swap is a single-element diagonal slab sweep — see
      toggleTheme(); no keyframes needed, it runs on the Web Animations API */
 
@@ -57,6 +58,9 @@
   #mv-reticle[data-near="1"] .mv-ret-label{opacity:.9;}
   #mv-foreground{z-index:40;}
   #mv-reticle{z-index:90;}
+  #mv-scanner-layer>div{animation:mv-scanner-breathe 3.4s steps(8) infinite;}
+  #mv-scanner-layer>div:nth-child(2n){animation-duration:4.1s;animation-delay:-1.3s;}
+  #mv-scanner-layer>div:nth-child(3n){animation-duration:2.9s;animation-delay:-2.1s;}
 
   /* minimal, theme-matched scrollbars */
   html{scrollbar-width:thin;scrollbar-color:var(--accent) var(--bg);}
@@ -72,6 +76,8 @@
 
   /* desktop mission index — hidden on narrow viewports */
   .mv-wing{display:none;}
+  .mv-wing{scrollbar-width:none;}
+  .mv-wing::-webkit-scrollbar{display:none;width:0;height:0;}
   .mv-mani-row:hover{background:var(--glow);}
   .mv-mani-phase.on{border-left:1px solid var(--accent);}
   .mv-mani-phase.on .mv-mani-head{color:var(--accent);}
@@ -244,13 +250,141 @@
   .sy-toggle{width:100%;border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);padding:13px;font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;}
   .sy-toggle.on{background:var(--bb-hud);color:var(--bb-bg);}
 
+  /* ---- shared crypto-lane widgets (hashing / RSA / signatures / TLS) ---- */
+  .cx-grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:14px;}
+  .cx-card{border:1px solid var(--bb-hud);padding:12px 10px;min-width:0;background:var(--bb-bg);color:var(--bb-ink);margin-top:12px;}
+  .cx-lab{color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-bottom:8px;}
+  .cx-fp{display:flex;flex-wrap:wrap;gap:2px;margin:8px 0 2px;}
+  .cx-nib{font:600 12px 'IBM Plex Mono',monospace;padding:4px 5px;border:1px solid rgba(245,21,14,.22);color:var(--bb-ink);min-width:20px;text-align:center;}
+  .cx-nib.diff{background:#ff2a22;color:#050505;border-color:#ff2a22;}
+  .cx-hex{font:500 10px 'IBM Plex Mono',monospace;letter-spacing:1px;color:var(--bb-ink);line-height:1.7;word-break:break-all;}
+  .cx-btn{width:100%;border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);padding:12px;font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;margin-top:10px;}
+  .cx-btn.solid{background:var(--bb-hud);color:var(--bb-bg);}
+  .cx-alarm{border:1px solid #ff2a22;color:#ff2a22;padding:13px 14px;margin-top:14px;font-size:10px;line-height:1.6;animation:mv-alarm .7s steps(2) 2;}
+  .cx-ok{border:1px solid var(--bb-hud);padding:13px 14px;margin-top:14px;font-size:10px;line-height:1.6;color:var(--bb-ink);}
+  .cx-counter{font:900 clamp(40px,13vw,68px) 'Archivo',sans-serif;line-height:.9;letter-spacing:-2px;margin:14px 0 2px;color:var(--bb-ink);}
+  .cx-counter span{color:var(--bb-hud);font-size:.32em;letter-spacing:1px;}
+  .cx-field{border:1px solid var(--bb-hud);padding:8px;background:var(--bb-bg);margin-top:12px;}
+  .cx-field label{display:block;color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin:0 0 6px 4px;}
+  .cx-field input{display:block;width:100%;border:0;outline:0;background:var(--bb-bg);color:var(--bb-ink);font:800 20px 'Archivo',sans-serif;padding:6px;caret-color:var(--bb-hud);}
+  .cx-plain{border:1px solid var(--bb-hud);padding:14px;font:800 19px 'Archivo',sans-serif;color:var(--bb-ink);margin-top:12px;overflow-wrap:anywhere;}
+
+  /* RSA padlock */
+  .pk-lock{width:104px;height:130px;margin:22px auto 6px;position:relative;}
+  .pk-shackle{position:absolute;left:50%;top:2px;width:54px;height:58px;border:7px solid var(--bb-hud);border-bottom:none;border-radius:27px 27px 0 0;transform:translateX(-50%);transition:top .18s steps(3),left .18s steps(3);}
+  .pk-lock.open .pk-shackle{top:-28px;left:36%;}
+  .pk-body{position:absolute;left:50%;bottom:0;width:104px;height:76px;transform:translateX(-50%);border:2px solid var(--bb-hud);background:var(--bb-bg);display:flex;align-items:center;justify-content:center;}
+  .pk-body strong{font:900 30px 'Archivo',sans-serif;color:var(--bb-hud);}
+  .pk-keys{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;}
+  .pk-key{border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-ink);padding:12px 8px;text-align:left;min-width:0;}
+  .pk-key strong{display:block;font:900 13px 'Archivo',sans-serif;}
+  .pk-key span{display:block;color:var(--bb-hud);font-size:7px;margin-top:6px;letter-spacing:.5px;}
+  .pk-key.pub{box-shadow:inset 0 0 0 2px rgba(245,21,14,.16);}
+  .pk-wire{border:1px dashed var(--bb-hud);padding:14px 10px;margin-top:14px;text-align:center;color:var(--bb-hud);font-size:9px;letter-spacing:1px;line-height:1.5;}
+
+  /* TLS step-order puzzle */
+  .tl-steps{display:grid;gap:6px;margin-top:14px;}
+  .tl-step{border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-ink);padding:13px 12px;text-align:left;min-width:0;position:relative;}
+  .tl-step strong{display:block;font:900 14px 'Archivo',sans-serif;}
+  .tl-step span{display:block;color:var(--bb-hud);font-size:7px;margin-top:6px;letter-spacing:.5px;}
+  .tl-step.done{background:var(--bb-ink);color:var(--bb-bg);}
+  .tl-step.done span{color:var(--bb-bg);opacity:.65;}
+  .tl-ord{position:absolute;right:10px;top:10px;font:900 13px 'Archivo',sans-serif;color:var(--bb-hud);}
+  .tl-step.done .tl-ord{color:var(--bb-bg);}
+  .tl-lock{text-align:center;font:900 clamp(28px,8vw,46px) 'Archivo',sans-serif;color:var(--bb-ink);margin:16px 0 4px;letter-spacing:-1px;}
+
+  /* ---- frontier / quantum widgets (qubit / shor / lattice) ---- */
+  .qb-dial{width:154px;height:154px;border:1px solid var(--bb-hud);border-radius:50%;margin:20px auto 8px;position:relative;}
+  .qb-dial b{position:absolute;left:50%;transform:translateX(-50%);font:900 12px 'Archivo',sans-serif;color:var(--bb-hud);}
+  .qb-dial b.p1{top:6px;} .qb-dial b.p0{bottom:6px;}
+  .qb-arrow{position:absolute;left:50%;bottom:50%;width:3px;height:58px;background:var(--bb-ink);transform-origin:bottom center;margin-left:-1.5px;transition:transform .12s steps(3);}
+  .qb-arrow:after{content:'';position:absolute;left:50%;top:-2px;transform:translateX(-50%);border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--bb-ink);}
+  .qb-hist{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;height:96px;}
+  .qb-bar{border:1px solid var(--bb-hud);position:relative;display:flex;align-items:flex-end;}
+  .qb-bar i{display:block;width:100%;background:var(--bb-hud);opacity:.85;min-height:1px;}
+  .qb-bar span{position:absolute;top:5px;left:0;right:0;text-align:center;font:900 13px 'Archivo',sans-serif;color:var(--bb-ink);}
+  .qb-two{display:flex;justify-content:center;gap:34px;margin:16px 0 6px;}
+  .qb-mini{width:74px;height:74px;border:1px solid var(--bb-hud);border-radius:50%;position:relative;}
+  .qb-mini i{position:absolute;left:50%;bottom:50%;width:2px;height:30px;background:var(--bb-ink);transform-origin:bottom center;margin-left:-1px;}
+  .qb-amp{height:12px;border:1px solid var(--bb-hud);position:relative;margin-top:12px;}
+  .qb-amp i{position:absolute;left:0;top:0;bottom:0;background:var(--bb-hud);transition:width .12s steps(3);}
+  .qb-slider{width:100%;height:30px;accent-color:var(--bb-hud);margin-top:10px;}
+
+  .qr-bloom{display:flex;align-items:flex-end;gap:2px;height:100px;border:1px solid var(--bb-hud);padding:8px;margin-top:14px;}
+  .qr-bloom i{flex:1;background:var(--bb-hud);opacity:.55;min-height:2px;}
+  .qr-bloom i.peak{background:var(--bb-ink);opacity:1;}
+  .qr-cascade{display:grid;gap:5px;margin-top:14px;}
+  .qr-lock-row{border:1px solid var(--bb-hud);padding:11px 12px;color:var(--bb-ink);font:800 12px 'Archivo',sans-serif;display:flex;justify-content:space-between;align-items:center;}
+  .qr-lock-row.popped{border-color:#ff2a22;color:#ff2a22;}
+  .qr-lock-row span{font:7px 'IBM Plex Mono',monospace;letter-spacing:1px;}
+
+  .pq-chamber{margin:26px 0 10px;border:1px solid var(--bb-hud);background:var(--bb-bg);position:relative;overflow:hidden;}
+  .pq-chamber:before{content:'3D LATTICE FIELD // DRAG THE VECTORS';position:absolute;left:10px;top:-7px;background:var(--bb-bg);color:var(--bb-hud);font:7px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:0 6px;z-index:2;}
+  .pq-chamber-grid{display:grid;grid-template-columns:1fr;min-height:520px;}
+  .pq-stage{position:relative;min-height:340px;border-bottom:1px solid rgba(245,21,14,.32);background:
+    linear-gradient(90deg,rgba(245,21,14,.06) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(245,21,14,.06) 1px,transparent 1px);
+    background-size:26px 26px;}
+  :root[data-theme="dark"] .pq-stage{background:
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(255,255,255,.045) 1px,transparent 1px);
+    background-size:26px 26px;}
+  .pq-stage canvas{display:block;width:100%;height:100%;min-height:340px;touch-action:none;}
+  .pq-stage-hud{position:absolute;left:10px;right:10px;bottom:9px;display:flex;justify-content:space-between;gap:10px;color:var(--bb-hud);font-size:7px;letter-spacing:1px;pointer-events:none;}
+  .pq-stage-tag{position:absolute;right:10px;top:10px;border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);padding:6px 8px;font-size:7px;letter-spacing:1px;}
+  .pq-console{padding:14px;display:grid;gap:12px;}
+  .pq-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+  .pq-tab{border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-ink);padding:9px 6px;text-align:left;min-width:0;}
+  .pq-tab strong{display:block;font:900 11px 'Archivo',sans-serif;line-height:1;text-transform:uppercase;}
+  .pq-tab span{display:block;color:var(--bb-hud);font-size:6px;letter-spacing:.7px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pq-tab.on{background:var(--bb-ink);color:var(--bb-bg);}
+  .pq-tab.on span{color:var(--bb-bg);opacity:.7;}
+  .pq-readout{border-left:2px solid var(--bb-hud);padding:10px 12px;color:var(--bb-muted);font-size:9px;line-height:1.65;min-height:70px;}
+  .pq-readout strong{display:block;color:var(--bb-ink);font:900 18px 'Archivo',sans-serif;line-height:1.05;text-transform:uppercase;margin-bottom:7px;}
+  .pq-controls{display:grid;gap:8px;}
+  .pq-control-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .pq-control-row.three{grid-template-columns:repeat(3,1fr);}
+  .pq-slider-block{border:1px solid var(--bb-hud);padding:9px;background:var(--bb-bg);}
+  .pq-slider-block label{display:flex;justify-content:space-between;gap:8px;color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-bottom:7px;}
+  .pq-slider{width:100%;height:28px;accent-color:var(--bb-hud);}
+  .pq-pill{border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-ink);padding:11px 9px;text-align:left;font-family:'IBM Plex Mono',monospace;}
+  .pq-pill strong{display:block;font:900 12px 'Archivo',sans-serif;line-height:1;text-transform:uppercase;}
+  .pq-pill span{display:block;color:var(--bb-hud);font-size:7px;letter-spacing:.6px;margin-top:6px;}
+  .pq-pill.on{box-shadow:inset 0 0 0 2px rgba(245,21,14,.18);}
+  .pq-pill.solid{background:var(--bb-hud);color:var(--bb-bg);}
+  .pq-pill.solid span{color:var(--bb-bg);opacity:.72;}
+  .pq-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+  .pq-metric{border:1px dashed var(--bb-hud);padding:9px 6px;min-width:0;}
+  .pq-metric span{display:block;color:var(--bb-hud);font-size:6px;letter-spacing:.8px;}
+  .pq-metric strong{display:block;color:var(--bb-ink);font:900 18px 'Archivo',sans-serif;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pq-lwe{display:grid;grid-template-columns:1fr;gap:6px;}
+  .pq-dial{height:12px;border:1px solid var(--bb-hud);position:relative;overflow:hidden;background:var(--bb-bg);}
+  .pq-dial:before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--bb-hud);opacity:.45;}
+  .pq-dial i{position:absolute;top:0;bottom:0;width:3px;background:var(--bb-ink);transform:translateX(-50%);transition:left .15s steps(3);}
+  .pq-todo{border:1px solid var(--bb-hud);background:var(--bb-hud);color:var(--bb-bg);padding:9px 11px;font-size:10px;line-height:1.5;}
+  .pq-todo span{display:inline-block;font:900 8px 'IBM Plex Mono',monospace;letter-spacing:1px;opacity:.85;margin-right:8px;border:1px solid var(--bb-bg);padding:1px 5px;vertical-align:middle;}
+  .pq-legend{display:flex;flex-wrap:wrap;gap:12px;color:var(--bb-muted);font-size:8px;letter-spacing:.5px;padding:1px 0 2px;}
+  .pq-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .pq-lg{display:inline-block;width:9px;height:9px;flex:0 0 auto;}
+  .pq-lg.diamond{background:var(--bb-hud);transform:rotate(45deg);}
+  .pq-lg.dot{background:var(--bb-ink);border-radius:50%;width:8px;height:8px;}
+  .pq-lg.key{height:2px;width:15px;background:var(--bb-hud);}
+  .pq-lg.true{border:1.5px dashed var(--bb-ink);background:transparent;}
+  @media (min-width:820px){
+    .pq-chamber{margin-left:calc(50% - 45vw);margin-right:calc(50% - 45vw);}
+    .pq-chamber-grid{grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);}
+    .pq-stage{min-height:560px;border-right:1px solid rgba(245,21,14,.32);border-bottom:0;}
+    .pq-stage canvas{min-height:560px;}
+  }
+  @media (max-width:520px){.pq-tabs{grid-template-columns:1fr 1fr}.pq-control-row,.pq-control-row.three,.pq-metrics{grid-template-columns:1fr}}
+
   /* the reticle already tracks the pointer — hide the OS cursor on fine pointers */
   @media (pointer:fine){ html,html *{cursor:none !important;} }
 
-  /* accessibility + polish: still the ambient motion */
-  @media (prefers-reduced-motion:reduce){
-    *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:0s !important;}
-  }
+  /* motion is controlled by the component's motionIntensity setting; 0 is reduced mode */
+  :root[data-motion="reduced"] *,
+  :root[data-motion="reduced"] *::before,
+  :root[data-motion="reduced"] *::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:0s !important;}
 </style>
 </helmet>
 
@@ -303,11 +437,11 @@
       <section data-screen-label="CYBERSECURITY ATLAS" style="position:relative;padding:120px 0 200px;">
 
         <!-- desktop mission index (fills the left wing on wide screens) -->
-        <div class="mv-wing" style="position:fixed;left:18px;top:92px;bottom:58px;width:214px;z-index:30;pointer-events:auto;overflow:auto;font-size:9px;line-height:1.5;">
-          <div style="font-size:9px;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px;border-bottom:1px solid var(--band-line);padding-bottom:6px;">// CYBERSECURITY ATLAS</div>
+        <div class="mv-wing" style="position:fixed;left:18px;top:74px;width:214px;z-index:30;pointer-events:auto;overflow:visible;font-size:8px;line-height:1.16;">
+          <div style="font-size:8px;letter-spacing:1.2px;color:var(--accent);margin-bottom:5px;border-bottom:1px solid var(--band-line);padding-bottom:4px;">// CYBERSECURITY ATLAS</div>
           <sc-for list="{{ manifest }}" as="ph" hint-placeholder-count="4">
-            <div class="mv-mani-phase" data-phase="{{ ph.idx }}" style="margin-bottom:14px;padding-left:6px;margin-left:-7px;">
-              <div class="mv-mani-head" style="color:var(--accent-dim);letter-spacing:.5px;font-size:8.5px;margin-bottom:5px;">{{ ph.label }} · {{ ph.progress }}</div>
+            <div class="mv-mani-phase" data-phase="{{ ph.idx }}" style="margin-bottom:6px;padding-left:5px;margin-left:-6px;">
+              <div class="mv-mani-head" style="color:var(--accent-dim);letter-spacing:.45px;font-size:7.5px;margin-bottom:2px;">{{ ph.label }} · {{ ph.progress }}</div>
               <sc-for list="{{ ph.items }}" as="it" hint-placeholder-count="8">
                 <div class="mv-mani-row" data-node="{{ it.id }}" onClick="{{ selectFromManifest }}" style="{{ it.style }}">
                   <span style="float:right;color:{{ it.dot }};font-weight:700;">{{ it.mark }}</span>
@@ -936,11 +1070,599 @@
 
           <section class="bb-payoff">
             <h2 class="bb-statement" style="max-width:12ch;">LOCK IT. SEND IT. UNLOCK IT.</h2>
-            <p class="bb-friendly" style="margin-bottom:0;">The message is what you protect. The shared key is what makes the transformation work. Close does not count.</p>
+            <p class="bb-friendly" style="margin-bottom:0;">The message is what you protect. The shared key is what makes the transformation work. Close does not count. But both sides had to share that secret first — and the eavesdropper watched that conversation too.</p>
+            <button class="cx-btn solid" data-reticle-target="next" data-node="hashing" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: HASHING // TAMPER DETECTION</button>
           </section>
         </sc-if>
 
         <div class="bb-scope">LEARNING SIMULATION // This is not real AES and must not be used to protect sensitive data. Real AES uses fixed 128, 192, or 256-bit keys and authenticated systems add integrity checks. No files, cracking, brute force, or live cryptographic operations happen here.</div>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ============ HASHING // LIVE MODULE ============ -->
+  <sc-if value="{{ hashingOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module ha-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-02 // FINGERPRINT</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ haHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ haStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">ATT {{ haAttempts }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 03 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">THE<br>FINGERPRINT</h1>
+        <p class="bb-friendly">Every message has a fingerprint. Try to change a message without changing its print. You can't — and that impossibility is the whole tool.</p>
+
+        <div class="iw-control">
+          <div class="cx-field">
+            <label>MESSAGE // TYPE ANYTHING</label>
+            <input id="ha-input" data-reticle-target="input" value="{{ haText }}" onChange="{{ haInput }}" maxlength="40" autocomplete="off" spellcheck="false" placeholder="pay bob $100">
+          </div>
+        </div>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 01 // AVALANCHE</div>
+          <h2 class="bb-statement">CHANGE ONE LETTER. WATCH IT DETONATE.</h2>
+          <p class="bb-friendly">The top print is your message's fingerprint. The bottom is the same message with the last character nudged by one. Nearly half the print flips — a tiny lie makes a totally different fingerprint.</p>
+          <div class="cx-card"><div class="cx-lab">YOUR MESSAGE → FINGERPRINT</div>
+            <div class="cx-fp"><sc-for list="{{ haDigestA }}" as="n" hint-placeholder-count="32"><span class="{{ n.className }}">{{ n.ch }}</span></sc-for></div>
+          </div>
+          <div class="cx-card"><div class="cx-lab">ONE CHARACTER CHANGED → FINGERPRINT</div>
+            <div class="cx-fp"><sc-for list="{{ haDigestB }}" as="n" hint-placeholder-count="32"><span class="{{ n.className }}">{{ n.ch }}</span></sc-for></div>
+          </div>
+          <div class="bb-readout">INPUT DELTA / <strong>1 CHARACTER</strong><br>FINGERPRINT DELTA / <strong>{{ haAvalanche }}%</strong> OF NIBBLES CHANGED</div>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 02 // COLLISION HUNT</div>
+          <h2 class="bb-statement">FORGE A DIFFERENT MESSAGE WITH THE SAME PRINT.</h2>
+          <p class="bb-friendly">Target fingerprint sits below. Keep generating messages and try to make one land on it.</p>
+          <div class="cx-card"><div class="cx-lab">TARGET FINGERPRINT</div>
+            <div class="cx-fp"><sc-for list="{{ haTargetPrint }}" as="n" hint-placeholder-count="32"><span class="cx-nib">{{ n.ch }}</span></sc-for></div>
+          </div>
+          <sc-if value="{{ haHasCandidate }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-card"><div class="cx-lab">CANDIDATE // "{{ haCandidateText }}"</div>
+              <div class="cx-fp"><sc-for list="{{ haCandidatePrint }}" as="n" hint-placeholder-count="32"><span class="{{ n.className }}">{{ n.ch }}</span></sc-for></div>
+            </div>
+          </sc-if>
+          <div class="cx-counter">{{ haAttempts }}<span> ATTEMPTS</span></div>
+          <div style="color:var(--bb-hud);font-size:8px;letter-spacing:1px;">MATCHES 0 // COLLISION SPACE UNREACHABLE</div>
+          <button class="cx-btn solid" data-reticle-target="collide" onClick="{{ haCollide }}">&gt; GENERATE ANOTHER MESSAGE</button>
+          <sc-if value="{{ haGaveUp }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">You can't. Nobody can, in any reasonable time. Hashing's value <strong>is</strong> the wall you just hit.</div></sc-if>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 03 // ONE-WAY</div>
+          <h2 class="bb-statement">NOW RUN IT BACKWARDS.</h2>
+          <p class="bb-friendly">Here is a fingerprint. Recover the message that made it. There is no undo button, no inverse.</p>
+          <div class="cx-card"><div class="cx-lab">UNKNOWN INPUT → FINGERPRINT</div>
+            <div class="cx-fp"><sc-for list="{{ haSecretPrint }}" as="n" hint-placeholder-count="32"><span class="cx-nib">{{ n.ch }}</span></sc-for></div>
+          </div>
+          <div class="cx-field"><label>RECOVERED MESSAGE?</label>
+            <input id="ha-recover" data-reticle-target="input" value="{{ haRecover }}" onChange="{{ haRecoverInput }}" maxlength="40" autocomplete="off" placeholder="type your guess">
+          </div>
+          <button class="cx-btn" data-reticle-target="recover" onClick="{{ haTryRecover }}">&gt; CHECK GUESS</button>
+          <sc-if value="{{ haRecoverTried }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">NO MATCH // A FINGERPRINT REVEALS NOTHING ABOUT ITS INPUT. It only runs forwards. That is why passwords are stored this way — steal the prints, still can't get the passwords.</div></sc-if>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 04 // THE DETECTOR</div>
+          <h2 class="bb-statement">YOU ARE THE TAMPER ALARM.</h2>
+          <p class="bb-friendly">Original on top, received copy below. Edit the received copy — the prints diverge instantly. Put it back — they re-align.</p>
+          <div class="cx-card"><div class="cx-lab">ORIGINAL</div>
+            <div style="font:800 15px 'Archivo',sans-serif;color:var(--bb-ink);">{{ haOriginal }}</div>
+            <div class="cx-fp"><sc-for list="{{ haOrigPrint }}" as="n" hint-placeholder-count="32"><span class="cx-nib">{{ n.ch }}</span></sc-for></div>
+          </div>
+          <div class="cx-field"><label>RECEIVED // EDIT ME</label>
+            <input id="ha-received" data-reticle-target="input" value="{{ haReceived }}" onChange="{{ haReceivedInput }}" maxlength="40" autocomplete="off">
+          </div>
+          <div class="cx-card"><div class="cx-lab">RECEIVED → FINGERPRINT</div>
+            <div class="cx-fp"><sc-for list="{{ haRecvPrint }}" as="n" hint-placeholder-count="32"><span class="{{ n.className }}">{{ n.ch }}</span></sc-for></div>
+          </div>
+          <sc-if value="{{ haIntact }}" hint-placeholder-val="{{ true }}"><div class="cx-ok">INTEGRITY OK // FINGERPRINTS MATCH // NOTHING WAS CHANGED.</div></sc-if>
+          <sc-if value="{{ haTampered }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">INTEGRITY VIOLATION // FINGERPRINTS DIVERGE // THE RECEIVED COPY WAS ALTERED.</div></sc-if>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:13ch;">IT CATCHES ANY CHANGE.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But a fingerprint can't tell you WHO sent a message — an attacker could change it and recompute a fresh print. You need a fingerprint only one specific person could have produced. Hold that thought.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="rsa" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: PUBLIC-KEY CRYPTOGRAPHY</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // This is an illustrative hash, not real SHA-256. Real hashes are longer and battle-tested; the behaviour you felt — avalanche, no inverse, no collisions — is identical.</div>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ============ PUBLIC-KEY CRYPTOGRAPHY // LIVE MODULE ============ -->
+  <sc-if value="{{ rsaOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module pk-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-03 // ASYMMETRIC</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ rsaHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ rsaStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">EAVES {{ rsaEaves }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 04 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(42px,13vw,68px);">A LOCK<br>YOU CAN'T<br>OPEN</h1>
+        <p class="bb-friendly">Send a secret to a stranger you've never shared a key with — by discovering that the lock and the key can be two different objects.</p>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 00 // THE PADLOCK</div>
+          <h2 class="bb-statement">ANYONE CLICKS IT SHUT. ONLY THE KEY OPENS IT.</h2>
+          <div class="{{ rsaLockClass }}">
+            <div class="pk-shackle"></div>
+            <div class="pk-body"><strong>{{ rsaLockGlyph }}</strong></div>
+          </div>
+          <div class="cx-grid2">
+            <button class="cx-btn" data-reticle-target="padlock" onClick="{{ rsaClickShut }}">CLICK SHUT</button>
+            <button class="cx-btn" data-reticle-target="padlock" onClick="{{ rsaClickOpen }}">CLICK TO OPEN</button>
+          </div>
+          <button class="cx-btn solid" data-reticle-target="usekey" onClick="{{ rsaUseKey }}">USE THE KEY</button>
+          <div class="bb-readout">{{ rsaLockTelemetry }}</div>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 01 // TWO DIFFERENT KEYS</div>
+          <h2 class="bb-statement">ONE KEY LOCKS. A DIFFERENT KEY UNLOCKS.</h2>
+          <p class="bb-friendly">Lock this message with the server's PUBLIC key. Then try to open it — first with that same public key.</p>
+          <div class="cx-plain">{{ rsaBoxContent }}</div>
+          <div class="pk-keys">
+            <div class="pk-key pub"><strong>PUBLIC KEY</strong><span>SERVER // LOCKS ONLY</span></div>
+            <div class="pk-key"><strong>PRIVATE KEY</strong><span>SERVER // UNLOCKS ONLY</span></div>
+          </div>
+          <button class="cx-btn solid" data-reticle-target="lockmsg" onClick="{{ rsaSeal }}">&gt; LOCK WITH PUBLIC KEY</button>
+          <sc-if value="{{ rsaSealed }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-grid2">
+              <button class="cx-btn" data-reticle-target="openpub" onClick="{{ rsaOpenPub }}">OPEN WITH PUBLIC</button>
+              <button class="cx-btn" data-reticle-target="openpriv" onClick="{{ rsaOpenPriv }}">OPEN WITH PRIVATE</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ rsaOpenFail }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">SEALED // THAT KEY ONLY CLOSES. IT CANNOT OPEN. Look for the other one — locking and unlocking are genuinely different powers.</div></sc-if>
+          <sc-if value="{{ rsaOpened }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">OPENED // "{{ rsaBoxContent }}" — only the PRIVATE key could do this.</div></sc-if>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 02 // PUBLISH THE LOCK</div>
+          <h2 class="bb-statement">THROW YOUR PUBLIC KEY INTO THE OPEN.</h2>
+          <p class="bb-friendly">Here's the wild part. Hand your lock to everyone — including the eavesdropper on the wire. Watch them stay stuck anyway.</p>
+          <div class="pk-wire">{{ rsaWireLabel }}</div>
+          <button class="cx-btn solid" data-reticle-target="publish" onClick="{{ rsaPublish }}">&gt; PUBLISH PUBLIC KEY TO THE WIRE</button>
+          <sc-if value="{{ rsaPublished }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn" data-reticle-target="eaves" onClick="{{ rsaEavesTry }}">EAVESDROPPER: OPEN AN INTERCEPTED BOX WITH IT</button>
+            <div class="cx-counter">{{ rsaEaves }}<span> SEALED</span></div>
+            <div class="bb-readout">A <strong>public</strong> key is safe to publish because it only closes locks. Attempts {{ rsaEaves }} // opened 0. This is the moment RSA stops sounding impossible.</div>
+          </sc-if>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:13ch;">SECRECY WITHOUT A SHARED SECRET.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">You sent a secret to a stranger with nothing agreed in advance. But when you grabbed the server's public key off the open wire — how do you know it was really <strong>theirs</strong>, and not the eavesdropper's lock swapped in? You solved secrecy. You have NOT solved identity.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="sig" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: DIGITAL SIGNATURES</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // The padlock is an honest metaphor. Real RSA is math — huge primes and one-way multiplication — not a physical lock. No real keys are generated here.</div>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ============ DIGITAL SIGNATURES // LIVE MODULE ============ -->
+  <sc-if value="{{ sigOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module sg-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-04 // SIGN &amp; VERIFY</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ sgHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ sgStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">FORGERIES 0</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 05 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(50px,16vw,80px);">SIGN &amp;<br>VERIFY</h1>
+        <p class="bb-friendly">A signature proves two things at once: who wrote it, and that not one character changed. Try to forge one — every way — and get caught.</p>
+
+        <div class="iw-control">
+          <div class="cx-field">
+            <label>MESSAGE FROM ALICE</label>
+            <input id="sg-input" data-reticle-target="input" value="{{ sgMessage }}" onChange="{{ sgInput }}" maxlength="48" autocomplete="off" spellcheck="false">
+          </div>
+          <button class="cx-btn solid" data-reticle-target="sign" onClick="{{ sgSign }}">SIGN WITH ALICE'S PRIVATE KEY</button>
+        </div>
+
+        <sc-if value="{{ sgSigned }}" hint-placeholder-val="{{ false }}">
+          <div class="cx-card"><div class="cx-lab">SIGNATURE // BOUND TO THE MESSAGE FINGERPRINT</div>
+            <div class="cx-fp"><sc-for list="{{ sgSigNibbles }}" as="n" hint-placeholder-count="32"><span class="cx-nib">{{ n.ch }}</span></sc-for></div>
+          </div>
+        </sc-if>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 01 // VERIFY</div>
+          <h2 class="bb-statement">CHECK IT AGAINST A PUBLIC KEY.</h2>
+          <p class="bb-friendly">Two claims get checked at once: it really came from Alice, and nobody touched it. Pick a public key, then verify.</p>
+          <div class="pk-keys">
+            <button class="{{ sgAliceKeyClass }}" data-reticle-target="step" onClick="{{ sgPickAlice }}"><strong>ALICE'S PUBLIC KEY</strong><span>THE REAL SENDER</span></button>
+            <button class="{{ sgMalloryKeyClass }}" data-reticle-target="step" onClick="{{ sgPickMallory }}"><strong>MALLORY'S PUBLIC KEY</strong><span>THE IMPOSTER</span></button>
+          </div>
+          <button class="cx-btn" data-reticle-target="verify" onClick="{{ sgVerify }}">&gt; VERIFY SIGNATURE</button>
+          <sc-if value="{{ sgVerified }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">VERIFIED // ALICE // UNALTERED — identity and integrity confirmed in one move.</div></sc-if>
+          <sc-if value="{{ sgContentBad }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">SIGNATURE INVALID // CONTENT ALTERED — the message fingerprint no longer matches the one sealed in the signature. Change the content, break the seal.</div></sc-if>
+          <sc-if value="{{ sgIdentityBad }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">IDENTITY MISMATCH // KEY DOES NOT VERIFY — the signature made with Alice's private key won't verify against the imposter's public key.</div></sc-if>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 02 // FORGERY</div>
+          <h2 class="bb-statement">SIGN A FAKE MESSAGE AS ALICE.</h2>
+          <p class="bb-friendly">You only hold Alice's PUBLIC key, not her private one. Try to sign as her anyway.</p>
+          <button class="cx-btn" data-reticle-target="forge" onClick="{{ sgForge }}">&gt; FORGE ALICE'S SIGNATURE</button>
+          <sc-if value="{{ sgForgeTried }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">PRIVATE KEY REQUIRED // NOT HELD — only the holder of the private key can produce a signature. The public key can only <strong>check</strong> it. This is RSA run in reverse.</div></sc-if>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:13ch;">IDENTITY AND INTEGRITY, TOGETHER.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">You now have secrecy (encryption), a tamper-detector (hashing), and proof-of-identity (signatures). Real security stacks all three, live, in the first half-second of every secure connection. Want to watch them assemble?</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="tls" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: TLS / HTTPS // THE HANDSHAKE</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // Simplified sign/verify. Real signatures hash-then-encrypt with padding schemes and rely on certificate authorities. The two-claims-in-one-move behaviour you felt is the real thing.</div>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ============ TLS / HTTPS // LIVE MODULE ============ -->
+  <sc-if value="{{ tlsOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module tl-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-05 // HANDSHAKE</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ tlHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ tlStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">ATTACKER {{ tlAttackerLabel }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 06 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(52px,17vw,84px);">THE<br>HANDSHAKE</h1>
+        <p class="bb-friendly">Build a secure channel from the four tools you now own — while an eavesdropper watches every step — and watch them walk away with static.</p>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 00 // PLAIN HTTP</div>
+          <h2 class="bb-statement">THIS IS WHERE WE STARTED.</h2>
+          <p class="bb-friendly">On plain http, the login flows past in the clear. Everyone on the path can read you.</p>
+          <div class="cx-alarm">GET /login&nbsp;&nbsp;user=clay&nbsp;&nbsp;pass=hunter2<br>&nbsp;&nbsp;↳ OBSERVER ON THE WIRE READS EVERYTHING</div>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 01 // BUILD THE HANDSHAKE</div>
+          <h2 class="bb-statement">PUT THE FOUR STEPS IN ORDER.</h2>
+          <p class="bb-friendly">You can't encrypt before you share a key. You can't trust a key before you verify identity. Tap them in the right order.</p>
+          <div class="tl-steps">
+            <sc-for list="{{ tlSteps }}" as="s" hint-placeholder-count="4">
+              <button class="{{ s.className }}" data-reticle-target="step" data-step="{{ s.id }}" onClick="{{ tlPick }}"><span class="tl-ord">{{ s.ord }}</span><strong>{{ s.title }}</strong><span>{{ s.sub }}</span></button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ tlFailed }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">{{ tlFailMsg }}</div></sc-if>
+          <sc-if value="{{ tlSecure }}" hint-placeholder-val="{{ false }}">
+            <div class="tl-lock">SECURE CHANNEL 🔒</div>
+            <div class="cx-ok">All four tools, stacked in the right order, negotiated over the open wire. The padlock snaps shut.</div>
+          </sc-if>
+          <button class="cx-btn" data-reticle-target="restart" onClick="{{ tlReset }}">RESET STEPS</button>
+        </section>
+
+        <sc-if value="{{ tlSecure }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 02 // BECOME THE EAVESDROPPER</div>
+            <h2 class="bb-statement">YOU WATCHED EVERYTHING. YOU HAVE NOTHING.</h2>
+            <p class="bb-friendly">Flip to the attacker's seat and read the traffic you just secured.</p>
+            <button class="cx-btn solid" data-reticle-target="attacker" onClick="{{ tlToggleAttacker }}">TOGGLE ATTACKER VIEW // {{ tlAttackerLabel }}</button>
+            <sc-if value="{{ tlAttacker }}" hint-placeholder-val="{{ false }}">
+              <div class="cx-card"><div class="cx-lab">CERTIFICATE EXCHANGE</div><div class="cx-hex">public info — you can read it, and it's useless to you</div></div>
+              <div class="cx-card"><div class="cx-lab">KEY AGREEMENT</div><div class="cx-hex">{{ tlNoise1 }}</div></div>
+              <div class="cx-card"><div class="cx-lab">ENCRYPTED DATA</div><div class="cx-hex">{{ tlNoise2 }}</div></div>
+              <div class="bb-readout">You saw every message. And you've got nothing but noise. <strong>That's HTTPS.</strong></div>
+            </sc-if>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 03 // MAN IN THE MIDDLE</div>
+            <h2 class="bb-statement">SWAP IN YOUR OWN CERTIFICATE.</h2>
+            <p class="bb-friendly">Try to impersonate the server — hand over your certificate instead of theirs.</p>
+            <button class="cx-btn" data-reticle-target="mitm" onClick="{{ tlMitmTry }}">&gt; IMPERSONATE THE SERVER</button>
+            <sc-if value="{{ tlMitm }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">CERTIFICATE INVALID // NOT SIGNED BY A TRUSTED AUTHORITY — the signature check catches you. The certificate is a signature vouching for the key. The RSA question — "how do I know it's really their key?" — is now answered.</div></sc-if>
+          </section>
+
+          <section class="bb-payoff">
+            <h2 class="bb-statement" style="max-width:14ch;">YOU BROKE IT, DEFENDED IT, REBUILT IT.</h2>
+            <p class="bb-friendly" style="margin-bottom:0;">That padlock in your browser bar is this exact handshake, happening in under a second, every time you load a secure page. Identity, key-exchange, a shared cipher, tamper-proofing — the four things you just learned, assembled while an attacker watched and walked away with static.</p>
+            <button class="cx-btn solid" data-reticle-target="exit" onClick="{{ closeStub }}" style="margin-top:16px;">&gt; RETURN TO THE ATLAS</button>
+          </section>
+        </sc-if>
+
+        <div class="bb-scope">LEARNING SIMULATION // Simplified handshake — real TLS 1.3 has more steps, session resumption, and cipher negotiation. The attacker view is a concept sim, never a real interception tool. These four steps are the essential shape.</div>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ============ WHAT IS QUANTUM COMPUTING? // LIVE MODULE ============ -->
+  <sc-if value="{{ quantumOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module qb-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FR-01 // QUBIT</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ qbHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ qbStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">MEAS {{ qbMeasurements }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">FRONTIER // QUANTUM</div>
+        <h1 class="bb-title" style="font-size:clamp(52px,17vw,84px);">THE<br>QUBIT</h1>
+        <p class="bb-friendly">Operate a qubit until you've felt the truth: a quantum computer doesn't try every answer at once. It makes wrong answers cancel so the right one rings out.</p>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 00 // THE HONEST COIN</div>
+          <h2 class="bb-statement">OLD FRIEND. OFF OR ON. NOTHING BETWEEN.</h2>
+          <p class="bb-friendly">A classical bit. Flip it a few times so the contrast lands.</p>
+          <button class="cx-btn solid" data-reticle-target="flipbit" onClick="{{ qbFlipBit }}" style="font:900 20px 'Archivo',sans-serif;padding:16px;">{{ qbBit }}</button>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 01 // THE POINTER</div>
+          <h2 class="bb-statement">A QUBIT ISN'T A SWITCH. IT'S AN ARROW.</h2>
+          <p class="bb-friendly">Aim it. The angle isn't the answer — it sets the odds. Measure, and it's forced to 0 or 1. Measure again and again; watch the tally match the aim.</p>
+          <div class="qb-dial"><b class="p1">1</b><b class="p0">0</b><div class="qb-arrow" style="{{ qbArrowStyle }}"></div></div>
+          <input class="qb-slider" data-reticle-target="angle" type="range" min="0" max="180" step="1" value="{{ qbAngle }}" onChange="{{ qbSetAngle }}" aria-label="Aim the qubit">
+          <div class="bb-readout">AIM / <strong>{{ qbAngleText }}</strong><br>ODDS OF MEASURING 1 / <strong>{{ qbP1 }}%</strong></div>
+          <button class="cx-btn solid" data-reticle-target="measure" onClick="{{ qbMeasure }}">&gt; MEASURE</button>
+          <div class="qb-hist">
+            <div class="qb-bar"><span>0 · {{ qbZeros }}</span><i style="{{ qbBar0Style }}"></i></div>
+            <div class="qb-bar"><span>1 · {{ qbOnes }}</span><i style="{{ qbBar1Style }}"></i></div>
+          </div>
+          <button class="cx-btn" data-reticle-target="resethist" onClick="{{ qbResetHist }}">CLEAR TALLY</button>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 01.5 // THE TRAP</div>
+          <h2 class="bb-statement">THINK YOU CAN READ THE EXACT ANGLE?</h2>
+          <p class="bb-friendly">Try it. Read the arrow's precise aim in one go.</p>
+          <button class="cx-btn" data-reticle-target="trap" onClick="{{ qbSpringTrap }}">&gt; READ THE EXACT ANGLE</button>
+          <sc-if value="{{ qbTrapSprung }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">SUPERPOSITION COLLAPSED // 1 BIT RETRIEVED — you didn't read the arrow, you knocked it down. Every measurement gives one bit and destroys the aim. This is exactly why "it tries all answers at once" is a lie: you could never read them out even if it did.</div></sc-if>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 02 // TWO ARROWS THAT CANCEL</div>
+          <h2 class="bb-statement">HERE'S THE THING A COIN CAN NEVER DO.</h2>
+          <p class="bb-friendly">Two ways to arrive at the outcome "0", each an arrow. Point them together and 0 is certain. Point them opposite and they <strong>cancel</strong> — 0 becomes impossible.</p>
+          <div class="qb-two">
+            <div class="qb-mini"><i style="transform:rotate(0deg);"></i></div>
+            <div class="qb-mini"><i style="{{ qbArrow2Style }}"></i></div>
+          </div>
+          <input class="qb-slider" data-reticle-target="phase" type="range" min="0" max="360" step="1" value="{{ qbPhase }}" onChange="{{ qbSetPhase }}" aria-label="Relative phase of the two arrows">
+          <div class="qb-amp"><i style="{{ qbAmpStyle }}"></i></div>
+          <div class="bb-readout">RELATIVE AIM / <strong>{{ qbPhase }}°</strong> // {{ qbInterfLabel }}<br>ODDS OF OUTCOME 0 / <strong>{{ qbP0 }}%</strong> &nbsp; (classical odds only add — these can subtract)</div>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 03 // THE RIGGED GAME</div>
+          <h2 class="bb-statement">DON'T CHECK BOTH. CANCEL THE WRONG ONE.</h2>
+          <p class="bb-friendly">A hidden setting to discover. Classically you probe and get a coin-flip of info each time. Quantumly you arrange the wrong answer to cancel — then one measurement is enough.</p>
+          <button class="cx-btn" data-reticle-target="ctry" onClick="{{ qbClassicalTry }}">CLASSICAL PROBE</button>
+          <sc-if value="{{ qbHasClassical }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">PROBE {{ qbClassicalTries }} // RESULT: {{ qbClassicalResult }} // STILL UNSURE — each probe is just a coin flip.</div></sc-if>
+          <button class="cx-btn solid" data-reticle-target="qrun" onClick="{{ qbQuantumRun }}">&gt; RUN QUANTUM ROUTINE</button>
+          <sc-if value="{{ qbQuantumSolved }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">WRONG ANSWER: AMPLITUDE 0 // RIGHT ANSWER: AMPLITUDE ~1 // SOLVED IN 1 MEASUREMENT. You didn't check both settings — you made the wrong one cancel, so the right one was all that was left to measure. That is what a quantum computer does.</div></sc-if>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">NOT "TRIES EVERYTHING." MAKES THE RIGHT ANSWER LOUD.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">For most problems that buys you nothing. But for a few specific ones — one being the exact math RSA hides behind — it changes everything. Want to point it at the lock you built?</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="quantum-rsa" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: QUANTUM vs RSA // SHOR'S ATTACK</button>
+        </section>
+        <div class="bb-scope">HONESTY MANDATE // Amplitudes are "arrows that can cancel," not probabilities — probabilities never cancel, and that is the whole distinction. This does NOT claim "tries all answers at once," "parallel universes computing," or "exponential speedup for everything" — those are the common myths. Real qubits live on a sphere (the Bloch sphere) and real algorithms use many linked qubits; this arrow is the honest 1-qubit shadow.</div>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ============ QUANTUM vs RSA // LIVE MODULE ============ -->
+  <sc-if value="{{ quantumRsaOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="{{ qrModuleClass }}">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FR-02 // THE BREAK</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ qrHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ qrStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">{{ qrTimerText }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">FRONTIER // QUANTUM</div>
+        <h1 class="bb-title" style="font-size:clamp(54px,18vw,88px);">THE<br>BREAK</h1>
+        <p class="bb-friendly">Point the quantum machine at the RSA lock you built — and discover RSA's security was a bet on one hard math problem. A bet quantum wins.</p>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 01 // OPEN THE LOCK'S SECRET</div>
+          <h2 class="bb-statement">YOUR LOCK. STILL HOLDING. WHAT KEEPS IT SHUT?</h2>
+          <div class="{{ qrLockClass }}">
+            <div class="pk-shackle"></div>
+            <div class="pk-body"><strong>{{ qrLockGlyph }}</strong></div>
+          </div>
+          <button class="cx-btn solid" data-reticle-target="inspect" onClick="{{ qrInspect }}">&gt; INSPECT THE LOCK</button>
+          <sc-if value="{{ qrRevealed }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-card"><div class="cx-lab">THE LOCK'S SECRET NUMBER</div>
+              <div style="font:900 34px 'Archivo',sans-serif;color:var(--bb-ink);letter-spacing:1px;">N = {{ qrN }}</div>
+              <div class="cx-lab" style="margin-top:8px;">STAYS SHUT WHILE NOBODY CAN FIND THE TWO PRIMES THAT MULTIPLY TO N</div>
+            </div>
+            <div class="bb-readout">RSA's strength was never magic. It's one arithmetic question nobody could answer fast.</div>
+          </sc-if>
+        </section>
+
+        <sc-if value="{{ qrRevealed }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 02 // TRY IT CLASSICALLY</div>
+            <h2 class="bb-statement">SAME WALL AS THE CIPHER.</h2>
+            <p class="bb-friendly">Find the two primes by brute force. Watch the time-to-crack balloon into geological time — same futility you hit in Symmetric.</p>
+            <button class="cx-btn" data-reticle-target="brute" onClick="{{ qrBruteStart }}">&gt; BRUTE-FORCE THE FACTORS</button>
+            <div class="cx-counter">{{ qrTries }}<span> CANDIDATES</span></div>
+            <div style="color:var(--bb-hud);font-size:8px;letter-spacing:1px;">EST. TIME TO FACTOR CLASSICALLY: {{ qrClassicalEst }}</div>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 03 // POINT THE QUANTUM MACHINE</div>
+            <h2 class="bb-statement">CANCEL THE WRONG PERIODS. THE RIGHT ONE RINGS OUT.</h2>
+            <p class="bb-friendly">The machine doesn't try factors one by one. It finds a hidden repeating pattern — a period — using the interference you just learned. Wrong periods cancel; the right one blooms.</p>
+            <div class="qr-bloom"><sc-for list="{{ qrBloom }}" as="b" hint-placeholder-count="24"><i class="{{ b.className }}" style="{{ b.style }}"></i></sc-for></div>
+            <button class="cx-btn solid" data-reticle-target="qfactor" onClick="{{ qrQuantum }}">&gt; RUN SHOR'S PERIOD-FINDING</button>
+            <sc-if value="{{ qrQuantumRun }}" hint-placeholder-val="{{ false }}">
+              <div class="cx-alarm">RSA BROKEN // N FACTORED // {{ qrN }} = {{ qrP }} × {{ qrQ }} — period found, factors fell out, the padlock sprang open. Your own lock, opened by the machine you learned to operate one node ago.</div>
+            </sc-if>
+          </section>
+
+          <sc-if value="{{ qrQuantumRun }}" hint-placeholder-val="{{ false }}">
+            <section class="bb-section" style="padding-top:28px;">
+              <div class="bb-kicker">SCAN 04 // THE BLAST RADIUS</div>
+              <h2 class="bb-statement">YOU DIDN'T BREAK ONE LOCK.</h2>
+              <p class="bb-friendly">RSA sat underneath the handshake, the certificate, the whole secure web. Pull that thread and it all comes apart.</p>
+              <button class="cx-btn" data-reticle-target="cascade" onClick="{{ qrCascadeRun }}">&gt; TRACE THE CHAIN REACTION</button>
+              <div class="qr-cascade"><sc-for list="{{ qrCascadeRows }}" as="r" hint-placeholder-count="4"><div class="{{ r.className }}">{{ r.name }}<span>{{ r.note }}</span></div></sc-for></div>
+            </section>
+
+            <section class="bb-payoff">
+              <h2 class="bb-statement" style="max-width:14ch;">THE SOBER PART.</h2>
+              <p class="bb-friendly" style="margin-bottom:0;">Quantum computers big enough to do this to real keys <strong>don't exist yet</strong> — but they might, and data stolen today could be cracked later ("harvest now, decrypt later"). So the world is already rebuilding the lock on a different hard problem — one where interference doesn't help the attacker.</p>
+              <button class="cx-btn solid" data-reticle-target="next" data-node="pqc" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: POST-QUANTUM // THE LOCK THAT SURVIVES</button>
+            </section>
+          </sc-if>
+        </sc-if>
+        <div class="bb-scope">HONESTY MANDATE // Real quantum computers CANNOT yet factor RSA-sized numbers — this demonstrates the principle, and "harvest now, decrypt later" is why it matters despite that. RSA is not broken today. Shor's is period-finding via interference (cancel wrong periods), NOT "tries all factors at once." Note: quantum only weakens symmetric keys like AES (double the key size), it does not shatter them the way it does RSA.</div>
+      </main>
+    </div>
+  </sc-if>
+
+  <!-- ============ POST-QUANTUM CRYPTOGRAPHY // LIVE MODULE ============ -->
+  <sc-if value="{{ pqcOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module pq-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FR-03 // THE LOCK THAT SURVIVES</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ pqHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ pqStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">KEY {{ pqBasisLabel }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">FRONTIER // QUANTUM-SAFE</div>
+        <h1 class="bb-title" style="font-size:clamp(44px,14vw,72px);">THE LOCK<br>THAT<br>SURVIVES</h1>
+        <p class="bb-friendly">Try to break the new lock the way you broke RSA — and discover a hard problem that resists classical AND quantum attack, because there's no hidden period for interference to exploit.</p>
+
+        <section class="pq-chamber">
+          <div class="pq-chamber-grid">
+            <div class="pq-stage">
+              <canvas id="pq-canvas" width="1000" height="660" data-reticle-target="lattice" onPointerDown="{{ pqCanvasDown }}" onPointerMove="{{ pqCanvasMove }}" onPointerUp="{{ pqCanvasUp }}" onPointerLeave="{{ pqCanvasUp }}" aria-label="Interactive 3D lattice diagram"></canvas>
+              <div class="pq-stage-tag">{{ pqStageTag }}</div>
+              <div class="pq-stage-hud"><span>{{ pqDragHint }}</span><span>{{ pqCameraReadout }}</span></div>
+            </div>
+            <div class="pq-console">
+              <div class="pq-tabs">
+                <sc-for list="{{ pqChapters }}" as="ch" hint-placeholder-count="3">
+                  <button class="{{ ch.className }}" data-reticle-target="chapter" data-chapter="{{ ch.id }}" onClick="{{ pqPickChapter }}"><strong>{{ ch.label }}</strong><span>{{ ch.short }}</span></button>
+                </sc-for>
+              </div>
+              <div class="pq-readout"><strong>{{ pqChapterTitle }}</strong>{{ pqChapterCopy }}</div>
+              <div class="pq-todo"><span>DO THIS</span>{{ pqTodo }}</div>
+              <div class="pq-legend">
+                <span><i class="pq-lg diamond"></i> message</span>
+                <span><i class="pq-lg dot"></i> grid dot</span>
+                <span><i class="pq-lg key"></i> key arrow</span>
+                <span><i class="pq-lg true"></i> true nearest</span>
+              </div>
+
+              <sc-if value="{{ pqShowKeys }}" hint-placeholder-val="{{ false }}">
+                <div class="pq-control-row">
+                  <button class="{{ pqGoodClass }}" data-reticle-target="basis" onClick="{{ pqUseGood }}"><strong>PRIVATE KEY</strong><span>clean · easy</span></button>
+                  <button class="{{ pqBadClass }}" data-reticle-target="basis" onClick="{{ pqUseBad }}"><strong>PUBLIC KEY</strong><span>messy · hard</span></button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ pqShowSkew }}" hint-placeholder-val="{{ false }}">
+                <div class="pq-slider-block">
+                  <label><span>HOW MESSY THE PUBLIC KEY IS</span><span>{{ pqSkew }}</span></label>
+                  <input class="pq-slider" data-reticle-target="skew" type="range" min="0" max="6" step="1" value="{{ pqSkew }}" onChange="{{ pqSetSkew }}" aria-label="How messy the public key is">
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ pqShowAttack }}" hint-placeholder-val="{{ false }}">
+                <div class="pq-control-row">
+                  <button class="pq-pill solid" data-reticle-target="solve" onClick="{{ pqSnap }}"><strong>FIND NEAREST DOT</strong><span>{{ pqSolveButtonLabel }}</span></button>
+                  <button class="pq-pill" data-reticle-target="truth" onClick="{{ pqToggleTruth }}"><strong>SHOW TRUE ANSWER</strong><span>{{ pqTruthLabel }}</span></button>
+                </div>
+                <sc-if value="{{ pqGuessWrong }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">WRONG DOT // the public key rounded to a near-miss. Same grid, worse description of it.</div></sc-if>
+                <sc-if value="{{ pqDecoded }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">CORRECT // the private key landed on the true nearest dot — the message is readable.</div></sc-if>
+                <button class="cx-btn" data-reticle-target="qfizzle" onClick="{{ pqQuantumTry }}">&gt; TRY A QUANTUM ATTACK</button>
+                <sc-if value="{{ pqQuantumFizzled }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">QUANTUM: NO ADVANTAGE — RSA broke because it hid a repeating pattern a quantum computer could find. "Nearest dot on a grid" has no such pattern, so the machine has nothing to lock onto. The lock holds.</div></sc-if>
+              </sc-if>
+
+              <button class="pq-pill" data-reticle-target="reset" onClick="{{ pqResetLab }}" style="margin-top:2px;"><strong>RESET FIELD</strong><span>start the story over</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">BUILT TO SURVIVE WHAT BROKE THE LAST ONE.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">RSA bet its life on a problem with a hidden pattern, and quantum found the pattern. This lock bets on geometry: a closest-point problem that gets brutal as dimension rises, with no known efficient quantum shortcut.</p>
+          <button class="cx-btn solid" data-reticle-target="exit" onClick="{{ closeStub }}" style="margin-top:16px;">&gt; RETURN TO THE ATLAS</button>
+        </section>
+        <div class="bb-scope">HONESTY MANDATE // The 2D grid is the honest shadow of real lattices with hundreds of dimensions, where human intuition fails entirely. "Quantum has no advantage" means no KNOWN efficient quantum attack — the honest state of the field, not "provably impossible forever." This is real and current: lattice-based schemes are being standardized right now to replace RSA.</div>
       </main>
     </div>
   </sc-if>
@@ -971,7 +1693,16 @@ class Component extends DCLogic {
     bitsCorruptionLevel:0, bitsEnd:false, bitsHint:false, bitsRoundElapsed:0,
     internetUrl: '', internetStage: 0, internetRequestBack: false, internetTrace: null, internetFailure: null,
     symMessage:'', symKey:'', symSealed:false, symSealedMessage:'', symSealedKey:'', symSealProgress:0,
-    symResult:'', symFailure:false, symIntercepted:false, symMutation:1, symFriendHasKey:true };
+    symResult:'', symFailure:false, symIntercepted:false, symMutation:1, symFriendHasKey:true,
+    haText:'PAY BOB $100', haAttempts:0, haRecover:'', haRecoverTried:false, haReceived:'PAY BOB $100',
+    rsaLatch:'open', rsaLockTelemetry:'The shackle is open. Try clicking it shut — no key needed.', rsaSealed:false, rsaOpenState:null, rsaPublished:false, rsaEaves:0,
+    sgMessage:'ALICE: SEND $500 TO BOB', sgSigned:false, sgSignedHash:'', sgSignedMessage:'', sgVerifier:'alice', sgVerifyResult:null, sgForgeTried:false,
+    tlSequence:[], tlFailed:null, tlSecure:false, tlAttacker:false, tlMitm:false,
+    qbBit:0, qbAngle:90, qbZeros:0, qbOnes:0, qbTrapSprung:false, qbPhase:180, qbClassicalTries:0, qbClassicalResult:'—', qbQuantumSolved:false,
+    qrRevealed:false, qrTries:0, qrBruteActive:false, qrQuantumRun:false, qrCascade:false,
+    pqBasis:'bad', pqGuessWrong:false, pqQuantumFizzled:false, pqDecoded:false,
+    pqChapter:0, pqSkew:3, pqGoodBasis:[[1.6,0.2],[0.2,1.6]], pqTarget:[2.3,1.4], pqShowTruth:false, pqLanded:null, pqNearest:null,
+    pqNoise:2, pqMessageBit:1, pqCipher:null, pqLweDecoded:null, pqDimension:2 };
 
   // ---------- graph ----------
   buildGraph() {
@@ -986,15 +1717,15 @@ class Component extends DCLogic {
       // PHASE 1 — BUILD THE SYSTEM
       ['crypto','head',180,375,'CRYPTOGRAPHY','the math of secrecy & trust','detected',54,'CRYPTO'],
       ['symmetric','node',64,470,'SYMMETRIC ENCRYPTION','AES playground','live',100,'CRYPTO'],
-      ['hashing','node',296,470,'HASHING','collision / change demo','signal',12,'CRYPTO'],
-      ['rsa','node',64,570,'PUBLIC-KEY CRYPTOGRAPHY','RSA / key exchange','detected',38,'CRYPTO'],
-      ['sig','node',296,570,'DIGITAL SIGNATURES','sign & verify demo','signal',14,'CRYPTO'],
-      ['tls','synth',180,670,'TLS / HTTPS','handshake simulator','signal',19,'CRYPTO'],
+      ['hashing','node',296,470,'HASHING','collision / change demo','live',100,'CRYPTO'],
+      ['rsa','node',64,570,'PUBLIC-KEY CRYPTOGRAPHY','RSA / key exchange','live',100,'CRYPTO'],
+      ['sig','node',296,570,'DIGITAL SIGNATURES','sign & verify demo','live',100,'CRYPTO'],
+      ['tls','synth',180,670,'TLS / HTTPS','handshake simulator','live',100,'CRYPTO'],
 
-      ['frontier','head',180,780,'FRONTIER','quantum-era cryptography','dim',5,'FRONTIER'],
-      ['quantum','node',64,875,'WHAT IS QUANTUM COMPUTING?','quantum concepts visualizer','dim',4,'FRONTIER'],
-      ['quantum-rsa','node',296,875,'QUANTUM VS RSA','cryptographic impact model','dim',4,'FRONTIER'],
-      ['pqc','synth',180,975,'POST-QUANTUM CRYPTOGRAPHY','quantum-safe algorithms','dim',4,'FRONTIER'],
+      ['frontier','head',180,780,'FRONTIER','quantum-era cryptography','detected',40,'FRONTIER'],
+      ['quantum','node',64,875,'WHAT IS QUANTUM COMPUTING?','quantum concepts visualizer','live',100,'FRONTIER'],
+      ['quantum-rsa','node',296,875,'QUANTUM VS RSA','cryptographic impact model','live',100,'FRONTIER'],
+      ['pqc','synth',180,975,'POST-QUANTUM CRYPTOGRAPHY','quantum-safe algorithms','live',100,'FRONTIER'],
 
       ['networks','head',180,1090,'NETWORKS','how data travels','signal',22,'NETWORKS'],
       ['packets','node',64,1185,'PACKETS / TCP-IP','packet journey simulator','signal',11,'NETWORKS'],
@@ -1180,7 +1911,7 @@ class Component extends DCLogic {
       progress: resolved[pm.idx] + '/' + total[pm.idx],
       items: nodes.filter(n => phaseOf(n.y) === pm.idx).map(n => ({
         id: n.id, idTag: n.idTag, name: n.name, mark: markOf[n.state] || '·', dot: pal[n.state].m,
-        style: { padding:'2px 4px 2px 5px', cursor:'pointer', overflow:'hidden', whiteSpace:'nowrap',
+        style: { padding:'1px 3px 1px 4px', cursor:'pointer', overflow:'hidden', whiteSpace:'nowrap',
           color: n.isHead ? 'var(--accent)' : 'var(--accent-dim)', fontWeight: n.isHead ? 700 : 400 },
       })),
     }));
@@ -1219,18 +1950,19 @@ class Component extends DCLogic {
   componentDidMount() {
     this.mounted = true;
     document.documentElement.dataset.theme = 'light';
-    this._reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.mi = Math.max(0, Math.min(100, this.props.motionIntensity ?? 45));
+    this._reduceMotion = this.mi === 0;
+    document.documentElement.dataset.motion = this._reduceMotion ? 'reduced' : 'full';
     this.pointer = { x: innerWidth/2, y: innerHeight/2 };
     this.ret = { x: innerWidth/2, y: innerHeight/2, w: 30, h: 30 };
     this.frame = 4820;
     this.nearEl = null;
-    this.mi = Math.max(0, Math.min(100, this.props.motionIntensity ?? 45));
     this.jitter = this._reduceMotion ? 0 : (0.6 + this.mi/45);
     const R = (a,b) => a + Math.random()*(b-a);
     this.scanners = Array.from({length:6}, () => ({
       cx:R(.14,.86), cy:R(.16,.84),
       ax:R(.05,.16), ay:R(.05,.14), ax2:R(.02,.07), ay2:R(.02,.06),
-      fx:R(.12,.42), fy:R(.12,.42), fx2:R(.4,.9), fy2:R(.4,.9),
+      fx:R(.22,.62), fy:R(.22,.62), fx2:R(.65,1.2), fy2:R(.65,1.2),
       px:R(0,6.28), py:R(0,6.28), px2:R(0,6.28), py2:R(0,6.28),
       w:R(32,60), h:R(28,48), aw:R(8,22), ah:R(6,18),
       fw:R(.25,.7), fh:R(.25,.7), pw:R(0,6.28), ph:R(0,6.28),
@@ -1295,9 +2027,10 @@ class Component extends DCLogic {
       }
       const c = document.getElementById('mv-coords');
       if (c) c.textContent = 'x' + String(Math.round(r.x)).padStart(3,'0') + ' y' + String(Math.round(r.y)).padStart(3,'0');
-      const liveModuleActive = this.state.stubId === 'bits' || this.state.stubId === 'internet' || this.state.stubId === 'symmetric';
+      const liveModuleActive = this.isLiveModule(this.state.stubId);
       if ((this._wantNear || liveModuleActive) && f % 3 === 0 && (!this.state.stubId || liveModuleActive)) { this._wantNear = false; this.updateNear(); }
       this.updateScanners();
+      if (this.state.stubId === 'pqc') this.drawPqCanvas();
       requestAnimationFrame(this._loop);
     };
     requestAnimationFrame(this._loop);
@@ -1344,6 +2077,7 @@ class Component extends DCLogic {
     clearInterval(this._iv);
     clearInterval(this._bitsClock);
     clearInterval(this._symSealIv);
+    clearInterval(this._qrIv);
     (this._t||[]).forEach(clearTimeout);
     document.body.style.overflow = '';
   }
@@ -1352,7 +2086,7 @@ class Component extends DCLogic {
     // argument — so we snapshot it ourselves
     const ps = this._prevState || {};
     this._prevState = { ...this.state };
-    if (this.state.stubId && this.state.stubId !== 'bits' && this.state.stubId !== 'internet' && this.state.stubId !== 'symmetric' && this.state.stubId !== ps.stubId) {
+    if (this.state.stubId && !this.isLiveModule(this.state.stubId) && this.state.stubId !== ps.stubId) {
       const n = this.g().byId[this.state.stubId];
       this.typeInto('mv-stub-name', n ? n.name : '', 45);
     }
@@ -1366,6 +2100,11 @@ class Component extends DCLogic {
     if (this.state.stubId === 'symmetric' && ps.stubId !== 'symmetric') {
       setTimeout(() => { const e = document.getElementById('sy-message'); if (e) e.focus(); }, 80);
     }
+    if (this.state.stubId === 'pqc') {
+      if (ps.stubId !== 'pqc') setTimeout(() => this.drawPqCanvas(), 80);
+      requestAnimationFrame(() => this.drawPqCanvas());
+    }
+    if (ps.stubId === 'pqc' && this.state.stubId !== 'pqc') this._pqDrag = null;
     // lock body scroll while the full-screen stub is open
     if (this.state.stubId && !ps.stubId) document.body.style.overflow = 'hidden';
     if (!this.state.stubId && ps.stubId) document.body.style.overflow = '';
@@ -1375,6 +2114,23 @@ class Component extends DCLogic {
 
   // ---------- helpers ----------
   g() { if (!this._g) this._g = this.buildGraph(); return this._g; }
+  // the seven modules that render their own full-screen interactive UI (vs. the
+  // generic "pending analysis" stub) — kept in one place so the loop, reticle,
+  // and stub gate all agree
+  isLiveModule(id) { return id === 'bits' || id === 'internet' || id === 'symmetric' || id === 'hashing' || id === 'rsa' || id === 'sig' || id === 'tls' || id === 'quantum' || id === 'quantum-rsa' || id === 'pqc'; }
+  // illustrative 32-hex-char digest with strong avalanche — every output byte
+  // depends on the whole input, so a one-character change scrambles ~half of it
+  learningDigest(text) {
+    let h = this.hashLearningText('sha:' + (text || ''));
+    const out = [];
+    for (let i = 0; i < 16; i++) { h = this.hashLearningText(String(h) + ':' + i + ':' + (text || '')); out.push((h & 0xff).toString(16).padStart(2,'0').toUpperCase()); }
+    return out.join('');
+  }
+  tlNoise(tag) {
+    let h = this.hashLearningText('noise:' + tag), s = '', hex = '0123456789ABCDEF';
+    for (let i = 0; i < 40; i++) { h = this.hashLearningText(tag + i + ':' + h); s += hex[h % 16]; if (i % 2) s += ' '; }
+    return s.trim();
+  }
   _sessionBooted() { try { return !!sessionStorage.getItem('vector-booted'); } catch { return false; } }
   setText(id, t) { const e = document.getElementById(id); if (e) e.textContent = t; }
   setView(name, coord) {
@@ -1467,7 +2223,7 @@ class Component extends DCLogic {
     document.querySelectorAll('.mv-mani-phase').forEach(el => el.classList.toggle('on', +el.dataset.phase === active));
   }
   updateNear() {
-    const selector = this.state.stubId === 'bits' || this.state.stubId === 'internet' || this.state.stubId === 'symmetric'
+    const selector = this.isLiveModule(this.state.stubId)
       ? '.bb-module [data-reticle-target]'
       : (this.state.sheetId
         ? '[data-reticle-target="lock"]'
@@ -1489,7 +2245,7 @@ class Component extends DCLogic {
       const ret = document.getElementById('mv-reticle');
       if (ret) ret.dataset.near = best ? '1' : '';
       const label = document.querySelector('#mv-reticle .mv-ret-label');
-      const labels = { scan:'INITIATE', lock:'LOCK ON', key:'KEY', theme:'MODE', exit:'EXIT', input:'TYPE', clear:'CLEAR', char:'SELECT', bit:'FLIP', load:'LOAD', preset:'PRESET', scrub:'SCRUB', chunk:'INSPECT', request:'FLIP', resource:'TRACE', page:'TRACE', failure:'SIMULATE', next:'OPEN', seal:'HOLD', intercept:'SCAN', decrypt:'APPLY', keycard:'TRY KEY', handoff:'TOGGLE', reacquire:'RETRY', 'next-round':'CONTINUE', restart:'REPLAY' };
+      const labels = { scan:'INITIATE', lock:'LOCK ON', key:'KEY', theme:'MODE', exit:'EXIT', input:'TYPE', clear:'CLEAR', char:'SELECT', bit:'FLIP', load:'LOAD', preset:'PRESET', scrub:'SCRUB', chunk:'INSPECT', request:'FLIP', resource:'TRACE', page:'TRACE', failure:'SIMULATE', next:'OPEN', seal:'HOLD', intercept:'SCAN', decrypt:'APPLY', keycard:'TRY KEY', handoff:'TOGGLE', reacquire:'RETRY', 'next-round':'CONTINUE', restart:'REPLAY', collide:'GENERATE', recover:'CHECK', padlock:'CLICK', usekey:'KEY', lockmsg:'LOCK', openpub:'OPEN', openpriv:'OPEN', publish:'PUBLISH', eaves:'ATTACK', sign:'SIGN', verify:'VERIFY', forge:'FORGE', step:'SELECT', attacker:'FLIP', mitm:'ATTACK', flipbit:'FLIP', angle:'AIM', measure:'MEASURE', resethist:'CLEAR', trap:'READ', phase:'AIM', ctry:'PROBE', qrun:'RUN', inspect:'INSPECT', brute:'BRUTE', qfactor:'RUN', cascade:'TRACE', basis:'TOGGLE', snap:'SNAP', qfizzle:'RUN', decode:'DECODE' };
       if (label) label.textContent = best ? (labels[best.dataset.reticleTarget] || 'SELECT') : 'SELECT';
       this.setStatus(best ? (best.dataset.reticleTarget ? 'TARGET READY' : 'TRACKING') : 'SCANNING');
     }
@@ -1685,6 +2441,105 @@ class Component extends DCLogic {
     const blueKey = 'blue-' + (symSealedKey.match(/\d+$/)?.[0] || '742');
     const symKeyCards = [symSealedKey, wrongKey, blueKey].map((key, i) => ({ key, label:i===0 ? key : key })).filter(c => c.key);
 
+    // ---- HASHING (CR-02) ----
+    const haText = st.haText || '';
+    const haBumped = haText ? this.mutateLearningKey(haText, 1) : haText;
+    const haDA = this.learningDigest(haText), haDB = this.learningDigest(haBumped);
+    const haDigestA = haDA.split('').map((ch, i) => ({ ch, className:'cx-nib' + (haText && ch !== haDB[i] ? ' diff' : '') }));
+    const haDigestB = haDB.split('').map((ch, i) => ({ ch, className:'cx-nib' + (haText && ch !== haDA[i] ? ' diff' : '') }));
+    const haAvChanged = haText ? haDA.split('').reduce((n, ch, i) => n + (ch !== haDB[i] ? 1 : 0), 0) : 0;
+    const haAvalanche = ((haAvChanged / 32) * 100).toFixed(0);
+    const haOriginal = 'PAY BOB $100';
+    const haCollideSamples = ['SEND $9000','PAY EVE $500','WIRE $100.00','pay bob $100','PAY  BOB $100','Pay Bob $100','PAY BOB $1O0','TRANSFER NOW','pay bob $101','APPROVE XFER','PAY BOB $100!','ok pay $100'];
+    const haAttempts = st.haAttempts || 0;
+    const haCandidateText = haAttempts > 0 ? haCollideSamples[(haAttempts - 1) % haCollideSamples.length] : '';
+    const haTargetStr = this.learningDigest(haOriginal);
+    const haTargetPrint = haTargetStr.split('').map(ch => ({ ch }));
+    const haCandStr = haCandidateText ? this.learningDigest(haCandidateText) : '';
+    const haCandidatePrint = haCandStr.split('').map((ch, i) => ({ ch, className:'cx-nib' + (ch !== haTargetStr[i] ? ' diff' : '') }));
+    const haSecret = 'the-2019-budget-memo';
+    const haSecretPrint = this.learningDigest(haSecret).split('').map(ch => ({ ch }));
+    const haReceived = st.haReceived || '';
+    const haOrigStr = this.learningDigest(haOriginal), haRecvStr = this.learningDigest(haReceived);
+    const haOrigPrint = haOrigStr.split('').map(ch => ({ ch }));
+    const haRecvPrint = haRecvStr.split('').map((ch, i) => ({ ch, className:'cx-nib' + (ch !== haOrigStr[i] ? ' diff' : '') }));
+    const haIntact = haReceived === haOriginal;
+
+    // ---- PUBLIC-KEY / RSA (CR-03) ----
+    const rsaLatch = st.rsaLatch || 'open';
+    const rsaOpened = st.rsaOpenState === 'ok', rsaOpenFail = !!st.rsaSealed && st.rsaOpenState === 'fail';
+
+    // ---- SIGNATURES (CR-04) ----
+    const sgMessage = st.sgMessage || '';
+    const sgVerifier = st.sgVerifier || 'alice';
+    const sgSigNibbles = st.sgSigned ? this.learningDigest(st.sgSignedMessage || '').split('').map(ch => ({ ch })) : [];
+
+    // ---- TLS (CR-05) ----
+    const tlDefs = { verify:['VERIFY IDENTITY','check the server certificate'], key:['AGREE ON A KEY','asymmetric key exchange over the open wire'], cipher:['SWITCH TO FAST CIPHER','hand off to symmetric encryption'], data:['EXCHANGE DATA','send the real request, now scrambled'] };
+    const tlDisplay = ['cipher','verify','data','key'];
+    const tlSeq = st.tlSequence || [];
+    const tlSteps = tlDisplay.map(id => { const pos = tlSeq.indexOf(id); return { id, title:tlDefs[id][0], sub:tlDefs[id][1], ord:pos >= 0 ? String(pos + 1) : '', className:'tl-step' + (pos >= 0 ? ' done' : '') }; });
+
+    // ---- QUBIT (FR-01) ----
+    const qbAngle = Math.max(0, Math.min(180, Number(st.qbAngle) || 0));
+    const qbRad = qbAngle * Math.PI / 180;
+    const qbP1v = Math.sin(qbRad / 2) ** 2;                 // amplitude², not "tries everything"
+    const qbP1 = (qbP1v * 100).toFixed(0);
+    const qbTotal = (st.qbZeros || 0) + (st.qbOnes || 0);
+    const qbPhase = Math.max(0, Math.min(360, Number(st.qbPhase) || 0));
+    const qbP0v = Math.cos(qbPhase * Math.PI / 360) ** 2;   // cos²(φ/2): arrows reinforce at 0°, cancel at 180°
+    const qbP0 = (qbP0v * 100).toFixed(0);
+
+    // ---- QUANTUM vs RSA (FR-02) ----
+    const qrN = 3233, qrP = 61, qrQ = 53;                   // toy RSA modulus 61×53
+    const qrBloom = Array.from({ length: 24 }, (_, i) => {
+      const peak = st.qrQuantumRun && (i === 8 || i === 16); // the found period rings out at two positions
+      const h = st.qrQuantumRun ? (peak ? 100 : 6) : (30 + (this.hashLearningText('bloom' + i) % 34));
+      return { className: peak ? 'peak' : '', style: { height: h + '%' } };
+    });
+    const qrLaneLocks = [
+      { name:'RSA KEY EXCHANGE', note:'PRIVATE KEY RECOVERED' },
+      { name:'TLS HANDSHAKE', note:'SESSION KEY NOW READABLE' },
+      { name:'SERVER CERTIFICATE', note:'SIGNATURE FORGEABLE' },
+      { name:'THE SECURE CHANNEL', note:'PLAINTEXT EXPOSED' },
+    ];
+    const qrCascadeRows = qrLaneLocks.map(l => ({ name:l.name, note:l.note, className:'qr-lock-row' + (st.qrCascade ? ' popped' : '') }));
+
+    // ---- POST-QUANTUM / LATTICE (FR-03) ----
+    const pqBad = st.pqBasis !== 'good';
+    const pqChapter = Math.max(0, Math.min(2, Number(st.pqChapter) || 0));
+    const pqNoise = Math.max(0, Math.min(9, Number(st.pqNoise) || 0));
+    const pqDimension = Math.max(2, Math.min(12, Number(st.pqDimension) || 2));
+    const pqChapterDefs = [
+      ['01','THE GRID','Two arrows build an endless grid of dots. Drag an arrow tip — the whole grid follows. The arrows ARE the description of the grid.'],
+      ['02','TWO KEYS','The same dots can be described two ways. The private key uses short, tidy arrows. The public key uses long, skewed ones — same grid, far harder to read.'],
+      ['03','THE ATTACK','A message is a point knocked off the grid by noise — the ◆. To read it you find the nearest dot. The private key snaps to it; the public key lands on the wrong one. A quantum computer cannot shortcut this.'],
+    ];
+    const pqChapters = pqChapterDefs.map((c, i) => ({ id:i, label:c[0], short:c[1], className:'pq-tab' + (i === pqChapter ? ' on' : '') }));
+    const pqChapterTitle = pqChapterDefs[pqChapter][1] + ' // ' + pqChapterDefs[pqChapter][0];
+    const pqChapterCopy = pqChapterDefs[pqChapter][2];
+    const pqTodo = [
+      'Drag the tip of an arrow in the diagram. Every dot shifts as the description changes — the arrows generate the grid.',
+      'Tap PRIVATE, then PUBLIC. Same dots either way — but the public key’s arrows go long and skewed.',
+      'Drag the ◆ message anywhere, then press FIND NEAREST DOT with each key. Private snaps to the right dot; public lands on a near-miss.',
+    ][pqChapter];
+    const pqShowKeys = pqChapter >= 1;
+    const pqShowSkew = pqChapter === 1;
+    const pqShowAttack = pqChapter === 2;
+    const pqCvpLabel = st.pqDecoded ? 'SOLVED' : (st.pqGuessWrong ? 'WRONG' : (st.pqLanded ? 'LANDED' : 'READY'));
+    const pqSolveButtonLabel = pqBad ? 'using public key' : 'using private key';
+    const pqTruthLabel = st.pqShowTruth ? 'shown' : 'hidden';
+    const pqStageTag = pqBad ? 'PUBLIC KEY — WHAT ATTACKERS SEE' : 'PRIVATE KEY — WHAT YOU HOLD';
+    const pqDragHint = this._pqDrag ? ('DRAGGING ' + this._pqDrag.kind.toUpperCase()) : 'DRAG HANDLES // ORBIT EMPTY SPACE';
+    const pqView = this._pqView || { yaw:-0.68, pitch:0.86, zoom:1 };
+    const pqCameraReadout = 'YAW ' + Math.round(pqView.yaw * 57.2958) + ' // PITCH ' + Math.round(pqView.pitch * 57.2958);
+    const pqCipher = st.pqCipher;
+    const pqDecodedLwe = st.pqLweDecoded;
+    const pqDialValue = pqDecodedLwe ? (pqDecodedLwe.d / 97 * 100) : (pqCipher ? (pqCipher.v / 97 * 100) : 50);
+    const pqLweReadout = pqDecodedLwe
+      ? ('DECODED BIT ' + pqDecodedLwe.bit + ' // EXPECTED ' + (st.pqMessageBit ? 1 : 0) + ' // ' + (pqDecodedLwe.ok ? 'PASS' : 'FAIL') + ' // d=' + pqDecodedLwe.d)
+      : (pqCipher ? ('CIPHERTEXT READY // u=[' + pqCipher.u.join(',') + '] // v=' + pqCipher.v + ' // decrypt to test the noise') : 'NO CIPHERTEXT // pick a bit, set noise, then encrypt.');
+
     const hidden = (extra) => ({ opacity:0, transform:'translateY(8px)', transition:'opacity .5s steps(4), transform .5s steps(4)', ...extra });
     const shown  = (extra) => ({ opacity:1, transform:'translateY(0)', transition:'opacity .5s steps(4), transform .5s steps(4)', ...extra });
 
@@ -1739,7 +2594,7 @@ class Component extends DCLogic {
       sheetOpen: !!sel, sel: sel || {},
       bitsOpen: st.stubId === 'bits',
       bitsLegacyOpen:false,
-      stubOpen: !!st.stubId && st.stubId !== 'bits' && st.stubId !== 'internet' && st.stubId !== 'symmetric',
+      stubOpen: !!st.stubId && !this.isLiveModule(st.stubId),
       bitsModuleClass:'bb-module bbc-module' + (st.bitsLost || (bitsRound === 5 && st.bitsCorruptionLevel > 0 && !st.bitsEnd) ? ' alarm' : ''),
       bitsRoundLabel:String(bitsRound).padStart(2,'0'), bitsRoundName:roundNames[bitsRound], bitsCaption:captions[bitsRound],
       bitsCode, bitsCodeText:String(bitsCode).padStart(3,'0'), bitsBinary, bitsGlyph, bitsSwitches,
@@ -1796,6 +2651,145 @@ class Component extends DCLogic {
       symFriendTelemetry:st.symFriendHasKey ? 'SENDER_KEY: PRESENT // RECEIVER_KEY: PRESENT // SYMMETRIC_STATE: VALID' : 'SENDER_KEY: PRESENT // RECEIVER_KEY: MISSING // SYMMETRIC_STATE: BROKEN',
       symStatus:st.symFailure ? 'WRONG KEY' : (st.symSealed ? 'CIPHERTEXT LOCKED' : (symReady ? 'LOCK STATE READY' : 'PLAINTEXT EXPOSED')),
       symHud:symReady ? ('PLAINTEXT ' + symMessage.length + 'B · ' + (st.symSealed ? 'READABLE FALSE' : 'READABLE TRUE')) : 'KEY SLOT EMPTY',
+
+      // ---- HASHING ----
+      hashingOpen:st.stubId === 'hashing', haText,
+      haDigestA, haDigestB, haAvalanche,
+      haTargetPrint, haHasCandidate:haAttempts > 0, haCandidateText, haCandidatePrint,
+      haAttempts, haGaveUp:haAttempts >= 6,
+      haSecretPrint, haRecover:st.haRecover, haRecoverTried:!!st.haRecoverTried,
+      haOriginal, haOrigPrint, haReceived, haRecvPrint, haIntact, haTampered:!haIntact,
+      haStatus:!haIntact ? 'INTEGRITY VIOLATION' : (haAttempts > 0 ? 'COLLISION HUNT' : 'FINGERPRINTING'),
+      haHud:'AVALANCHE ' + haAvalanche + '% · MATCHES 0',
+
+      // ---- PUBLIC-KEY / RSA ----
+      rsaOpen:st.stubId === 'rsa',
+      rsaLockClass:'pk-lock' + (rsaLatch === 'open' ? ' open' : ''),
+      rsaLockGlyph:rsaLatch === 'closed' ? '●' : '○',
+      rsaLockTelemetry:st.rsaLockTelemetry || '',
+      rsaBoxContent:'MEET AT PIER 9 // 8PM',
+      rsaSealed:!!st.rsaSealed, rsaOpenFail, rsaOpened,
+      rsaPublished:!!st.rsaPublished, rsaEaves:st.rsaEaves || 0,
+      rsaWireLabel:st.rsaPublished ? 'PUBLIC KEY IS NOW ON THE OPEN WIRE // ANYONE CAN GRAB IT' : 'THE OPEN WIRE // OBSERVER PRESENT',
+      rsaStatus:st.rsaSealed ? (rsaOpened ? 'BOX OPENED' : (rsaOpenFail ? 'SEALED — WRONG KEY' : 'BOX SEALED')) : (rsaLatch === 'closed' ? 'PADLOCK SHUT' : 'PADLOCK OPEN'),
+      rsaHud:st.rsaPublished ? ('KEY PUBLISHED · ' + (st.rsaEaves || 0) + ' SEALED') : 'ASYMMETRIC // 2 KEYS',
+
+      // ---- SIGNATURES ----
+      sigOpen:st.stubId === 'sig', sgMessage,
+      sgSigned:!!st.sgSigned, sgSigNibbles,
+      sgAliceKeyClass:'pk-key' + (sgVerifier === 'alice' ? ' pub' : ''),
+      sgMalloryKeyClass:'pk-key' + (sgVerifier === 'mallory' ? ' pub' : ''),
+      sgVerified:st.sgVerifyResult === 'ok', sgContentBad:st.sgVerifyResult === 'content', sgIdentityBad:st.sgVerifyResult === 'identity',
+      sgForgeTried:!!st.sgForgeTried,
+      sgStatus:st.sgVerifyResult === 'ok' ? 'VERIFIED' : (st.sgVerifyResult ? 'REJECTED' : (st.sgSigned ? 'SIGNED' : 'UNSIGNED')),
+      sgHud:st.sgSigned ? 'SIGNED BY ALICE · VERIFY READY' : 'AWAITING SIGNATURE',
+
+      // ---- TLS ----
+      tlsOpen:st.stubId === 'tls', tlSteps,
+      tlFailed:!!st.tlFailed, tlFailMsg:st.tlFailed || '', tlSecure:!!st.tlSecure,
+      tlAttacker:!!st.tlAttacker, tlAttackerLabel:st.tlAttacker ? 'ON' : 'OFF', tlMitm:!!st.tlMitm,
+      tlNoise1:this.tlNoise('ka'), tlNoise2:this.tlNoise('data'),
+      tlStatus:st.tlSecure ? (st.tlAttacker ? 'ATTACKER — LOCKED OUT' : 'SECURE') : (st.tlFailed ? 'HANDSHAKE FAILED' : 'ORDERING'),
+      tlHud:st.tlSecure ? 'CHANNEL SECURE · ATTACKER LOCKED OUT' : ('STEPS ' + tlSeq.length + '/4'),
+
+      haInput:(e) => this.setState({ haText:e.currentTarget.value || '' }),
+      haCollide:() => this.setState({ haAttempts:(this.state.haAttempts || 0) + 1 }),
+      haRecoverInput:(e) => this.setState({ haRecover:e.currentTarget.value || '' }),
+      haTryRecover:() => this.setState({ haRecoverTried:true }),
+      haReceivedInput:(e) => this.setState({ haReceived:e.currentTarget.value || '' }),
+      rsaClickShut:() => this.setState({ rsaLatch:'closed', rsaLockTelemetry:'CLICKED SHUT // no key was needed to close it. Anyone can do this.' }),
+      rsaClickOpen:() => this.setState(this.state.rsaLatch === 'closed' ? { rsaLockTelemetry:'STILL SHUT // clicking will not open it. Only the key opens it.' } : { rsaLockTelemetry:'ALREADY OPEN.' }),
+      rsaUseKey:() => this.setState({ rsaLatch:'open', rsaLockTelemetry:'KEY TURNED // open. Locking and unlocking are genuinely different powers.' }),
+      rsaSeal:() => this.setState({ rsaSealed:true, rsaOpenState:null }),
+      rsaOpenPub:() => this.setState({ rsaOpenState:'fail' }),
+      rsaOpenPriv:() => this.setState({ rsaOpenState:'ok' }),
+      rsaPublish:() => this.setState({ rsaPublished:true }),
+      rsaEavesTry:() => this.setState({ rsaEaves:(this.state.rsaEaves || 0) + 1 }),
+      sgInput:(e) => this.setState({ sgMessage:e.currentTarget.value || '', sgVerifyResult:null }),
+      sgSign:() => { const m = this.state.sgMessage || ''; this.setState({ sgSigned:true, sgSignedMessage:m, sgSignedHash:this.learningDigest(m), sgVerifyResult:null, sgForgeTried:false }); },
+      sgPickAlice:() => this.setState({ sgVerifier:'alice', sgVerifyResult:null }),
+      sgPickMallory:() => this.setState({ sgVerifier:'mallory', sgVerifyResult:null }),
+      sgVerify:() => this.verifySignature(),
+      sgForge:() => this.setState({ sgForgeTried:true }),
+      tlPick:(e) => this.tlPick(e),
+      tlReset:() => this.setState({ tlSequence:[], tlFailed:null, tlSecure:false, tlAttacker:false, tlMitm:false }),
+      tlToggleAttacker:() => this.setState({ tlAttacker:!this.state.tlAttacker }),
+      tlMitmTry:() => this.setState({ tlMitm:true }),
+
+      // ---- QUBIT ----
+      quantumOpen:st.stubId === 'quantum', qbBit:st.qbBit || 0,
+      qbAngle, qbAngleText:qbAngle === 0 ? 'PURE 0' : (qbAngle === 180 ? 'PURE 1' : (qbAngle === 90 ? '45° — DEAD BETWEEN' : qbAngle + '° FROM 0')),
+      qbP1, qbP0, qbPhase,
+      qbArrowStyle:{ transform:'rotate(' + (180 - qbAngle) + 'deg)' },
+      qbArrow2Style:{ transform:'rotate(' + qbPhase + 'deg)' },
+      qbAmpStyle:{ width:qbP0 + '%' },
+      qbZeros:st.qbZeros || 0, qbOnes:st.qbOnes || 0,
+      qbBar0Style:{ height:(qbTotal ? (st.qbZeros / qbTotal * 100) : 0).toFixed(0) + '%' },
+      qbBar1Style:{ height:(qbTotal ? (st.qbOnes / qbTotal * 100) : 0).toFixed(0) + '%' },
+      qbMeasurements:qbTotal,
+      qbTrapSprung:!!st.qbTrapSprung,
+      qbInterfLabel:qbPhase >= 150 && qbPhase <= 210 ? 'ARROWS CANCEL // 0 IMPOSSIBLE' : (qbPhase <= 30 || qbPhase >= 330 ? 'ARROWS REINFORCE // 0 CERTAIN' : 'PARTIAL'),
+      qbHasClassical:(st.qbClassicalTries || 0) > 0, qbClassicalTries:st.qbClassicalTries || 0, qbClassicalResult:st.qbClassicalResult || '—',
+      qbQuantumSolved:!!st.qbQuantumSolved,
+      qbStatus:st.qbTrapSprung ? 'SUPERPOSITION COLLAPSED' : (qbTotal ? 'MEASURING' : 'AIMING'),
+      qbHud:'AIM ' + qbAngle + '° · P(1) ' + qbP1 + '%',
+
+      // ---- QUANTUM vs RSA ----
+      quantumRsaOpen:st.stubId === 'quantum-rsa',
+      qrModuleClass:'bb-module qr-module' + (st.qrQuantumRun ? ' bbc-module alarm' : ''),
+      qrRevealed:!!st.qrRevealed, qrN:qrN.toLocaleString(), qrP, qrQ,
+      qrLockClass:'pk-lock' + (st.qrQuantumRun ? ' open' : ''),
+      qrLockGlyph:st.qrQuantumRun ? '○' : '●',
+      qrTries:(st.qrTries || 0).toLocaleString(),
+      qrClassicalEst:'~4.0 MILLION YEARS',
+      qrBloom, qrQuantumRun:!!st.qrQuantumRun,
+      qrCascadeRows,
+      qrStatus:st.qrQuantumRun ? 'RSA BROKEN' : (st.qrBruteActive ? 'BRUTE-FORCING' : (st.qrRevealed ? 'LOCK INSPECTED' : 'LOCK SEALED')),
+      qrTimerText:st.qrQuantumRun ? 'QUANTUM 0.3s' : (st.qrBruteActive ? 'CLASSICAL: 4.0M YR' : 'IDLE'),
+      qrHud:st.qrQuantumRun ? 'N FACTORED · ' + qrP + '×' + qrQ : (st.qrRevealed ? 'N = ' + qrN : 'RSA LOCK'),
+
+      // ---- POST-QUANTUM ----
+      pqcOpen:st.stubId === 'pqc',
+      pqChapters, pqChapterTitle, pqChapterCopy, pqStageTag, pqDragHint, pqCameraReadout,
+      pqTodo, pqShowKeys, pqShowSkew, pqShowAttack,
+      pqSkew:String(Math.max(0, Math.min(6, Number(st.pqSkew) || 0))), pqNoise:String(pqNoise), pqDimension:String(pqDimension),
+      pqBasisLabel:pqBad ? 'PUBLIC' : 'PRIVATE',
+      pqGoodClass:'pq-pill' + (!pqBad ? ' on' : ''), pqBadClass:'pq-pill' + (pqBad ? ' on' : ''),
+      pqBit0Class:'pq-pill' + (!st.pqMessageBit ? ' on' : ''), pqBit1Class:'pq-pill' + (st.pqMessageBit ? ' on' : ''),
+      pqCvpLabel, pqSolveButtonLabel, pqTruthLabel, pqDialStyle:{ left:Math.max(0, Math.min(100, pqDialValue)).toFixed(1) + '%' },
+      pqLweReadout,
+      pqGuessWrong:!!st.pqGuessWrong, pqDecoded:!!st.pqDecoded, pqQuantumFizzled:!!st.pqQuantumFizzled,
+      pqStatus:st.pqDecoded ? 'DECODED' : (st.pqQuantumFizzled ? 'QUANTUM FIZZLED' : (st.pqGuessWrong ? 'WRONG POINT' : 'LATTICE LOADED')),
+      pqHud:st.pqQuantumFizzled ? 'QUANTUM: NO ADVANTAGE' : (pqBad ? 'PUBLIC BASIS · HARD' : 'PRIVATE BASIS · EASY'),
+
+      qbFlipBit:() => this.setState({ qbBit:this.state.qbBit ? 0 : 1 }),
+      qbSetAngle:(e) => this.setState({ qbAngle:Number(e.currentTarget.value) || 0 }),
+      qbMeasure:() => this.qbMeasure(),
+      qbResetHist:() => this.setState({ qbZeros:0, qbOnes:0 }),
+      qbSpringTrap:() => this.setState({ qbTrapSprung:true, qbZeros:0, qbOnes:0 }),
+      qbSetPhase:(e) => this.setState({ qbPhase:Number(e.currentTarget.value) || 0 }),
+      qbClassicalTry:() => this.setState({ qbClassicalTries:(this.state.qbClassicalTries || 0) + 1, qbClassicalResult:Math.random() < 0.5 ? '0' : '1' }),
+      qbQuantumRun:() => this.setState({ qbQuantumSolved:true }),
+      qrInspect:() => this.setState({ qrRevealed:true }),
+      qrBruteStart:() => this.startQrBrute(),
+      qrQuantum:() => { clearInterval(this._qrIv); this.setState({ qrQuantumRun:true, qrBruteActive:false }); },
+      qrCascadeRun:() => this.setState({ qrCascade:true }),
+      pqCanvasDown:(e) => this.pqCanvasDown(e),
+      pqCanvasMove:(e) => this.pqCanvasMove(e),
+      pqCanvasUp:(e) => this.pqCanvasUp(e),
+      pqPickChapter:(e) => this.pqPickChapter(e),
+      pqUseGood:() => this.pqUseGood(),
+      pqUseBad:() => this.pqUseBad(),
+      pqSetSkew:(e) => this.pqSetSkew(e),
+      pqSnap:() => this.pqSnap(),
+      pqToggleTruth:() => this.pqToggleTruth(),
+      pqResetLab:() => this.pqResetLab(),
+      pqSetNoise:(e) => this.pqSetNoise(e),
+      pqSetBit:(e) => this.pqSetBit(e),
+      pqEncrypt:() => this.pqEncrypt(),
+      pqDecrypt:() => this.pqDecrypt(),
+      pqSetDimension:(e) => this.pqSetDimension(e),
+      pqQuantumTry:() => this.pqQuantumTry(),
 
       initiateScan: () => this.initiateScan(),
       selectNode: (e) => this.selectNode(e),
@@ -2007,8 +3001,372 @@ class Component extends DCLogic {
   trySymKey(e) { this.decryptSymWithKey(e.currentTarget.dataset.key || ''); }
   closeStub() {
     clearInterval(this._symSealIv); this._symSealComplete = false;
-    this.setStatus('TRACKING'); this.setState({ stubId: null, symSealProgress:this.state.symSealed ? 100 : 0 });
+    clearInterval(this._qrIv);
+    this._pqDrag = null;
+    this.setStatus('TRACKING'); this.setState({ stubId: null, symSealProgress:this.state.symSealed ? 100 : 0, qrBruteActive:false });
   }
+  verifySignature() {
+    if (!this.state.sgSigned) { this.setState({ sgVerifyResult:null }); return; }
+    const cur = this.learningDigest(this.state.sgMessage || '');
+    let r;
+    if (cur !== this.state.sgSignedHash) r = 'content';        // message altered after signing → fingerprint mismatch
+    else if (this.state.sgVerifier !== 'alice') r = 'identity'; // wrong public key → identity fails
+    else r = 'ok';
+    this.setState({ sgVerifyResult:r });
+  }
+  tlPick(e) {
+    const id = e.currentTarget.dataset.step;
+    if (this.state.tlSecure) return;
+    const order = ['verify','key','cipher','data'];
+    const seq = (this.state.tlSequence || []).slice();
+    if (seq.includes(id)) return;
+    const expected = order[seq.length];
+    if (id === expected) {
+      seq.push(id);
+      this.setState({ tlSequence:seq, tlFailed:null, tlSecure:seq.length === 4 });
+      return;
+    }
+    // wrong next step — report the tool that blocks it, then reset the sequence
+    let msg;
+    if ((id === 'cipher' || id === 'data') && !seq.includes('key')) msg = 'CANNOT ENCRYPT: NO SHARED KEY YET';
+    else if (id !== 'verify' && !seq.includes('verify')) msg = 'CANNOT TRUST KEY: IDENTITY UNVERIFIED';
+    else msg = 'OUT OF ORDER // THAT STEP CAN\'T RUN YET';
+    this.setState({ tlSequence:[], tlFailed:msg });
+  }
+  qbMeasure() {
+    const angle = Math.max(0, Math.min(180, Number(this.state.qbAngle) || 0));
+    const p1 = Math.sin(angle * Math.PI / 360) ** 2;   // sin²(θ/2) — the aim sets the odds, not the answer
+    const one = Math.random() < p1;
+    this.setState({ qbOnes:(this.state.qbOnes || 0) + (one ? 1 : 0), qbZeros:(this.state.qbZeros || 0) + (one ? 0 : 1) });
+  }
+  startQrBrute() {
+    clearInterval(this._qrIv);
+    this.setState({ qrBruteActive:true });
+    this._qrIv = setInterval(() => {
+      if (this.state.stubId !== 'quantum-rsa' || this.state.qrQuantumRun) { clearInterval(this._qrIv); return; }
+      const next = (this.state.qrTries || 0) + 7919 + (Math.floor(Math.random() * 5000));
+      if (next >= 300000) { clearInterval(this._qrIv); this.setState({ qrTries:300000 }); return; }
+      this.setState({ qrTries:next });
+    }, 60);
+  }
+
+  // ---------- post-quantum lattice lab (ported from Quantum Lattice, restyled native) ----------
+  pqDefaultGood() { return [[1.6, 0.2], [0.2, 1.6]]; }
+  pqCloneBasis(b) { return [[b[0][0], b[0][1]], [b[1][0], b[1][1]]]; }
+  pqMatVec(basis, x) { return [basis[0][0] * x[0] + basis[1][0] * x[1], basis[0][1] * x[0] + basis[1][1] * x[1]]; }
+  pqBasisMul(a, b) { return [this.pqMatVec(a, b[0]), this.pqMatVec(a, b[1])]; }
+  pqMakeBadBasis(good, strength) {
+    const shearRight = [[1, 0], [1, 1]];
+    const shearLeft = [[1, 1], [0, 1]];
+    let U = [[1, 0], [0, 1]];
+    for (let i = 0; i < strength; i++) U = this.pqBasisMul(U, i % 2 === 0 ? shearRight : shearLeft);
+    return this.pqBasisMul(good, U);
+  }
+  pqDet(basis) { return basis[0][0] * basis[1][1] - basis[1][0] * basis[0][1]; }
+  pqInvBasis(basis) {
+    const d = this.pqDet(basis) || 1e-6;
+    return [[basis[1][1] / d, -basis[0][1] / d], [-basis[1][0] / d, basis[0][0] / d]];
+  }
+  pqToCoeffs(basis, target) { return this.pqMatVec(this.pqInvBasis(basis), target); }
+  pqDist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
+  pqGenerateLattice(basis, range) {
+    const pts = [];
+    for (let a = -range; a <= range; a++) for (let b = -range; b <= range; b++) pts.push({ coeff:[a, b], p:this.pqMatVec(basis, [a, b]) });
+    return pts;
+  }
+  pqNearest(target, pts) {
+    let best = pts[0], bestD = Infinity;
+    for (const it of pts) {
+      const p = it.p || it, d = this.pqDist(target, p);
+      if (d < bestD) { bestD = d; best = p; }
+    }
+    return best;
+  }
+  pqBabai(target, basis) {
+    const coeffs = this.pqToCoeffs(basis, target);
+    const snapped = [Math.round(coeffs[0]), Math.round(coeffs[1])];
+    const landed = this.pqMatVec(basis, snapped);
+    const mid = this.pqMatVec(basis, [snapped[0], coeffs[1]]);
+    return { coeffs, snapped, landed, path:[target, mid, landed] };
+  }
+  pqGoodBasis() { return this.state.pqGoodBasis || this.pqDefaultGood(); }
+  pqBadBasis() { return this.pqMakeBadBasis(this.pqGoodBasis(), Math.max(0, Math.min(6, Number(this.state.pqSkew) || 0))); }
+  pqActiveBasis() { return this.state.pqBasis === 'good' ? this.pqGoodBasis() : this.pqBadBasis(); }
+  pqView() {
+    if (!this._pqView) this._pqView = { yaw:-0.68, pitch:0.86, zoom:1 };
+    return this._pqView;
+  }
+  pqProject(v, W, H) {
+    const view = this.pqView();
+    const yaw = view.yaw, pitch = view.pitch;
+    const x = v[0], z = v[1], y = v.length > 2 ? v[2] : 0;
+    const cy = H * 0.56, cx = W * 0.5;
+    const co = Math.cos(yaw), si = Math.sin(yaw);
+    const cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const x1 = x * co - z * si;
+    const z1 = x * si + z * co;
+    const y1 = y * cp - z1 * sp;
+    const z2 = y * sp + z1 * cp;
+    const base = Math.min(W, H) / 14 * view.zoom;
+    const depth = Math.max(0.72, Math.min(1.28, 1 + z2 * 0.025));
+    return { x:cx + x1 * base * depth, y:cy - y1 * base * depth, d:z2, s:depth, base };
+  }
+  pqScreenToWorld(e, canvas) {
+    const r = canvas.getBoundingClientRect();
+    const W = r.width || 1, H = r.height || 1, view = this.pqView();
+    const cx = W * 0.5, cy = H * 0.56, base = Math.min(W, H) / 14 * view.zoom;
+    const x1 = (e.clientX - r.left - cx) / base;
+    const sp = Math.max(0.25, Math.sin(view.pitch));
+    const z1 = (e.clientY - r.top - cy) / (sp * base);
+    const co = Math.cos(view.yaw), si = Math.sin(view.yaw);
+    const x = x1 * co + z1 * si;
+    const z = -x1 * si + z1 * co;
+    const clamp = 5.8;
+    return [Math.max(-clamp, Math.min(clamp, x)), Math.max(-clamp, Math.min(clamp, z))];
+  }
+  pqColor(canvas, name, fallback) {
+    const v = getComputedStyle(canvas).getPropertyValue(name).trim();
+    return v || fallback;
+  }
+  drawPqCanvas() {
+    const canvas = document.getElementById('pq-canvas');
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const W = Math.max(320, rect.width || 1000), H = Math.max(320, rect.height || 660);
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    const wantW = Math.round(W * dpr), wantH = Math.round(H * dpr);
+    if (canvas.width !== wantW || canvas.height !== wantH) { canvas.width = wantW; canvas.height = wantH; }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+
+    const hud = this.pqColor(canvas, '--bb-hud', '#F5150E');
+    const ink = this.pqColor(canvas, '--bb-ink', '#171717');
+    const bg = this.pqColor(canvas, '--bb-bg', '#F7F7F4');
+    const muted = this.pqColor(canvas, '--bb-muted', '#555');
+    const good = this.pqGoodBasis(), bad = this.pqBadBasis();
+    const active = this.state.pqBasis === 'good' ? good : bad;
+    const target = this.state.pqTarget || [2.3, 1.4];
+    const chapter = Number(this.state.pqChapter) || 0;
+    const range = Math.max(4, Math.min(7, 4 + Math.floor((Number(this.state.pqDimension) || 2) / 4)));
+    const view = this.pqView();
+    if (!this._pqDrag && !this._reduceMotion) view.yaw += 0.00075 * Math.max(0.25, (this.mi || 45) / 45);
+
+    ctx.fillStyle = bg;
+    ctx.globalAlpha = 0.34;
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = 1;
+
+    const pts = this.pqGenerateLattice(good, range).map(it => ({ ...it, q:this.pqProject([it.p[0], it.p[1], 0], W, H) })).sort((a, b) => a.q.d - b.q.d);
+    const drawLine = (a, b, color, alpha, width, dash) => {
+      const A = this.pqProject([a[0], a[1], a[2] || 0], W, H), B = this.pqProject([b[0], b[1], b[2] || 0], W, H);
+      ctx.save(); ctx.globalAlpha = alpha; ctx.strokeStyle = color; ctx.lineWidth = width; if (dash) ctx.setLineDash(dash);
+      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke(); ctx.restore();
+    };
+    if (chapter >= 1 || this.state.pqShowTruth) {
+      ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .13; ctx.lineWidth = 1;
+      for (let a = -range; a <= range; a++) {
+        let last = null;
+        for (let b = -range; b <= range; b++) { const p = this.pqMatVec(good, [a, b]); const q = this.pqProject([p[0], p[1], 0], W, H); if (last) { ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(q.x, q.y); ctx.stroke(); } last = q; }
+      }
+      for (let b = -range; b <= range; b++) {
+        let last = null;
+        for (let a = -range; a <= range; a++) { const p = this.pqMatVec(good, [a, b]); const q = this.pqProject([p[0], p[1], 0], W, H); if (last) { ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(q.x, q.y); ctx.stroke(); } last = q; }
+      }
+      ctx.restore();
+    }
+
+    const o = [0, 0], c1 = active[0], c2 = active[1], c3 = [c1[0] + c2[0], c1[1] + c2[1]];
+    if (chapter >= 1) {
+      const poly = [o, c1, c3, c2].map(p => this.pqProject([p[0], p[1], .02], W, H));
+      ctx.save(); ctx.fillStyle = hud; ctx.globalAlpha = .08; ctx.beginPath(); ctx.moveTo(poly[0].x, poly[0].y); for (let i = 1; i < poly.length; i++) ctx.lineTo(poly[i].x, poly[i].y); ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = .42; ctx.strokeStyle = hud; ctx.setLineDash([6, 5]); ctx.stroke(); ctx.restore();
+    }
+
+    for (const it of pts) {
+      const q = it.q, nearOrigin = it.coeff[0] === 0 && it.coeff[1] === 0;
+      const r = (nearOrigin ? 5 : 3.2) * q.s;
+      // solid filled dots: origin in accent (red/white), the rest ink, each with a
+      // thin bg ring so overlapping dots stay legible in the depth-sorted field
+      ctx.save(); ctx.globalAlpha = .58 + Math.max(-.2, Math.min(.24, q.d * .025)); ctx.fillStyle = nearOrigin ? hud : ink; ctx.strokeStyle = bg; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(q.x, q.y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.restore();
+    }
+
+    const drawArrow = (vec, color, label, dash) => {
+      const A = this.pqProject([0, 0, .08], W, H), B = this.pqProject([vec[0], vec[1], .08], W, H);
+      const ang = Math.atan2(B.y - A.y, B.x - A.x);
+      ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2; if (dash) ctx.setLineDash([7, 5]);
+      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.lineTo(B.x - Math.cos(ang - .45) * 10, B.y - Math.sin(ang - .45) * 10); ctx.lineTo(B.x - Math.cos(ang + .45) * 10, B.y - Math.sin(ang + .45) * 10); ctx.closePath(); ctx.fill();
+      ctx.font = "700 10px 'IBM Plex Mono', monospace"; ctx.fillText(label, B.x + 8, B.y - 8); ctx.restore();
+      return B;
+    };
+    if (chapter === 1) {
+      drawArrow(this.state.pqBasis === 'good' ? bad[0] : good[0], muted, 'alt b1', true);
+      drawArrow(this.state.pqBasis === 'good' ? bad[1] : good[1], muted, 'alt b2', true);
+    }
+    const b1 = drawArrow(active[0], hud, 'b1', false);
+    const b2 = drawArrow(active[1], ink, 'b2', false);
+
+    const landed = this.state.pqLanded;
+    const nearest = this.state.pqNearest;
+    if (landed) {
+      drawLine([target[0], target[1], .25], [landed[0], landed[1], .25], this.state.pqGuessWrong ? '#ff2a22' : hud, .8, 2, [4, 4]);
+      const L = this.pqProject([landed[0], landed[1], .32], W, H);
+      ctx.save(); ctx.strokeStyle = this.state.pqGuessWrong ? '#ff2a22' : hud; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(L.x, L.y, 12, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    }
+    if ((this.state.pqShowTruth || chapter >= 2) && nearest) {
+      const N = this.pqProject([nearest[0], nearest[1], .42], W, H);
+      ctx.save(); ctx.strokeStyle = ink; ctx.fillStyle = bg; ctx.lineWidth = 2; ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.rect(N.x - 9, N.y - 9, 18, 18); ctx.stroke(); ctx.fillText('TRUE', N.x + 12, N.y + 3); ctx.restore();
+    }
+
+    if (chapter >= 4 || this.state.pqCipher) {
+      const noise = Number(this.state.pqNoise) || 0, tq = this.pqProject([target[0], target[1], .22], W, H);
+      ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .12 + noise * .035; ctx.lineWidth = 1;
+      for (let i = 1; i <= 4; i++) { ctx.beginPath(); ctx.arc(tq.x, tq.y, 9 + i * (5 + noise), 0, Math.PI * 2); ctx.stroke(); }
+      ctx.restore();
+    }
+    if (chapter >= 5) {
+      const dim = Number(this.state.pqDimension) || 2;
+      ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .18; ctx.lineWidth = 1;
+      for (let i = 0; i < dim; i++) {
+        const x = 18 + i * Math.min(16, (W - 44) / Math.max(1, dim - 1)), h = 18 + i * 8;
+        ctx.strokeRect(x, H - 34 - h, 8, h);
+      }
+      ctx.restore();
+    }
+
+    // the ◆ message only exists in THE ATTACK — a floating diamond in the earlier
+    // chapters just reads as noise, so hide it (and its drag handle) until chapter 2
+    this._pqHandles = { b1:{ x:b1.x, y:b1.y, kind:'b1' }, b2:{ x:b2.x, y:b2.y, kind:'b2' } };
+    if (chapter >= 2) {
+      const tq = this.pqProject([target[0], target[1], .55], W, H);
+      ctx.save(); ctx.translate(tq.x, tq.y); ctx.rotate(Math.PI / 4); ctx.fillStyle = hud; ctx.strokeStyle = bg; ctx.lineWidth = 2; ctx.fillRect(-7, -7, 14, 14); ctx.strokeRect(-7, -7, 14, 14); ctx.restore();
+      ctx.save(); ctx.fillStyle = hud; ctx.font = "700 10px 'IBM Plex Mono', monospace"; ctx.fillText('message', tq.x + 12, tq.y - 10); ctx.restore();
+      this._pqHandles.target = { x:tq.x, y:tq.y, kind:'target' };
+    }
+  }
+  pqCanvasDown(e) {
+    const canvas = e.currentTarget, r = canvas.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    let best = null, bestD = 999;
+    const handles = this._pqHandles || {};
+    Object.keys(handles).forEach(k => { const h = handles[k], d = Math.hypot(x - h.x, y - h.y); if (d < bestD) { bestD = d; best = h; } });
+    const view = this.pqView();
+    this._pqDrag = best && bestD < 26 ? { kind:best.kind } : { kind:'orbit', x:e.clientX, y:e.clientY, yaw:view.yaw, pitch:view.pitch };
+    if (canvas.setPointerCapture) try { canvas.setPointerCapture(e.pointerId); } catch {}
+    e.preventDefault();
+  }
+  pqCanvasMove(e) {
+    const d = this._pqDrag;
+    if (!d) return;
+    const canvas = e.currentTarget;
+    if (d.kind === 'orbit') {
+      const view = this.pqView();
+      view.yaw = d.yaw + (e.clientX - d.x) * 0.006;
+      view.pitch = Math.max(0.42, Math.min(1.22, d.pitch + (e.clientY - d.y) * 0.004));
+      this.drawPqCanvas();
+      return;
+    }
+    const p = this.pqScreenToWorld(e, canvas);
+    if (d.kind === 'target') { this.setState({ pqTarget:p, pqLanded:null, pqNearest:null, pqGuessWrong:false, pqDecoded:false }); return; }
+    const good = this.pqCloneBasis(this.pqGoodBasis());
+    const len = Math.hypot(p[0], p[1]);
+    if (len < .45) return;
+    const s = len > 4.2 ? 4.2 / len : 1;
+    good[d.kind === 'b1' ? 0 : 1] = [p[0] * s, p[1] * s];
+    if (Math.abs(this.pqDet(good)) < .15) return;
+    this.setState({ pqGoodBasis:good, pqLanded:null, pqNearest:null, pqGuessWrong:false, pqDecoded:false });
+  }
+  pqCanvasUp() { this._pqDrag = null; }
+  pqPickChapter(e) {
+    const n = Math.max(0, Math.min(2, Number(e.currentTarget.dataset.chapter) || 0));
+    const patch = { pqChapter:n };
+    // THE GRID starts clean; THE ATTACK opens on the public key so the near-miss is the first thing you see
+    if (n === 0) patch.pqBasis = 'good';
+    if (n === 2) patch.pqBasis = this.state.pqBasis || 'bad';
+    this.setState(patch);
+  }
+  pqUseGood() { this.setState({ pqBasis:'good', pqGuessWrong:false }); }
+  pqUseBad() { this.setState({ pqBasis:'bad', pqDecoded:false }); }
+  pqSetSkew(e) { this.setState({ pqSkew:Number(e.currentTarget.value) || 0, pqLanded:null, pqNearest:null, pqGuessWrong:false, pqDecoded:false }); }
+  pqToggleTruth() {
+    const target = this.state.pqTarget || [2.3, 1.4];
+    const nearest = this.pqNearest(target, this.pqGenerateLattice(this.pqGoodBasis(), 7));
+    this.setState({ pqShowTruth:!this.state.pqShowTruth, pqNearest:nearest });
+  }
+  pqResetLab() {
+    this._pqView = { yaw:-0.68, pitch:0.86, zoom:1 };
+    this._pqDrag = null;
+    this.setState({ pqBasis:'good', pqChapter:0, pqSkew:3, pqGoodBasis:this.pqDefaultGood(), pqTarget:[2.3,1.4], pqShowTruth:false, pqLanded:null, pqNearest:null, pqGuessWrong:false, pqDecoded:false, pqQuantumFizzled:false, pqNoise:2, pqMessageBit:1, pqCipher:null, pqLweDecoded:null, pqDimension:2 });
+  }
+  pqSnap() {
+    const target = this.state.pqTarget || [2.3, 1.4];
+    const landed = this.pqBabai(target, this.pqActiveBasis()).landed;
+    const nearest = this.pqNearest(target, this.pqGenerateLattice(this.pqGoodBasis(), 7));
+    const correct = this.pqDist(landed, nearest) < 1e-6;
+    this.setState({ pqChapter:2, pqLanded:landed, pqNearest:nearest, pqDecoded:correct, pqGuessWrong:!correct, pqShowTruth:true });
+  }
+  pqLweBase() {
+    if (!this._pqLweBase) this._pqLweBase = {
+      q:97, n:4, m:8, s:[17, 42, 8, 63],
+      A:[[11,7,31,5],[19,23,3,41],[29,13,17,37],[43,2,47,11],[5,53,7,19],[61,31,2,29],[3,71,43,13],[37,5,59,23]],
+      eBase:[1.45,-.72,2.05,-1.2,.35,1.78,-.55,.96],
+      r:[1,0,1,1,0,1,0,0],
+    };
+    return this._pqLweBase;
+  }
+  pqMod(x, q) { return ((x % q) + q) % q; }
+  pqRingDist(a, b, q) { const d = Math.abs(this.pqMod(a, q) - this.pqMod(b, q)); return Math.min(d, q - d); }
+  pqLweDerived(base, sigma) {
+    const e = base.eBase.map(x => Math.round(x * sigma));
+    const b = base.A.map((row, i) => this.pqMod(row.reduce((acc, aij, j) => acc + aij * base.s[j], 0) + e[i], base.q));
+    return { e, b };
+  }
+  pqEncryptBit(base, derived, r, bit) {
+    const u = Array.from({ length:base.n }, (_, j) => {
+      let acc = 0; for (let i = 0; i < base.m; i++) acc += base.A[i][j] * r[i];
+      return this.pqMod(acc, base.q);
+    });
+    const v = this.pqMod(derived.b.reduce((acc, bi, i) => acc + bi * r[i], 0) + bit * Math.floor(base.q / 2), base.q);
+    return { r:r.slice(), u, v, bit };
+  }
+  pqDecryptBit(base, ct) {
+    const d = this.pqMod(ct.v - ct.u.reduce((acc, ui, j) => acc + ui * base.s[j], 0), base.q);
+    const bit = this.pqRingDist(d, Math.floor(base.q / 2), base.q) < this.pqRingDist(d, 0, base.q) ? 1 : 0;
+    return { d, bit, ok:bit === ct.bit };
+  }
+  pqSetNoise(e) {
+    const noise = Number(e.currentTarget.value) || 0;
+    const patch = { pqNoise:noise };
+    if (this.state.pqCipher) {
+      const base = this.pqLweBase(), derived = this.pqLweDerived(base, noise);
+      const ct = this.pqEncryptBit(base, derived, this.state.pqCipher.r, this.state.pqMessageBit ? 1 : 0);
+      patch.pqCipher = ct;
+      patch.pqLweDecoded = this.state.pqLweDecoded ? this.pqDecryptBit(base, ct) : null;
+    }
+    this.setState(patch);
+  }
+  pqSetBit(e) {
+    const bit = Number(e.currentTarget.dataset.bit) ? 1 : 0;
+    const patch = { pqMessageBit:bit, pqLweDecoded:null };
+    if (this.state.pqCipher) {
+      const base = this.pqLweBase(), derived = this.pqLweDerived(base, Number(this.state.pqNoise) || 0);
+      patch.pqCipher = this.pqEncryptBit(base, derived, this.state.pqCipher.r, bit);
+    }
+    this.setState(patch);
+  }
+  pqEncrypt() {
+    const base = this.pqLweBase(), derived = this.pqLweDerived(base, Number(this.state.pqNoise) || 0);
+    this.setState({ pqChapter:4, pqCipher:this.pqEncryptBit(base, derived, base.r, this.state.pqMessageBit ? 1 : 0), pqLweDecoded:null });
+  }
+  pqDecrypt() {
+    const base = this.pqLweBase();
+    const ct = this.state.pqCipher || this.pqEncryptBit(base, this.pqLweDerived(base, Number(this.state.pqNoise) || 0), base.r, this.state.pqMessageBit ? 1 : 0);
+    this.setState({ pqChapter:4, pqCipher:ct, pqLweDecoded:this.pqDecryptBit(base, ct) });
+  }
+  pqSetDimension(e) { this.setState({ pqChapter:5, pqDimension:Math.max(2, Math.min(12, Number(e.currentTarget.value) || 2)) }); }
+  pqQuantumTry() { this.setState({ pqChapter:5, pqQuantumFizzled:true, pqDimension:Math.max(8, Number(this.state.pqDimension) || 2) }); }
 
   // ---------- day / night sensor mode (corner-to-corner square-flip wipe) ----------
   toggleTheme() {
@@ -2058,8 +3416,19 @@ class Component extends DCLogic {
     const [mA, mB] = fromTL ? [m0, m1] : [m1, m0];
     const T = (m) => `translate(${(ux*m).toFixed(1)}px,${(uy*m).toFixed(1)}px) rotate(${deg.toFixed(3)}deg)`;
     const dur = 1900;
-    const anim = slab.animate([{ transform: T(mA) }, { transform: T(mB) }],
-      { duration: dur, easing: 'cubic-bezier(.3,0,.7,1)', fill: 'both' });
+    let anim = null;
+    if (typeof slab.animate === 'function') {
+      anim = slab.animate([{ transform: T(mA) }, { transform: T(mB) }],
+        { duration: dur, easing: 'cubic-bezier(.3,0,.7,1)', fill: 'both' });
+    } else {
+      // Older embedded previews may not expose the Web Animations API.
+      // A forced initial frame keeps the diagonal wipe animated there too.
+      slab.style.transform = T(mA);
+      requestAnimationFrame(() => {
+        slab.style.transition = `transform ${dur}ms cubic-bezier(.3,0,.7,1)`;
+        slab.style.transform = T(mB);
+      });
+    }
 
     // symmetric easing ⇒ the slab is dead-centre (full cover) at t = dur/2
     setTimeout(() => {
@@ -2073,7 +3442,8 @@ class Component extends DCLogic {
       this._wiping = false;
       restore();
     };
-    anim.onfinish = done;
+    if (anim) anim.onfinish = done;
+    else slab.addEventListener('transitionend', done, { once:true });
     setTimeout(done, dur + 250);
   }
 }
