@@ -44,6 +44,23 @@ Deconstructed, the PQC shape is seven ingredients:
 unique, persistent, manipulable diagram — with the seven ingredients above, and
 no two nodes may reuse the same visual metaphor or interaction mechanic.
 
+### 1b. The elevated bar — cinematic narrated step-through (v2 direction)
+
+Static chapters are the floor, not the ceiling. The bar we're actually building
+to: each module is its own **bespoke, cinematic mini-experience**, not a reskin
+of one template. The signature interaction is a **narrated animation that plays,
+decelerates to a slow-mo stop at each key beat, and surfaces an explainer of
+exactly what's happening right there** — the user supplies the input (types a
+message, aims a thing), presses go, and then *watches the concept happen to
+their own input*, with the system narrating itself beat by beat.
+
+Reference build: **FD-02 "Send a Message"** — you type a message to a friend,
+hit SEND, and a packet animates across a canvas of machines (you → router →
+DNS detour → ISP → backbone → server → home), coasting to a slow-mo halt at
+each hop where a full-bleed explainer card fades in and the machine pulses.
+CONTINUE advances the story. This is the feel every module should have: unique
+visuals, unique verb, cinematic pacing, "interesting" over "correct-looking."
+
 ---
 
 ## 2. Cross-cutting standard (applies to every module)

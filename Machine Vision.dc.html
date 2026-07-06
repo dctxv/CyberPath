@@ -175,47 +175,31 @@
   .bbc-end{border:1px solid var(--bb-hud);padding:22px 16px;margin-top:24px;}
   .bbc-score{display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px solid rgba(245,21,14,.25);padding:7px 0;font-size:9px;}
 
-  /* How the Internet Works: one request, scrubbed through the full conversation */
+  /* How the Internet Works: a typed message, animated across the machines, narrated at each slow-mo stop */
   .iw-shell{width:min(100%,620px);}
-  .iw-control{position:sticky;top:46px;z-index:73;background:var(--bb-bg);padding:10px 0 14px;border-bottom:1px solid rgba(245,21,14,.35);}
-  .iw-url-row{display:grid;grid-template-columns:1fr auto;gap:6px;}
-  .iw-url{width:100%;min-width:0;border:1px solid var(--bb-hud);outline:0;background:var(--bb-bg);color:var(--bb-ink);font:700 19px 'Archivo',sans-serif;padding:12px;caret-color:var(--bb-hud);}
-  .iw-load{border:1px solid var(--bb-hud);background:var(--bb-hud);color:var(--bb-bg);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:0 12px;}
-  .iw-scrub{width:100%;height:28px;margin:11px 0 0;accent-color:var(--bb-hud);}
-  .iw-object{margin-top:12px;border:1px solid var(--bb-hud);padding:8px 10px;color:var(--bb-hud);font-size:9px;letter-spacing:1px;display:flex;justify-content:space-between;gap:8px;}
-  .iw-chunks{display:grid;grid-template-columns:auto 1fr auto;gap:5px;margin:20px 0;}
-  .iw-chunk{border:1px solid var(--bb-hud);padding:11px 7px;min-width:0;overflow:hidden;text-align:center;}
-  .iw-chunk strong{display:block;color:var(--bb-ink);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .iw-chunk span{display:block;color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-top:7px;}
-  .iw-dns{display:grid;grid-template-columns:1fr 30px 1fr;align-items:center;margin:22px 0;}
-  .iw-card{border:1px solid var(--bb-hud);padding:15px 10px;background:var(--bb-bg);color:var(--bb-ink);min-width:0;}
-  .iw-card-label{color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-bottom:8px;}
-  .iw-card-big{font:900 clamp(16px,5.5vw,25px) 'Archivo',sans-serif;line-height:1;overflow-wrap:anywhere;}
-  .iw-route{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;position:relative;margin:24px 0 10px;}
-  .iw-route:before{content:'';position:absolute;left:8%;right:8%;top:27px;height:1px;background:var(--bb-hud);opacity:.35;}
-  .iw-hop{position:relative;z-index:1;border:1px solid var(--bb-hud);background:var(--bb-bg);padding:11px 2px;text-align:center;min-width:0;}
-  .iw-hop-dot{display:block;width:9px;height:9px;margin:0 auto 9px;border:1px solid var(--bb-hud);background:var(--bb-bg);}
-  .iw-hop.on .iw-hop-dot{background:var(--bb-ink);}
-  .iw-hop.live{box-shadow:0 0 0 2px rgba(245,21,14,.25);}
-  .iw-hop-name{display:block;color:var(--bb-ink);font:800 clamp(8px,2.5vw,11px) 'Archivo',sans-serif;white-space:nowrap;overflow:hidden;}
-  .iw-hop-meta{display:block;color:var(--bb-hud);font-size:6px;margin-top:7px;}
-  .iw-resources{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:20px 0;}
-  .iw-resource{border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-ink);padding:14px 5px;text-align:left;min-width:0;}
-  .iw-resource strong{display:block;font:900 15px 'Archivo',sans-serif;}
-  .iw-resource span{display:block;color:var(--bb-hud);font-size:7px;margin-top:8px;}
-  .iw-page{border:1px solid var(--bb-hud);padding:10px;background:var(--bb-ink);color:var(--bb-bg);margin-top:22px;}
-  .iw-page-bar{height:8px;background:var(--bb-bg);opacity:.28;margin-bottom:9px;}
-  .iw-page-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:7px;}
-  .iw-page-el{border:1px solid var(--bb-bg);background:transparent;color:var(--bb-bg);padding:12px 8px;text-align:left;font-family:'IBM Plex Mono',monospace;min-height:62px;}
-  .iw-page-el.heading{grid-column:1/-1;font:900 24px 'Archivo',sans-serif;min-height:auto;}
-  .iw-page-el.fail{border-color:#ff2a22;color:#ff2a22;animation:mv-alarm .7s steps(2) infinite;}
-  .iw-trace{border-left:2px solid var(--bb-hud);padding:13px 14px;margin-top:18px;color:var(--bb-muted);font-size:9px;line-height:1.75;}
-  .iw-trace strong{color:var(--bb-ink);font-weight:500;}
-  .iw-failures{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:16px;}
-  .iw-failure{border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:7px 'IBM Plex Mono',monospace;padding:10px 2px;}
-  .iw-failure.on{background:#ff2a22;color:#050505;border-color:#ff2a22;}
-  .iw-next{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px;}
-  .iw-next button{border:1px dashed var(--bb-hud);background:var(--bb-bg);color:var(--bb-ink);padding:14px 8px;font:800 12px 'Archivo',sans-serif;}
+  .iw-compose{position:sticky;top:46px;z-index:73;background:var(--bb-bg);padding:10px 0 14px;border-bottom:1px solid rgba(245,21,14,.35);}
+  .iw-compose-row{display:grid;grid-template-columns:1fr auto;gap:6px;}
+  .iw-msg{width:100%;min-width:0;border:1px solid var(--bb-hud);outline:0;background:var(--bb-bg);color:var(--bb-ink);font:700 18px 'Archivo',sans-serif;padding:12px;caret-color:var(--bb-hud);}
+  .iw-send{border:1px solid var(--bb-hud);background:var(--bb-hud);color:var(--bb-bg);font:900 10px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:0 16px;white-space:nowrap;}
+  .iw-to{margin-top:9px;color:var(--bb-hud);font-size:9px;letter-spacing:1px;display:flex;align-items:baseline;gap:4px;flex-wrap:wrap;}
+  .iw-to strong{color:var(--bb-ink);font:800 12px 'Archivo',sans-serif;}
+  .iw-to span{color:var(--bb-muted);letter-spacing:.4px;text-transform:none;font-size:8px;}
+  .iw-stage-wrap{position:relative;margin:22px 0 12px;border:1px solid var(--bb-hud);background:var(--bb-bg);overflow:hidden;
+    background-image:linear-gradient(90deg,rgba(245,21,14,.05) 1px,transparent 1px),linear-gradient(0deg,rgba(245,21,14,.05) 1px,transparent 1px);
+    background-size:24px 24px;}
+  :root[data-theme="dark"] .iw-stage-wrap{background-image:linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(0deg,rgba(255,255,255,.04) 1px,transparent 1px);}
+  .iw-stage-wrap:before{content:'THE INTERNET // A CHAIN OF MACHINES';position:absolute;left:10px;top:-7px;background:var(--bb-bg);color:var(--bb-hud);font:7px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:0 6px;z-index:2;}
+  .iw-stage-wrap canvas{display:block;width:100%;height:auto;aspect-ratio:1000/620;touch-action:none;}
+  .iw-speed{position:absolute;right:10px;top:10px;color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;pointer-events:none;background:var(--bb-bg);padding:2px 5px;}
+  .iw-dots{display:flex;gap:6px;justify-content:center;margin:2px 0 16px;}
+  .iw-dots i{width:26px;height:4px;background:var(--bb-hud);opacity:.22;transition:opacity .25s,transform .25s;}
+  .iw-dots i.on{opacity:.85;}
+  .iw-dots i.cur{opacity:1;transform:scaleY(2);}
+  .iw-explain{border-left:3px solid var(--bb-hud);padding:4px 0 4px 16px;margin:6px 0 4px;animation:mv-boxin .5s steps(6) both;}
+  .iw-explain-tag{color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:2px;margin-bottom:8px;}
+  .iw-explain-title{font:900 clamp(24px,7vw,34px) 'Archivo',sans-serif;line-height:.98;text-transform:uppercase;color:var(--bb-ink);margin:0 0 10px;letter-spacing:-.5px;}
+  .iw-explain-body{color:var(--bb-muted);font-size:13px;line-height:1.65;margin:0;}
+  .iw-actions{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:16px;}
 
   /* Symmetric Encryption: a shared-key transformation chamber */
   .sy-inputs{display:grid;gap:8px;margin-top:22px;}
@@ -816,141 +800,65 @@
       <div class="bb-hud">
         <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
         <span class="bb-corner bl"></span><span class="bb-corner br"></span>
-        <div style="position:absolute;left:22px;top:20px;">FD-02 // REQUEST TRACER</div>
+        <div style="position:absolute;left:22px;top:20px;">FD-02 // MESSAGE TRACER</div>
         <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
           <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
             <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
             <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
           </div>
-          <div>{{ internetHud }}</div>
+          <div>{{ iwHud }}</div>
         </div>
-        <div style="position:absolute;left:22px;bottom:20px;">{{ internetStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
-        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">HOP {{ internetHop }}/05</div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ iwStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">BEAT {{ iwBeatCount }}/06</div>
       </div>
 
       <main class="bb-shell iw-shell">
         <div class="bb-kicker">MODULE 01 // FOUNDATIONS</div>
-        <h1 class="bb-title" style="font-size:clamp(42px,13vw,72px);">HOW THE<br>INTERNET WORKS</h1>
-        <p class="bb-friendly">Load a tiny pretend website. Then move its request forward — or backward — one machine at a time.</p>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">SEND A<br>MESSAGE</h1>
+        <p class="bb-friendly">Type a message to a friend on the other side of the world. Then watch it actually get there — one machine at a time, in slow motion, with the internet narrating each step as the packet coasts to a stop.</p>
 
-        <div class="iw-control">
-          <div style="display:flex;justify-content:space-between;color:var(--bb-hud);font-size:8px;letter-spacing:1px;margin-bottom:7px;">
-            <span>URL INPUT</span><span>{{ internetStageLabel }}</span>
+        <div class="iw-compose">
+          <div class="iw-compose-row">
+            <input id="iw-msg" class="iw-msg" data-reticle-target="input" value="{{ iwMsg }}" onChange="{{ iwMsgInput }}" maxlength="40" autocomplete="off" spellcheck="false" placeholder="hi bob, meet at 8?">
+            <button class="iw-send" data-reticle-target="send" onClick="{{ iwSend }}">{{ iwSendLabel }}</button>
           </div>
-          <div class="iw-url-row">
-            <input id="iw-url" class="iw-url" data-reticle-target="input" value="{{ internetUrl }}" onChange="{{ internetUrlInput }}" maxlength="48" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="example.com/page">
-            <button class="iw-load" data-reticle-target="load" onClick="{{ loadInternet }}">LOAD</button>
-          </div>
-          <div style="display:flex;gap:5px;margin-top:7px;">
-            <sc-for list="{{ internetPresets }}" as="p" hint-placeholder-count="3">
-              <button data-reticle-target="preset" data-url="{{ p.url }}" onClick="{{ chooseInternetPreset }}" style="flex:1;min-width:0;border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:7px 'IBM Plex Mono',monospace;padding:7px 2px;overflow:hidden;">{{ p.url }}</button>
-            </sc-for>
-          </div>
-          <input class="iw-scrub" data-reticle-target="scrub" type="range" min="0" max="10" step="1" value="{{ internetStage }}" onChange="{{ scrubInternet }}" aria-label="Scrub the request through the internet">
-          <div class="iw-object"><span>{{ internetObjectType }}</span><strong style="color:var(--bb-ink);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ internetObject }}</strong></div>
+          <div class="iw-to">TO&nbsp; <strong>bob.host</strong> <span>your friend's computer, somewhere far away</span></div>
         </div>
 
-        <section class="bb-section">
-          <div class="bb-kicker">{{ internetScan }}</div>
-          <h2 class="bb-statement">{{ internetStatement }}</h2>
-          <p class="bb-friendly">{{ internetCaption }}</p>
+        <section class="iw-stage-wrap">
+          <canvas id="iw-canvas" width="1000" height="620" aria-label="Animated journey of a message across the internet"></canvas>
+          <div class="iw-speed" id="iw-speed"></div>
         </section>
 
-        <sc-if value="{{ internetParsed }}" hint-placeholder-val="{{ false }}">
-          <section class="bb-section" style="padding-top:28px;">
-            <div class="iw-chunks">
-              <button class="iw-chunk" data-reticle-target="chunk"><strong>{{ internetProtocol }}</strong><span>PROTOCOL</span></button>
-              <button class="iw-chunk" data-reticle-target="chunk"><strong>{{ internetDomain }}</strong><span>DOMAIN</span></button>
-              <button class="iw-chunk" data-reticle-target="chunk"><strong>{{ internetPath }}</strong><span>PATH</span></button>
-            </div>
-            <p class="bb-friendly">The URL is instructions: how to talk, where to go, and what to ask for.</p>
+        <div class="iw-dots"><sc-for list="{{ iwDots }}" as="d" hint-placeholder-count="7"><i class="{{ d.className }}"></i></sc-for></div>
+
+        <sc-if value="{{ iwStarted }}" hint-placeholder-val="{{ false }}">
+          <section class="iw-explain">
+            <div class="iw-explain-tag">{{ iwBeatTag }}</div>
+            <h2 class="iw-explain-title">{{ iwBeatTitle }}</h2>
+            <p class="iw-explain-body">{{ iwBeatBody }}</p>
           </section>
         </sc-if>
 
-        <sc-if value="{{ internetDnsReady }}" hint-placeholder-val="{{ false }}">
-          <section class="bb-section" style="padding-top:28px;">
-            <div class="bb-kicker">DNS QUERY // DOCUMENTATION-SAFE SIMULATION</div>
-            <div class="iw-dns">
-              <div class="iw-card"><div class="iw-card-label">HUMAN NAME</div><div class="iw-card-big">{{ internetDomain }}</div></div>
-              <div class="bb-arrow"></div>
-              <div class="iw-card"><div class="iw-card-label">MACHINE ADDRESS</div><div class="iw-card-big">{{ internetIp }}</div></div>
-            </div>
-            <p class="bb-friendly">DNS is the internet asking, “What number belongs to this name?” The answer may already be cached, or it may travel through several lookup layers.</p>
-          </section>
+        <sc-if value="{{ iwShowActions }}" hint-placeholder-val="{{ false }}">
+          <div class="iw-actions">
+            <button class="cx-btn solid" data-reticle-target="continue" onClick="{{ iwContinue }}">{{ iwContinueLabel }}</button>
+            <button class="cx-btn" data-reticle-target="replay" onClick="{{ iwReplay }}">RESTART</button>
+          </div>
         </sc-if>
 
-        <sc-if value="{{ internetRequestReady }}" hint-placeholder-val="{{ false }}">
-          <section class="bb-section" style="padding-top:28px;">
-            <div class="bb-kicker">HTTP REQUEST OBJECT // PORT 443</div>
-            <button class="iw-card" data-reticle-target="request" onClick="{{ flipInternetRequest }}" style="width:100%;text-align:left;">
-              <div class="iw-card-label">{{ internetRequestFace }}</div>
-              <div class="iw-card-big">{{ internetRequestMain }}</div>
-              <div style="font-size:8px;color:var(--bb-muted);margin-top:10px;">{{ internetRequestSub }}</div>
-            </button>
-            <p class="bb-friendly">Now the browser can write the envelope. Tap the request card to turn it over.</p>
-
-            <div class="iw-route">
-              <sc-for list="{{ internetRoute }}" as="hop" hint-placeholder-count="5">
-                <div class="{{ hop.className }}">
-                  <span class="iw-hop-dot"></span><span class="iw-hop-name">{{ hop.name }}</span><span class="iw-hop-meta">{{ hop.meta }}</span>
-                </div>
-              </sc-for>
-            </div>
-            <div class="bb-readout">{{ internetRouteReadout }}</div>
-          </section>
-        </sc-if>
-
-        <sc-if value="{{ internetResponseReady }}" hint-placeholder-val="{{ false }}">
-          <section class="bb-section" style="padding-top:28px;">
-            <div class="bb-kicker">RESPONSE STATUS // 200 OK</div>
-            <h2 class="bb-statement">THE SERVER ANSWERS IN PIECES.</h2>
-            <p class="bb-friendly">Not one giant “website.” A skeleton, some style, an image, and behavior — your browser puts them together.</p>
-            <div class="iw-resources">
-              <sc-for list="{{ internetResources }}" as="r" hint-placeholder-count="3">
-                <button class="iw-resource" data-reticle-target="resource" data-resource="{{ r.id }}" onClick="{{ traceInternetResource }}"><strong>{{ r.name }}</strong><span>{{ r.job }}</span></button>
-              </sc-for>
+        <sc-if value="{{ iwDone }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-payoff">
+            <h2 class="bb-statement" style="max-width:12ch;">THE INTERNET IS A RELAY RACE.</h2>
+            <p class="bb-friendly">No machine knew the whole route. Each one just knew a good next step and handed the packet on — your router, DNS the phone-book, your ISP, the backbone, and finally Bob's server. Secrecy, trust, and identity aren't part of this yet. Anyone relaying the packet could read it.</p>
+            <div class="iw-actions" style="margin-top:16px;">
+              <button class="cx-btn" data-reticle-target="replay" onClick="{{ iwReplay }}">&gt; RUN IT AGAIN</button>
+              <button class="cx-btn solid" data-reticle-target="next" data-node="crypto" onClick="{{ openInternetBridge }}">&gt; NEXT: LOCK IT DOWN</button>
             </div>
           </section>
         </sc-if>
 
-        <sc-if value="{{ internetPageReady }}" hint-placeholder-val="{{ false }}">
-          <section class="bb-section" style="padding-top:28px;">
-            <div class="bb-kicker">BROWSER ASSEMBLY // PAGE READY</div>
-            <h2 class="bb-statement">NOW PICK SOMETHING YOU CAN SEE.</h2>
-            <p class="bb-friendly">Tap any piece. The machine will trace the hidden conversation that made it.</p>
-            <div class="iw-page">
-              <div class="iw-page-bar"></div>
-              <div class="iw-page-grid">
-                <button class="iw-page-el heading" data-reticle-target="page" data-resource="html" onClick="{{ traceInternetResource }}">A SMALL SHOP</button>
-                <button class="iw-page-el" data-reticle-target="page" data-resource="css" onClick="{{ traceInternetResource }}">BUTTON<br><span style="font-size:7px;">styled by CSS</span></button>
-                <button class="{{ internetImageClass }}" data-reticle-target="page" data-resource="image" onClick="{{ traceInternetResource }}">{{ internetImageLabel }}<br><span style="font-size:7px;">hero.png</span></button>
-              </div>
-            </div>
-
-            <sc-if value="{{ internetTraceOpen }}" hint-placeholder-val="{{ false }}">
-              <div class="iw-trace"><strong>{{ internetTraceTitle }}</strong><br>{{ internetTracePath }}</div>
-            </sc-if>
-
-            <div class="bb-kicker" style="margin-top:34px;">SIMULATED FAILURE LAB</div>
-            <p class="bb-friendly">When loading breaks, one link in the conversation usually failed. Pick a symptom, then tap the page to trace it.</p>
-            <div class="iw-failures">
-              <sc-for list="{{ internetFailures }}" as="f" hint-placeholder-count="4">
-                <button class="{{ f.className }}" data-reticle-target="failure" data-failure="{{ f.id }}" onClick="{{ setInternetFailure }}">{{ f.label }}</button>
-              </sc-for>
-            </div>
-
-            <div class="bb-payoff">
-              <h2 class="bb-statement" style="max-width:12ch;">THE INTERNET IS A CONVERSATION.</h2>
-              <p class="bb-friendly" style="margin-bottom:0;">Your browser asks. Machines pass the message along. A server answers. Your browser rebuilds the pieces.</p>
-            </div>
-            <div class="iw-next">
-              <button data-reticle-target="next" data-node="networks" onClick="{{ openInternetBridge }}">NETWORKS<br><span style="font:7px 'IBM Plex Mono',monospace;color:var(--bb-hud);">ROUTING DETAIL</span></button>
-              <button data-reticle-target="next" data-node="crypto" onClick="{{ openInternetBridge }}">CRYPTOGRAPHY<br><span style="font:7px 'IBM Plex Mono',monospace;color:var(--bb-hud);">TRUST LAYER</span></button>
-            </div>
-          </section>
-        </sc-if>
-
-        <div class="bb-scope">SIMULATION ONLY // No live DNS, requests, scanning, interception, or probing. Routes and failures are simplified; return paths can differ in the real internet. Addresses shown here are reserved for documentation.</div>
+        <div class="bb-scope">SIMULATION ONLY // No live DNS, requests, scanning, interception, or probing. The route and timing are simplified; real paths have far more hops and can differ each way. Addresses shown here are reserved for documentation.</div>
       </main>
     </div>
   </sc-if>
@@ -1709,7 +1617,7 @@ class Component extends DCLogic {
     bitsRound:0, bitsValue:0, bitsFlips:0, bitsCalibrationFlips:0, bitsLocks:0, bitsLocked:false, bitsLost:false, bitsTimer:0, bitsElapsed:0,
     bitsTimedIndex:0, bitsLastFlip:'AWAITING FIRST FLIP', bitsMessageReceived:'PAY BOB $900', bitsCorruptIndex:-1,
     bitsCorruptionLevel:0, bitsEnd:false, bitsHint:false, bitsRoundElapsed:0,
-    internetUrl: '', internetStage: 0, internetRequestBack: false, internetTrace: null, internetFailure: null,
+    iwMsg: 'hi bob, meet at 8?', iwBeat: 0, iwStarted: false, iwMoving: false, iwDone: false,
     symMessage:'', symKey:'', symSealed:false, symSealedMessage:'', symSealedKey:'', symSealProgress:0,
     symResult:'', symFailure:false, symIntercepted:false, symMutation:1, symFriendHasKey:true,
     haText:'PAY BOB $100', haAttempts:0, haRecover:'', haRecoverTried:false, haReceived:'PAY BOB $100',
@@ -2049,6 +1957,7 @@ class Component extends DCLogic {
       if ((this._wantNear || liveModuleActive) && f % 3 === 0 && (!this.state.stubId || liveModuleActive)) { this._wantNear = false; this.updateNear(); }
       this.updateScanners();
       if (this.state.stubId === 'pqc') this.drawPqCanvas();
+      if (this.state.stubId === 'internet') this.drawIwCanvas();
       requestAnimationFrame(this._loop);
     };
     requestAnimationFrame(this._loop);
@@ -2389,55 +2298,20 @@ class Component extends DCLogic {
     const bitsWord = Array.from(timedWord).map((ch, idx) => ({ glyph:ch, className:idx < st.bitsTimedIndex ? 'done' : (idx === st.bitsTimedIndex ? 'on' : '') }));
     const activeFlips = Math.max(1, (st.bitsFlips || 0) - (st.bitsCalibrationFlips || 0));
     const bitsEfficiency = Math.min(100, Math.round(13 / activeFlips * 100));
-    const internetStage = Math.max(0, Math.min(10, Number(st.internetStage) || 0));
-    const internetParsedUrl = this.parseInternetUrl(st.internetUrl);
-    const internetIp = this.internetIpFor(internetParsedUrl.domain);
-    const internetHop = Math.max(0, Math.min(5, internetStage - 3));
-    const internetStages = [
-      ['INPUT 00 // AWAITING URL','START WITH SOMETHING FAMILIAR.','Type a website. Nothing leaves your device until the browser has a name to work with.'],
-      ['SCAN 01 // URL PARSED','A URL IS A SET OF INSTRUCTIONS.','Your browser sees how to talk, where to go, and which page you want.'],
-      ['SCAN 02 // DNS RESOLVED','THE FRIENDLY NAME NEEDS AN ADDRESS.','Machines route to numbers, so DNS translates the domain before the request can move.'],
-      ['SCAN 03 // REQUEST SEALED','NOW THE BROWSER CAN ASK.','It writes a small request: “Can I have this page?”'],
-      ['HOP 01 // DEVICE','THE MESSAGE LEAVES YOUR DEVICE.','Your phone or laptop hands the request to the first machine nearby.'],
-      ['HOP 02 // ROUTER','ONE MACHINE CHOOSES THE NEXT.','The router does not need the whole map. It only needs a useful next step.'],
-      ['HOP 03 // ISP','YOUR PROVIDER PASSES IT ON.','The request joins the larger network, still carrying the same destination.'],
-      ['HOP 04 // NETWORK','THE REQUEST CROSSES THE INTERNET.','Many machines cooperate by passing the message forward. It never teleports.'],
-      ['HOP 05 // SERVER','THE SERVER HEARS THE QUESTION.','A server is simply a machine listening for requests and preparing answers.'],
-      ['SCAN 09 // RESPONSE 200','THE ANSWER COMES BACK IN PIECES.','HTML, CSS, images, and behavior can each be their own little conversation.'],
-      ['SCAN 10 // PAGE ASSEMBLED','YOUR BROWSER REBUILDS THE ANSWER.','What looks like one page is the final shape of many machine messages.'],
+    // ---- HOW THE INTERNET WORKS (FD-02) — the message's slow-mo journey ----
+    const iwBeatDefs = [
+      ['LEAVING // YOUR DEVICE', 'YOU HIT SEND.', 'Your sentence is chopped into tiny numbered packets, each one stamped with where it’s headed. Nothing has moved yet — this is the packet, sitting on your machine, about to be handed off.'],
+      ['HOP 01 // HOME ROUTER', 'THE FIRST GATEKEEPER.', 'Your router has no clue who “bob” is, and it doesn’t need to. Its whole job is to know one good next step toward him and shove the packet that way.'],
+      ['DETOUR // DNS LOOKUP', 'WAIT — WHERE IS BOB?', '“bob.host” is a name for humans; machines need a number. The packet detours to DNS, the internet’s phone-book, which answers instantly: bob.host = 203.0.113.18. Watch the name-tag flip to a number.'],
+      ['HOP 02 // YOUR ISP', 'ONTO THE BIG ROADS.', 'Your internet provider lifts the packet off your street and merges it onto the backbone — the motorways of the internet, carrying millions of other packets at once.'],
+      ['HOP 03 // THE BACKBONE', 'ACROSS THE WORLD, HOP BY HOP.', 'Undersea cables and city-sized routers pass the packet hand to hand. It never teleports — every leg is one machine handing it to the next, thousands of times a second.'],
+      ['ARRIVAL // BOB’S SERVER', 'BOB’S MACHINE CATCHES IT.', 'The destination reassembles your sentence from its packets, reads it, and writes a reply — ready to send the whole trip back in reverse.'],
+      ['RETURN // THE ROUND TRIP', 'AND THE ANSWER COMES HOME.', 'The reply retraces the route back to you and your device rebuilds it. That entire round-the-world round trip took a few hundred milliseconds. That’s the internet: a conversation, relayed by strangers.'],
     ];
-    const internetStageData = internetStages[internetStage];
-    const internetObjectTypes = ['URL CHIP','DOMAIN','IP ADDRESS','REQUEST','PACKET','PACKET','PACKET','PACKET','SERVER JOB','RESPONSE GROUP','PAGE'];
-    const internetObjects = [
-      st.internetUrl || 'AWAITING INPUT', internetParsedUrl.domain, internetIp,
-      'GET ' + internetParsedUrl.path, 'GET ' + internetParsedUrl.path,
-      'TO ' + internetIp, 'TO ' + internetIp, 'TO ' + internetIp,
-      'PROCESS ' + internetParsedUrl.path, '200 OK · 3 RESOURCES', 'PAGE READY',
-    ];
-    const hopNames = ['DEVICE','ROUTER','ISP','NETWORK','SERVER'];
-    const hopMeta = ['LOCAL','HOP_02','HOP_03','HOP_04',internetIp];
-    const internetRoute = hopNames.map((name, idx) => {
-      const threshold = 4 + idx, on = internetStage >= threshold, live = internetStage === threshold;
-      return { name, meta:hopMeta[idx], className:'iw-hop' + (on ? ' on' : '') + (live ? ' live' : '') };
-    });
-    const internetResources = [
-      { id:'html', name:'HTML', job:'PAGE SKELETON' },
-      { id:'css', name:'CSS', job:'COLOUR + LAYOUT' },
-      { id:'image', name:'IMAGE', job:'GET /hero.png' },
-    ];
-    const traceNames = { html:'HEADING / HTML_NODE', css:'BUTTON / CSS_RULE', image:'IMAGE / IMG_02' };
-    const traceRequests = { html:'GET ' + internetParsedUrl.path, css:'GET /styles.css', image:'GET /hero.png' };
-    const traced = st.internetTrace || 'html';
-    let internetTraceTitle = traceNames[traced] || traceNames.html;
-    let internetTracePath = (traceRequests[traced] || traceRequests.html) + ' ← 200 OK ← ' + internetIp + ' ← ROUTE ← DNS ← ' + internetParsedUrl.domain;
-    if (st.internetFailure === 'dns') { internetTraceTitle = 'LOAD STOPPED / DNS TIMEOUT'; internetTracePath = internetParsedUrl.domain + ' ← DNS_TIMEOUT ← NO ADDRESS RETURNED'; }
-    if (st.internetFailure === 'route') { internetTraceTitle = 'LOAD STALLED / ROUTE TIMEOUT'; internetTracePath = 'HOP_03 ← PACKET_TIMEOUT ← REQUEST NOT DELIVERED'; }
-    if (st.internetFailure === 'server') { internetTraceTitle = 'PAGE FAILED / SERVER ERROR'; internetTracePath = 'GET ' + internetParsedUrl.path + ' ← 500_SERVER_ERROR ← ' + internetIp; }
-    if (st.internetFailure === 'image' && traced === 'image') { internetTraceTitle = 'BROKEN IMAGE / REQUEST FAILED'; internetTracePath = 'GET /hero.png ← 404_NOT_FOUND ← ' + internetIp; }
-    const internetFailures = [
-      { id:'dns', label:'DNS FAIL' }, { id:'route', label:'SLOW ROUTE' },
-      { id:'server', label:'SERVER 500' }, { id:'image', label:'BREAK IMAGE' },
-    ].map(f => ({ ...f, className:'iw-failure' + (st.internetFailure === f.id ? ' on' : '') }));
+    const iwBeat = Math.max(0, Math.min(6, Number(st.iwBeat) || 0));
+    const iwStarted = !!st.iwStarted, iwDone = !!st.iwDone, iwMoving = !!st.iwMoving;
+    const iwCur = iwBeatDefs[iwBeat];
+    const iwDots = iwBeatDefs.map((_, i) => ({ className:'iw-dot' + (i <= iwBeat ? ' on' : '') + (i === iwBeat && !iwMoving ? ' cur' : '') }));
     const symMessage = st.symMessage || '', symKey = st.symKey || '';
     const symReady = !!symMessage && !!symKey;
     const symKeyHash = this.hashLearningText(symKey || 'empty');
@@ -2631,26 +2505,17 @@ class Component extends DCLogic {
       bitsEnd:!!st.bitsEnd, bitsEfficiency,
       bitsMeterStyle:{ position:'absolute', left:0, top:0, bottom:0, width:(bitsCode/255*100).toFixed(1)+'%', background:'var(--bb-hud)' },
 
-      internetOpen: st.stubId === 'internet', internetUrl: st.internetUrl,
-      internetStage, internetStageLabel:'STEP ' + String(internetStage).padStart(2,'0') + '/10',
-      internetScan:internetStageData[0], internetStatement:internetStageData[1], internetCaption:internetStageData[2],
-      internetObjectType:internetObjectTypes[internetStage], internetObject:internetObjects[internetStage],
-      internetProtocol:internetParsedUrl.protocol, internetDomain:internetParsedUrl.domain, internetPath:internetParsedUrl.path, internetIp,
-      internetParsed:internetStage >= 1, internetDnsReady:internetStage >= 2, internetRequestReady:internetStage >= 3,
-      internetResponseReady:internetStage >= 9, internetPageReady:internetStage >= 10,
-      internetHop:String(internetHop).padStart(2,'0'), internetRoute,
-      internetRouteReadout:internetStage < 4 ? 'ROUTE READY // SCRUB FORWARD TO LAUNCH' : (internetStage < 9 ? ('HOP_0' + internetHop + ' LOCKED // NEXT HOP SELECTED // ' + (7+internetHop*3) + 'ms') : (internetStage === 9 ? 'RETURN_PATH_ACTIVE // PACKET_GROUP 03 // REASSEMBLY_PENDING' : 'REASSEMBLY COMPLETE // PAGE READY')),
-      internetRequestFace:st.internetRequestBack ? 'REQUEST BACK // MACHINE DETAILS' : 'REQUEST FRONT // HUMAN ASK',
-      internetRequestMain:st.internetRequestBack ? ('DEST ' + internetIp + ':443') : ('GET ' + internetParsedUrl.path),
-      internetRequestSub:st.internetRequestBack ? ('HOST ' + internetParsedUrl.domain + ' · HTTPS · ACCEPT HTML') : ('Please send ' + internetParsedUrl.path),
-      internetResources, internetTraceOpen:!!st.internetTrace || !!st.internetFailure,
-      internetTraceTitle, internetTracePath,
-      internetFailures,
-      internetImageClass:'iw-page-el' + (st.internetFailure === 'image' ? ' fail' : ''),
-      internetImageLabel:st.internetFailure === 'image' ? 'BROKEN IMAGE' : 'IMAGE',
-      internetPresets:[{url:'shop.site'},{url:'news.site'},{url:'uni.edu'}],
-      internetStatus:internetStage === 0 ? 'AWAITING URL' : (internetStage < 9 ? 'REQUEST IN FLIGHT' : (internetStage < 10 ? 'RETURN PATH ACTIVE' : 'PAGE RESOLVED')),
-      internetHud:internetStage < 2 ? 'NO DESTINATION' : ('DEST ' + internetIp + ' · ' + (internetStage >= 9 ? '200 OK' : 'ACTIVE')),
+      internetOpen: st.stubId === 'internet',
+      iwMsg: st.iwMsg != null ? st.iwMsg : '',
+      iwStarted, iwDone, iwMoving,
+      iwSendLabel: iwStarted ? 'RESEND' : 'SEND ▶',
+      iwBeatTag: iwCur[0], iwBeatTitle: iwCur[1], iwBeatBody: iwCur[2],
+      iwDots,
+      iwShowActions: iwStarted && !iwDone,
+      iwContinueLabel: iwMoving ? 'IN FLIGHT…' : (iwBeat >= 6 ? 'ARRIVED' : 'CONTINUE ▶'),
+      iwBeatCount: String(iwBeat).padStart(2,'0'),
+      iwStatus: !iwStarted ? 'AWAITING MESSAGE' : (iwMoving ? 'PACKET IN FLIGHT' : (iwDone ? 'ROUND TRIP COMPLETE' : 'HELD // ' + iwCur[0])),
+      iwHud: iwStarted ? ('BEAT ' + iwBeat + '/6 · bob.host') : 'NO PACKET SENT',
 
       symmetricOpen:st.stubId === 'symmetric', symMessage, symKey, symReady,
       symHasMessage:!!symMessage, symByteCount:symMessage.length,
@@ -2814,13 +2679,10 @@ class Component extends DCLogic {
       nextBitsRound: () => this.nextBitsRound(), reacquireBits: () => this.reacquireBits(),
       selectCorruptChar: (e) => this.selectCorruptChar(e),
       restartBits: () => this.restartBits(), openBitsBridge: (e) => this.openInternetBridge(e),
-      internetUrlInput: (e) => this.updateInternetUrl(e),
-      chooseInternetPreset: (e) => this.chooseInternetPreset(e),
-      loadInternet: () => this.loadInternet(),
-      scrubInternet: (e) => this.scrubInternet(e),
-      flipInternetRequest: () => this.setState({ internetRequestBack:!this.state.internetRequestBack }),
-      traceInternetResource: (e) => this.traceInternetResource(e),
-      setInternetFailure: (e) => this.setInternetFailure(e),
+      iwMsgInput: (e) => this.iwMsgInput(e),
+      iwSend: () => this.iwSend(),
+      iwContinue: () => this.iwContinue(),
+      iwReplay: () => this.iwReplay(),
       openInternetBridge: (e) => this.openInternetBridge(e),
       symMessageInput: (e) => this.updateSymMessage(e),
       symKeyInput: (e) => this.updateSymKey(e),
@@ -2954,25 +2816,164 @@ class Component extends DCLogic {
       bitsTimer:0, bitsElapsed:0, bitsTimedIndex:0, bitsLastFlip:'AWAITING FIRST FLIP', bitsMessageReceived:'PAY BOB $900',
       bitsCorruptIndex:-1, bitsCorruptionLevel:0, bitsEnd:false, bitsHint:false, bitsRoundElapsed:0 });
   }
-  updateInternetUrl(e) {
-    this.setState({ internetUrl:e.currentTarget.value || '', internetStage:0, internetTrace:null, internetFailure:null, internetRequestBack:false });
+  // ---------- FD-02 // the message's slow-mo journey across the internet ----------
+  iwMsgInput(e) {
+    clearTimeout(this._iwTimer); this._iwSeg = null;
+    this.setState({ iwMsg:e.currentTarget.value || '', iwStarted:false, iwDone:false, iwMoving:false, iwBeat:0 });
   }
-  chooseInternetPreset(e) {
-    this.setState({ internetUrl:e.currentTarget.dataset.url || 'shop.site', internetStage:1, internetTrace:null, internetFailure:null, internetRequestBack:false });
+  iwSend() {
+    clearTimeout(this._iwTimer); this._iwSeg = null;
+    this.setState({ iwStarted:true, iwDone:false, iwMoving:false, iwBeat:0 });
   }
-  loadInternet() {
-    this.setState({ internetUrl:(this.state.internetUrl || '').trim() || 'shop.site', internetStage:1, internetTrace:null, internetFailure:null, internetRequestBack:false });
+  iwContinue() {
+    if (this.state.iwMoving) return;
+    const next = Math.min(6, (Number(this.state.iwBeat) || 0) + 1);
+    if (next === this.state.iwBeat) return;
+    const dur = next === 6 ? 2400 : (next === 4 ? 1900 : 1500); // the backbone & return legs run longer
+    this._iwSeg = { toBeat:next, t0:(typeof performance !== 'undefined' ? performance.now() : Date.now()), dur };
+    this.setState({ iwMoving:true });
+    clearTimeout(this._iwTimer);
+    this._iwTimer = setTimeout(() => {
+      this._iwSeg = null;
+      this.setState({ iwBeat:next, iwMoving:false, iwDone:next >= 6 });
+    }, dur + 40);
   }
-  scrubInternet(e) {
-    const stage = Math.max(0, Math.min(10, Number(e.currentTarget.value) || 0));
-    this.setState({ internetUrl:(this.state.internetUrl || '').trim() || 'shop.site', internetStage:stage, internetTrace:stage < 10 ? null : this.state.internetTrace });
+  iwReplay() {
+    clearTimeout(this._iwTimer); this._iwSeg = null;
+    this.setState({ iwStarted:true, iwDone:false, iwMoving:false, iwBeat:0 });
   }
-  traceInternetResource(e) {
-    this.setState({ internetTrace:e.currentTarget.dataset.resource || 'html' });
+  // fixed machine layout in normalised 0..1 stage space
+  iwNodes() { return { you:[0.09,0.72], router:[0.28,0.72], dns:[0.28,0.17], isp:[0.50,0.72], bb:[0.71,0.50], server:[0.91,0.72] }; }
+  iwNodeForBeat(b) { return ['you','router','dns','isp','bb','server','you'][Math.max(0,Math.min(6,b))]; }
+  // waypoints the packet travels through to REACH a given beat
+  iwWaypoints(toBeat) {
+    const map = {
+      1:['you','router'], 2:['router','dns'], 3:['dns','router','isp'],
+      4:['isp','bb'], 5:['bb','server'], 6:['server','bb','isp','router','you'],
+    };
+    return (map[toBeat] || ['you','you']);
   }
-  setInternetFailure(e) {
-    const chosen = e.currentTarget.dataset.failure;
-    this.setState({ internetFailure:this.state.internetFailure === chosen ? null : chosen, internetTrace:null });
+  iwPointAlong(nodes, N, keys, W, H, t) {
+    const pts = keys.map(k => [N[k][0]*W, N[k][1]*H]);
+    let total = 0; const segs = [];
+    for (let i = 1; i < pts.length; i++) { const d = Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]); segs.push(d); total += d; }
+    let want = t * total;
+    for (let i = 0; i < segs.length; i++) {
+      if (want <= segs[i] || i === segs.length-1) {
+        const f = segs[i] ? Math.max(0,Math.min(1, want/segs[i])) : 1;
+        return [pts[i][0] + (pts[i+1][0]-pts[i][0])*f, pts[i][1] + (pts[i+1][1]-pts[i][1])*f];
+      }
+      want -= segs[i];
+    }
+    return pts[pts.length-1];
+  }
+  iwColor(canvas, name, fallback) { const v = getComputedStyle(canvas).getPropertyValue(name).trim(); return v || fallback; }
+  drawIwCanvas() {
+    const canvas = document.getElementById('iw-canvas');
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const W = Math.max(320, rect.width || 1000), H = Math.max(240, rect.height || W*0.62);
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    const wantW = Math.round(W*dpr), wantH = Math.round(H*dpr);
+    if (canvas.width !== wantW || canvas.height !== wantH) { canvas.width = wantW; canvas.height = wantH; }
+    const ctx = canvas.getContext('2d'); if (!ctx) return;
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+    const hud = this.iwColor(canvas,'--bb-hud','#F5150E');
+    const ink = this.iwColor(canvas,'--bb-ink','#171717');
+    const bg = this.iwColor(canvas,'--bb-bg','#F7F7F4');
+    const muted = this.iwColor(canvas,'--bb-muted','#555');
+    const N = this.iwNodes();
+    const P = (k) => [N[k][0]*W, N[k][1]*H];
+    const st = this.state;
+    const started = !!st.iwStarted;
+    const seg = this._iwSeg;
+    const now = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+
+    // --- roads between machines ---
+    const road = (a, b, dashed) => {
+      const A = P(a), B = P(b);
+      ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .3; ctx.lineWidth = 1.5; if (dashed) ctx.setLineDash([5,5]);
+      ctx.beginPath(); ctx.moveTo(A[0],A[1]); ctx.lineTo(B[0],B[1]); ctx.stroke(); ctx.restore();
+    };
+    road('you','router'); road('router','isp'); road('isp','bb'); road('bb','server'); road('router','dns', true);
+
+    // --- backbone flavour: a little bundle of cables behind the bb node ---
+    { const B = P('bb'); ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .22; ctx.lineWidth = 1;
+      for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(B[0]-46, B[1]+i*4); ctx.bezierCurveTo(B[0]-14,B[1]+i*10, B[0]+14,B[1]-i*10, B[0]+46,B[1]+i*4); ctx.stroke(); } ctx.restore(); }
+
+    // active node = where the packet is holding (or heading, faintly, while moving)
+    const activeKey = seg ? this.iwNodeForBeat(seg.toBeat) : (started ? this.iwNodeForBeat(Number(st.iwBeat)||0) : 'you');
+
+    // --- machines ---
+    const machine = (key, label, sub, glyph) => {
+      const [x,y] = P(key); const active = key === activeKey;
+      const rw = Math.max(30, W*0.052), rh = Math.max(24, W*0.04);
+      ctx.save();
+      if (active && !seg) { // pulsing lock ring on the machine we've stopped at
+        const pulse = 0.5 + 0.5*Math.sin(now/220);
+        ctx.strokeStyle = hud; ctx.globalAlpha = .35 + .3*pulse; ctx.lineWidth = 2;
+        ctx.strokeRect(x-rw/2-7-pulse*4, y-rh/2-7-pulse*4, rw+14+pulse*8, rh+14+pulse*8);
+      }
+      ctx.globalAlpha = 1; ctx.fillStyle = active ? hud : bg; ctx.strokeStyle = hud; ctx.lineWidth = 1.5;
+      ctx.fillRect(x-rw/2, y-rh/2, rw, rh); ctx.strokeRect(x-rw/2, y-rh/2, rw, rh);
+      // little screen
+      ctx.fillStyle = active ? bg : hud; ctx.globalAlpha = active ? .9 : .25;
+      ctx.fillRect(x-rw/2+4, y-rh/2+4, rw-8, rh-11);
+      ctx.globalAlpha = 1; ctx.fillStyle = active ? bg : ink;
+      ctx.font = "900 12px 'Archivo', sans-serif"; ctx.textAlign = 'center';
+      ctx.fillText(glyph, x, y+rh/2-3);
+      ctx.fillStyle = ink; ctx.font = "800 10px 'Archivo', sans-serif";
+      ctx.fillText(label, x, y+rh/2+15);
+      ctx.fillStyle = hud; ctx.font = "6px 'IBM Plex Mono', monospace";
+      ctx.fillText(sub, x, y+rh/2+25);
+      ctx.restore();
+    };
+    machine('you','YOU','your device','◻');
+    machine('router','ROUTER','LOCAL','⌂');
+    machine('dns','DNS','PHONE-BOOK','☎');
+    machine('isp','ISP','PROVIDER','▤');
+    machine('bb','BACKBONE','GLOBAL','∞');
+    machine('server','BOB','203.0.113.18','▣');
+
+    // --- the packet ---
+    let speedTxt = 'ARRIVED';
+    if (started) {
+      let pos, resolved, isReturn, speedFrac = 0;
+      if (seg) {
+        const k = Math.max(0, Math.min(1, (now - seg.t0)/seg.dur));
+        const e = 1 - Math.pow(1 - k, 4); // easeOutQuart — coasts to a slow-mo stop
+        pos = this.iwPointAlong(N, N, this.iwWaypoints(seg.toBeat), W, H, e);
+        speedFrac = Math.pow(1 - k, 3);
+        resolved = seg.toBeat >= 3; isReturn = seg.toBeat === 6;
+        speedTxt = 'SPEED ' + (speedFrac*2.4).toFixed(2) + 'c';
+      } else {
+        pos = P(this.iwNodeForBeat(Number(st.iwBeat)||0));
+        resolved = (Number(st.iwBeat)||0) >= 3; isReturn = (Number(st.iwBeat)||0) === 6;
+        speedTxt = 'HELD // 0.00c';
+      }
+      // motion trail
+      if (speedFrac > 0.02) {
+        ctx.save(); ctx.strokeStyle = isReturn ? ink : hud; ctx.lineWidth = 2; ctx.globalAlpha = .25;
+        ctx.beginPath(); ctx.moveTo(pos[0]-speedFrac*40, pos[1]); ctx.lineTo(pos[0], pos[1]); ctx.stroke(); ctx.restore();
+      }
+      // envelope
+      const pw = 40, ph = 26;
+      ctx.save(); ctx.translate(pos[0], pos[1]);
+      ctx.fillStyle = bg; ctx.strokeStyle = isReturn ? ink : hud; ctx.lineWidth = 2;
+      ctx.fillRect(-pw/2,-ph/2,pw,ph); ctx.strokeRect(-pw/2,-ph/2,pw,ph);
+      ctx.beginPath(); ctx.moveTo(-pw/2,-ph/2); ctx.lineTo(0,2); ctx.lineTo(pw/2,-ph/2); ctx.stroke();
+      ctx.fillStyle = isReturn ? ink : hud; ctx.font = "900 7px 'IBM Plex Mono', monospace"; ctx.textAlign = 'center';
+      const tag = isReturn ? 'REPLY' : (resolved ? '203.0.113.18' : 'bob.host');
+      ctx.fillText(tag, 0, ph/2-4);
+      ctx.restore();
+      // the human message riding above the envelope, before it resolves to a number
+      if (!isReturn) {
+        const msg = (st.iwMsg || '').slice(0, 22);
+        if (msg) { ctx.save(); ctx.fillStyle = muted; ctx.font = "10px 'Archivo', sans-serif"; ctx.textAlign = 'center';
+          ctx.fillText('“' + msg + '”', pos[0], pos[1]-ph/2-8); ctx.restore(); }
+      }
+    }
+    const sp = document.getElementById('iw-speed'); if (sp) sp.textContent = started ? speedTxt : 'READY // PRESS SEND';
   }
   openInternetBridge(e) {
     const id = e.currentTarget.dataset.node;
