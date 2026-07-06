@@ -25,6 +25,8 @@
   @keyframes mv-converge{0%{transform:scale(1.9);opacity:0}60%{opacity:1}100%{transform:scale(1);opacity:1}}
   @keyframes mv-search{0%{transform:translate(-3px,-2px)}50%{transform:translate(3px,2px)}100%{transform:translate(-3px,-2px)}}
   @keyframes mv-ping{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+  @keyframes mv-flow{0%{left:0%;opacity:0}8%{opacity:1}92%{opacity:1}100%{left:100%;opacity:0}}
+  @keyframes mv-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-2px)}40%{transform:translateX(2px)}60%{transform:translateX(-1.5px)}80%{transform:translateX(1.5px)}}
 </style>
 </helmet>
 
@@ -76,7 +78,7 @@
     <sc-if value="{{ showField }}" hint-placeholder-val="{{ false }}">
       <section data-screen-label="CONCEPT FIELD" style="position:relative;padding:120px 0 200px;">
         <div style="{{ fieldWrapStyle }}">
-          <div style="position:relative;width:360px;min-height:2180px;margin:0 auto;" id="mv-field">
+          <div style="position:relative;width:360px;min-height:2320px;margin:0 auto;" id="mv-field">
 
             <!-- faint field feature points -->
             <sc-for list="{{ fieldPoints }}" as="p" hint-placeholder-count="10">
@@ -228,11 +230,92 @@
     </div>
   </sc-if>
 
+  <!-- ============ MODULE: INCIDENT TRACE (FD-02) ============ -->
+  <sc-if value="{{ moduleOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:60;background:#F7F7F4;color:#171717;font-family:'IBM Plex Mono',monospace;overflow-y:auto;">
+      <span style="position:absolute;left:16px;top:16px;width:30px;height:30px;border-top:1.5px solid #F5150E;border-left:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+      <span style="position:absolute;right:16px;top:16px;width:30px;height:30px;border-top:1.5px solid #F5150E;border-right:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+      <span style="position:absolute;left:16px;bottom:16px;width:30px;height:30px;border-bottom:1.5px solid #F5150E;border-left:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+      <span style="position:absolute;right:16px;bottom:16px;width:30px;height:30px;border-bottom:1.5px solid #F5150E;border-right:1.5px solid #F5150E;animation:mv-converge .5s steps(4) both;"></span>
+
+      <div style="max-width:520px;margin:0 auto;width:100%;padding:26px 24px 40px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div style="font-size:9px;color:#F5150E;letter-spacing:.5px;">FD-02 · INCIDENT TRACE</div>
+          <div onClick="{{ closeModule }}" style="font-size:9px;color:#555;cursor:pointer;letter-spacing:.5px;">[ ABORT ]</div>
+        </div>
+        <div style="font-family:'Archivo',sans-serif;font-weight:800;text-transform:uppercase;font-size:22px;line-height:1;letter-spacing:-.5px;margin:6px 0 12px;">{{ mod.phaseTag }}</div>
+
+        <div style="font-size:9px;color:#F5150E;letter-spacing:.5px;border:1px solid rgba(245,21,14,.5);padding:8px 10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <span>{{ mod.ribbon }}</span><span style="white-space:nowrap;">T+<span id="mv-mod-timer">0:00</span></span>
+        </div>
+
+        <div style="font-size:11px;color:#444;line-height:1.55;margin:16px 0 16px;">{{ mod.caption }}</div>
+
+        <div style="position:relative;display:flex;align-items:stretch;gap:5px;">
+          <sc-for list="{{ mod.chain }}" as="hop" hint-placeholder-count="5">
+            <div data-hop="{{ hop.id }}" onClick="{{ probeHop }}" style="{{ hop.boxStyle }}">
+              <div style="{{ hop.labelStyle }}">{{ hop.label }}</div>
+              <div style="font-size:7.5px;line-height:1.25;margin-top:4px;min-height:20px;color:#555;">{{ hop.line }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ mod.isBaseline }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:-7px;width:9px;height:9px;background:#F5150E;border-radius:50%;box-shadow:0 0 6px #F5150E;animation:mv-flow 2.2s linear infinite;"></div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ mod.showDeclare }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:20px;">
+            <div style="font-size:9px;color:#F5150E;letter-spacing:1px;margin-bottom:9px;">&gt; DECLARE THE FAILED HOP</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <sc-for list="{{ mod.declareOpts }}" as="opt" hint-placeholder-count="3">
+                <button data-hop="{{ opt.id }}" onClick="{{ declareHop }}" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px;color:#F5150E;background:transparent;border:1px solid #F5150E;padding:10px 15px;cursor:pointer;">{{ opt.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mod.verdictWrong }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px;border:1px dashed #F5150E;padding:11px 13px;font-size:10px;color:#6E1B16;line-height:1.5;animation:mv-shake .4s steps(4) 1;">MISREAD // {{ mod.wrongText }}</div>
+        </sc-if>
+
+        <sc-if value="{{ mod.isObserve }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:18px;">
+            <div style="font-size:9px;color:#F5150E;letter-spacing:1px;margin-bottom:7px;">POSITION: ON PATH // OBSERVER — you can read the wire</div>
+            <div style="font-size:11px;color:#171717;background:#EDEDE8;border-left:2px solid #F5150E;padding:11px 13px;line-height:1.65;word-break:break-word;">{{ mod.observePlain }}</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mod.showDebrief }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:18px;border-top:1px solid rgba(245,21,14,.3);padding-top:13px;">
+            <div style="font-size:9px;color:#F5150E;letter-spacing:1px;margin-bottom:7px;">// DEBRIEF</div>
+            <div style="font-size:11px;color:#444;line-height:1.6;">{{ mod.debriefText }}</div>
+            <sc-if value="{{ mod.cliff }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:10px;color:#6E1B16;line-height:1.55;margin-top:11px;letter-spacing:.3px;">{{ mod.cliff }}</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mod.isEnd }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;font-size:9px;color:#F5150E;letter-spacing:.5px;">
+            <span>INCIDENTS SOLVED {{ mod.solvedCount }}/2</span><span>PROBES USED {{ mod.probeCount }}</span><span>MISREADS {{ mod.wrongCount }}</span>
+          </div>
+        </sc-if>
+
+        <div style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;">
+          <sc-if value="{{ mod.showNext }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ nextRound }}" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:#000;background:#F5150E;border:none;padding:12px 20px;cursor:pointer;font-weight:600;">{{ mod.nextLabel }}</button>
+          </sc-if>
+          <button onClick="{{ closeModule }}" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:#F5150E;background:transparent;border:1px solid #F5150E;padding:12px 20px;cursor:pointer;">&lt; FIELD</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;siteName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;VECTOR&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;motionIntensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:45,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:5,&quot;unit&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;number&quot;}}">
 class Component extends DCLogic {
-  state = { bootStage: 0, view: 'boot', sheetId: null, stubId: null, ctaHover: false, fieldEnter: false };
+  state = { bootStage: 0, view: 'boot', sheetId: null, stubId: null, moduleId: null, mod: null, ctaHover: false, fieldEnter: false };
 
   // ---------- graph ----------
   buildGraph() {
@@ -240,12 +323,12 @@ class Component extends DCLogic {
     const W = { root:[186,50], head:[192,36], node:[128,54], live:[176,66], synth:[176,58] };
     const raw = [
       // PHASE 1 — BUILD THE SYSTEM
-      ['crypto','head',180,90,'CRYPTOGRAPHY','the math of secrecy & trust','detected',54,'CRYPTO'],
-      ['symmetric','node',64,185,'SYMMETRIC ENCRYPTION','AES playground','detected',41,'CRYPTO'],
-      ['hashing','node',296,185,'HASHING','collision / change demo','signal',12,'CRYPTO'],
-      ['rsa','node',64,275,'PUBLIC-KEY CRYPTO','RSA / key exchange','detected',38,'CRYPTO'],
-      ['sig','node',296,275,'DIGITAL SIGNATURES','sign & verify demo','signal',14,'CRYPTO'],
-      ['tls','synth',180,370,'TLS / HTTPS','handshake simulator','signal',19,'CRYPTO'],
+      ['crypto','head',180,90,'CRYPTOGRAPHY','the locks that protect everything','detected',54,'CRYPTO'],
+      ['symmetric','node',64,185,'SYMMETRIC ENCRYPTION','crack the intercept','detected',41,'CRYPTO'],
+      ['hashing','node',296,185,'HASHING','tamper & get caught','signal',12,'CRYPTO'],
+      ['rsa','node',64,275,'PUBLIC-KEY CRYPTO','lock without the key','detected',38,'CRYPTO'],
+      ['sig','node',296,275,'DIGITAL SIGNATURES','forge & get caught','signal',14,'CRYPTO'],
+      ['tls','synth',180,370,'TLS / HTTPS','assemble under attack','signal',19,'CRYPTO'],
 
       ['networks','head',180,475,'NETWORKS','how data travels','signal',22,'NETWORKS'],
       ['packets','node',64,570,'PACKETS / TCP-IP','packet journey simulator','signal',11,'NETWORKS'],
@@ -279,6 +362,12 @@ class Component extends DCLogic {
       ['grc','node',64,1985,'GOVERNANCE','control mapping visualizer','dim',4,'FINANCE'],
       ['compliance','node',296,1985,'COMPLIANCE','audit evidence tracker','dim',4,'FINANCE'],
     ];
+    // open a slot at the top of the field, then prepend the playable
+    // Foundations entry node whose lock-on launches the INCIDENT TRACE module.
+    raw.forEach(r => { r[3] += 120; });
+    raw.unshift(['internet','live',180,84,'HOW THE INTERNET WORKS','trace a broken request','live',60,'FOUNDATIONS']);
+    const codes = { internet:'FD-02', symmetric:'CR-01', hashing:'CR-02', rsa:'CR-03', sig:'CR-04', tls:'CR-05' };
+    const modules = { internet:'incident' };
     const pal = {
       live:    { m:'#F5150E', n:'#171717', border:'1px solid #F5150E', op:1,   badge:'LIVE',        badgeC:'#F5150E' },
       detected:{ m:'#F5150E', n:'#333', border:'1px dashed #F5150E', op:.92, badge:'DETECTED',    badgeC:'#F5150E' },
@@ -295,9 +384,10 @@ class Component extends DCLogic {
       const fs = type === 'node' ? 12.5 : (type === 'live' ? 15 : (type === 'root' ? 16 : 14));
       return {
         id, type, x, y, w, h, cx, cy: y + h/2, lane, name, sub, state, conf,
-        idTag: 'id:' + String(4000 + i * 37).slice(0,4),
+        idTag: codes[id] || ('id:' + String(4000 + i * 37).slice(0,4)),
         confText: (conf<100?('0'+conf).slice(-2):'100') + '%',
         badge: p.badge, isLive, notLive: !isLive, searching,
+        hasModule: !!modules[id], moduleKey: modules[id] || null,
         coord: 'x' + cx + ' y' + y,
         stateLine: isLive ? 'LOCK READY' : (state==='detected' ? 'BUILDABLE NEXT' : 'AWAITING SIGNAL'),
         style: {
@@ -321,6 +411,7 @@ class Component extends DCLogic {
     });
     const byId = {}; nodes.forEach(n => byId[n.id] = n);
     const edgeDefs = [
+      ['internet','crypto',2],
       ['crypto','symmetric',1],['crypto','hashing',1],['crypto','rsa',1],['crypto','sig',1],['crypto','tls',1],
       ['tls','networks',2],
       ['networks','packets',1],['networks','dns',1],['networks','vpn',1],['networks','mitm',1],
@@ -354,12 +445,12 @@ class Component extends DCLogic {
       {
         label:'PHASE 2 // BREAK THE SYSTEM',
         description:'How systems fail, get exploited, or are manipulated.',
-        style:{ position:'absolute', left:'0', top:'1045px', width:'360px', borderTop:'1px solid rgba(245,21,14,.25)', paddingTop:'10px', zIndex:1, pointerEvents:'none' },
+        style:{ position:'absolute', left:'0', top:'1165px', width:'360px', borderTop:'1px solid rgba(245,21,14,.25)', paddingTop:'10px', zIndex:1, pointerEvents:'none' },
       },
       {
         label:'PHASE 3 // GOVERN THE SYSTEM',
         description:'How cybersecurity becomes risk, money, policy, and business impact.',
-        style:{ position:'absolute', left:'0', top:'1710px', width:'360px', borderTop:'1px solid rgba(245,21,14,.25)', paddingTop:'10px', zIndex:1, pointerEvents:'none' },
+        style:{ position:'absolute', left:'0', top:'1830px', width:'360px', borderTop:'1px solid rgba(245,21,14,.25)', paddingTop:'10px', zIndex:1, pointerEvents:'none' },
       },
     ];
     // void feature points across the tall field
@@ -369,7 +460,7 @@ class Component extends DCLogic {
       fieldPoints.push({ style:{ position:'absolute', left:fx+'px', top:fy+'px', width:'3px', height:'3px',
         border:'1px solid #6E1B16', opacity:.4, animation:`mv-flick ${2+i%3}s steps(4) infinite`, animationDelay:(i*0.13)+'s', zIndex:0 } });
     }
-    const H = 2080;
+    const H = 2200;
     return { nodes, byId, arcs, phaseBands, fieldPoints, H };
   }
 
@@ -429,6 +520,10 @@ class Component extends DCLogic {
       const d = new Date();
       const ce = document.getElementById('mv-clock');
       if (ce) ce.textContent = [d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':') + ':' + String(Math.floor(d.getMilliseconds()/40)).padStart(2,'0');
+      if (this.state.moduleId && this.modStart) {
+        const te = document.getElementById('mv-mod-timer');
+        if (te) { const s = Math.floor((performance.now() - this.modStart)/1000); te.textContent = Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+      }
     }, 90);
 
     // boot choreography
@@ -529,6 +624,139 @@ class Component extends DCLogic {
     }
   }
 
+  // ---------- module: INCIDENT TRACE (FD-02) ----------
+  incidents() {
+    return [
+      { probe:{ dns:'NXDOMAIN — no such name', server:'unreachable — never contacted', response:'— no request arrived' },
+        culprit:'dns',
+        wrong:{ server:'The server was never contacted — the name never became an address.',
+                response:'No response can exist — the request never left the lookup stage.' },
+        debrief:'DNS is the phonebook. No entry means no address, so there is nowhere to send the request. The rest of the chain never even got asked.' },
+      { probe:{ dns:'OK — name resolved', server:'200 OK — page delivered', response:'IMG 404 — one request of many failed' },
+        culprit:'response',
+        wrong:{ dns:'The name resolved fine — you reached the right machine.',
+                server:'The server answered 200 — the main page arrived intact.' },
+        debrief:'The page you see is stitched from separate conversations. One can fail while the others succeed — a page is many requests, not one.' },
+    ];
+  }
+  openModule(key, id) {
+    this.modStart = performance.now();
+    this.setView('VECTOR // INCIDENT TRACE');
+    this.setStatus('TRACING');
+    this.setState({ moduleId: key, sheetId: null, stubId: null,
+      mod: { round: 0, probed: {}, verdict: null, wrongHop: null, wrongText: '', probes: 0, wrongs: 0, solved: 0 } });
+  }
+  closeModule() {
+    this.setStatus('TRACKING');
+    this.setView('VECTOR // CONCEPT FIELD');
+    this.setState({ moduleId: null, mod: null });
+  }
+  probeHop(e) {
+    const hop = e.currentTarget.dataset.hop;
+    const m = this.state.mod; if (!m) return;
+    if (m.round !== 1 && m.round !== 2) return;
+    if (!(hop === 'dns' || hop === 'server' || hop === 'response')) return;
+    if (m.probed[hop] || m.verdict === 'right') return;
+    this.setState({ mod: { ...m, probed: { ...m.probed, [hop]: true }, probes: m.probes + 1 } });
+  }
+  declareHop(e) {
+    const hop = e.currentTarget.dataset.hop;
+    const m = this.state.mod; if (!m || m.verdict === 'right') return;
+    const inc = this.incidents()[m.round - 1]; if (!inc) return;
+    if (hop === inc.culprit) {
+      this.setStatus('LOCK-ON');
+      this.setState({ mod: { ...m, verdict: 'right', wrongHop: null, wrongText: '', solved: m.solved + 1 } });
+    } else {
+      this.setStatus('MISREAD');
+      this.setState({ mod: { ...m, verdict: 'wrong', wrongHop: hop,
+        wrongText: inc.wrong[hop] || 'That hop is reporting healthy — look again.', wrongs: m.wrongs + 1 } });
+    }
+  }
+  nextRound() {
+    const m = this.state.mod; if (!m) return;
+    const next = m.round + 1;
+    this.setStatus(next === 3 ? 'ON PATH' : (next >= 4 ? 'RESOLVED' : 'TRACING'));
+    this.setState({ mod: { ...m, round: next, probed: {}, verdict: null, wrongHop: null, wrongText: '' } });
+  }
+  buildModView(m) {
+    const round = m.round;
+    const isBaseline = round === 0, isDiag = round === 1 || round === 2, isObserve = round === 3, isEnd = round >= 4;
+    const inc = isDiag ? this.incidents()[round - 1] : null;
+    const solvedRight = m.verdict === 'right';
+    const OK = '#2f7d32';
+
+    const defs = [
+      { id:'you', label:'YOU', probeable:false },
+      { id:'dns', label:'DNS', probeable:true },
+      { id:'server', label:'SERVER', probeable:true },
+      { id:'response', label:'RESPONSE', probeable:true },
+      { id:'page', label:'PAGE', probeable:false },
+    ];
+    const chain = defs.map(d => {
+      let line = '', border = '1px dashed #6E1B16', color = '#6E1B16', bg = '#F7F7F4';
+      const isCulprit = inc && d.id === inc.culprit;
+      if (isBaseline) { line = 'OK'; border = '1px solid ' + OK; color = OK; }
+      else if (isObserve) { line = d.probeable ? 'relay' : (d.id === 'you' ? 'sender' : 'target'); border = '1px solid #F5150E'; color = '#F5150E'; }
+      else if (isDiag) {
+        if (!d.probeable) { line = d.id === 'you' ? 'origin' : 'target'; border = '1px solid #777'; color = '#555'; }
+        else if (m.probed[d.id]) {
+          line = inc.probe[d.id];
+          if (isCulprit) { border = '1px solid #F5150E'; color = '#F5150E'; bg = 'rgba(245,21,14,.06)'; }
+          else { border = '1px solid ' + OK; color = OK; }
+        } else { line = '? tap to probe'; border = '1px dashed #999'; color = '#999'; }
+      }
+      return {
+        id: d.id, label: d.label, line,
+        boxStyle: { flex:'1', minWidth:'0', border, background:bg, padding:'8px 5px',
+          cursor: (isDiag && d.probeable && !solvedRight) ? 'pointer' : 'default', textAlign:'center', transition:'border .15s steps(2)' },
+        labelStyle: { fontFamily:"'Archivo',sans-serif", fontWeight:800, fontSize:'11px', letterSpacing:'-.2px', color },
+      };
+    });
+
+    const stateWord = isBaseline ? 'BASELINE' : (isObserve ? 'ON PATH' : (solvedRight ? 'LOCK-ON'
+      : (m.verdict === 'wrong' ? 'MISREAD' : (isEnd ? 'RESOLVED' : 'TRACING'))));
+    const probedCount = Object.keys(m.probed).length;
+    let phaseTag = '', ribbon = '', caption = '', debriefText = '', cliff = '', observePlain = '';
+    let nextLabel = '> CONTINUE', showNext = false, showDeclare = false, showDebrief = false;
+
+    if (isBaseline) {
+      phaseTag = 'ROUND 0 // BASELINE';
+      ribbon = 'OBJECTIVE: LEARN THE HEALTHY SHAPE · STATE: ' + stateWord;
+      caption = 'A page is not one thing — it is a conversation across several machines. Watch a healthy request travel the chain once, clean. Remember what it looks like, because next time one of these hops goes dark.';
+      nextLabel = '> FIRST INCIDENT'; showNext = true;
+    } else if (isDiag) {
+      phaseTag = round === 1 ? 'INCIDENT 01' : 'INCIDENT 02';
+      ribbon = 'OBJECTIVE: DIAGNOSE FAULT · HOPS PROBED ' + probedCount + '/3 · STATE: ' + stateWord;
+      caption = round === 1
+        ? 'A page will not load. One machine in the chain failed. Probe each hop to read its telemetry, then name the culprit.'
+        : 'The page half-loads — text appears, the image is missing. The first request succeeded. Probe the hops and find the one that did not.';
+      if (solvedRight) { showDebrief = true; debriefText = inc.debrief; showNext = true; nextLabel = round === 1 ? '> NEXT INCIDENT' : '> REPOSITION ON PATH'; }
+      else { showDeclare = true; }
+    } else if (isObserve) {
+      phaseTag = 'ROUND 03 // THE EAVESDROPPER';
+      ribbon = 'OBJECTIVE: OBSERVE · POSITION: ON PATH · STATE: ' + stateWord;
+      caption = 'This time nothing is broken. You have simply been repositioned onto the wire the request travels. You are not attacking anything — you are just sitting on the path. Read what goes past.';
+      observePlain = 'GET /login HTTP/1.1   host: bank.example   user=clay   pass=hunter2   card=4012 8888 8888 1881';
+      showDebrief = true;
+      debriefText = 'Every hop you traced is a machine that can see your message. On the open internet your words travel in the clear — anyone on the path reads everything.';
+      cliff = 'So how do you send something only the far end can read, when strangers hold it the whole way?  →  NEXT: SYMMETRIC ENCRYPTION // SCRAMBLING THE MESSAGE';
+      showNext = true; nextLabel = '> COMPLETE TRACE';
+    } else {
+      phaseTag = 'TRACE COMPLETE';
+      ribbon = 'OBJECTIVE: DIAGNOSE FAULT · STATE: RESOLVED';
+      caption = 'You diagnosed the chain by elimination, then watched a healthy request give up its secrets in plain text. That plaintext problem is exactly what the next module fixes.';
+    }
+
+    return {
+      phaseTag, ribbon, caption, chain, isBaseline, isDiag, isObserve, isEnd,
+      showDeclare, verdictWrong: m.verdict === 'wrong', wrongText: m.wrongText,
+      showDebrief, debriefText, cliff, observePlain,
+      declareOpts: [ { id:'dns', label:'DNS' }, { id:'server', label:'SERVER' }, { id:'response', label:'RESPONSE' } ],
+      showNext, nextLabel,
+      solvedCount: m.solved, probeCount: m.probes, wrongCount: m.wrongs,
+    };
+  }
+
   // ---------- render ----------
   renderVals() {
     const st = this.state, gr = this.g();
@@ -579,12 +807,23 @@ class Component extends DCLogic {
 
       sheetOpen: !!sel, sel: sel || {},
       stubOpen: !!st.stubId,
+      moduleOpen: !!st.moduleId && !!st.mod,
+      mod: st.mod ? this.buildModView(st.mod) : {},
 
       initiateScan: () => this.initiateScan(),
       selectNode: (e) => this.selectNode(e),
       closeSheet: () => this.setState({ sheetId: null }),
-      lockOn: () => { const id = this.state.sheetId; this.setStatus('LOCKED'); this.setState({ stubId: id, sheetId: null }); },
+      lockOn: () => {
+        const id = this.state.sheetId, n = this.g().byId[id];
+        this.setStatus('LOCKED');
+        if (n && n.hasModule) this.openModule(n.moduleKey, id);
+        else this.setState({ stubId: id, sheetId: null });
+      },
       closeStub: () => { this.setStatus('TRACKING'); this.setState({ stubId: null }); },
+      probeHop: (e) => this.probeHop(e),
+      declareHop: (e) => this.declareHop(e),
+      nextRound: () => this.nextRound(),
+      closeModule: () => this.closeModule(),
       ctaEnter: () => this.setState({ ctaHover: true }),
       ctaLeave: () => this.setState({ ctaHover: false }),
     };
