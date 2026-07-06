@@ -1,0 +1,78 @@
+  <sc-if value="{{ rsaOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module pk-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-03 // THE BENCH</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ rsaHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ rsaStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">EAVES {{ rsaEaves }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 04 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,74px);">TWO<br>KEYS</h1>
+        <p class="bb-friendly">Every lock you've ever used, one key both locks and unlocks. This one is stranger: the key that snaps it shut can't open it. Send a secret to a stranger you've never shared a key with — and watch why that's possible.</p>
+
+        <section class="ha-stage-wrap pk-stage-wrap">
+          <canvas id="pk-canvas" width="820" height="720" aria-label="A padlock with a public key that only locks and a private key that only opens"></canvas>
+          <div class="ha-stage-tag" id="pk-tag"></div>
+        </section>
+
+        <div class="ha-tabs"><sc-for list="{{ rsaTabs }}" as="t" hint-placeholder-count="3">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ rsaPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ rsaBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ rsaBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ rsaBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ rsaTodo }}</div>
+
+        <sc-if value="{{ rsaChapterKeys }}" hint-placeholder-val="{{ true }}">
+          <div class="cx-grid2" style="margin-top:12px;">
+            <button class="cx-btn solid" data-reticle-target="pub" onClick="{{ rsaUsePublic }}">USE PUBLIC KEY</button>
+            <button class="cx-btn" data-reticle-target="priv" onClick="{{ rsaUsePrivate }}">USE PRIVATE KEY</button>
+          </div>
+          <sc-if value="{{ rsaRejectShown }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">REFUSED // the PUBLIC key only closes. It physically cannot turn the other way. Locking and unlocking are genuinely different powers.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ rsaChapterSeal }}" hint-placeholder-val="{{ false }}">
+          <div class="cx-plain">{{ rsaBoxContent }}</div>
+          <button class="cx-btn solid" data-reticle-target="lockmsg" onClick="{{ rsaSeal }}" style="margin-top:8px;">&gt; SEAL THE BOX WITH THE PUBLIC KEY</button>
+          <sc-if value="{{ rsaSealed }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-grid2" style="margin-top:8px;">
+              <button class="cx-btn" data-reticle-target="openpub" onClick="{{ rsaOpenPub }}">OPEN WITH PUBLIC</button>
+              <button class="cx-btn" data-reticle-target="openpriv" onClick="{{ rsaOpenPriv }}">OPEN WITH PRIVATE</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ rsaOpenFail }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">SEALED // THAT KEY ONLY CLOSES. Look for the other one — the PRIVATE key never left the server's hands.</div></sc-if>
+          <sc-if value="{{ rsaOpened }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">OPENED // "{{ rsaBoxContent }}" — only the PRIVATE key could do this.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ rsaChapterPublish }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="publish" onClick="{{ rsaPublish }}" style="margin-top:12px;">&gt; PUBLISH PUBLIC KEY TO THE WIRE</button>
+          <sc-if value="{{ rsaPublished }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn" data-reticle-target="eaves" onClick="{{ rsaEavesTry }}" style="margin-top:8px;">EAVESDROPPER: TRY AN INTERCEPTED BOX</button>
+            <div class="cx-counter">{{ rsaEaves }}<span> STILL SEALED</span></div>
+            <div class="bb-readout">A <strong>public</strong> key is safe to publish because it only closes locks. Attempts {{ rsaEaves }} // opened 0. This is the moment public-key crypto stops sounding impossible.</div>
+          </sc-if>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:13ch;">SECRECY WITHOUT A SHARED SECRET.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">You sent a secret to a stranger with nothing agreed in advance. But when you grabbed the server's public key off the open wire — how do you know it was really <strong>theirs</strong>, and not the eavesdropper's lock swapped in? You solved secrecy. You have NOT solved identity.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="sig" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: DIGITAL SIGNATURES</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // The padlock is an honest metaphor. Real RSA is math — huge primes and one-way multiplication — not a physical lock. No real keys are generated here.</div>
+      </main>
+    </div>
+  </sc-if>

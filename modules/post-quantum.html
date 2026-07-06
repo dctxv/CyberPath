@@ -1,0 +1,95 @@
+  <sc-if value="{{ pqcOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module pq-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FR-03 // THE LOCK THAT SURVIVES</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ pqHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ pqStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">KEY {{ pqBasisLabel }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">FRONTIER // QUANTUM-SAFE</div>
+        <h1 class="bb-title" style="font-size:clamp(44px,14vw,72px);">THE LOCK<br>THAT<br>SURVIVES</h1>
+        <p class="bb-friendly">Try to break the new lock the way you broke RSA — and discover a hard problem that resists classical AND quantum attack, because there's no hidden period for interference to exploit.</p>
+
+        <sc-if value="{{ pqIntroOpen }}" hint-placeholder-val="{{ true }}">
+          <section class="pq-intro">
+            <div class="bb-kicker">CHAPTER 00 // WHY A NEW LOCK</div>
+            <ol class="pq-intro-list">
+              <li><span>01</span>RSA hid a <strong>repeating pattern</strong>. A quantum computer is a machine for finding repeating patterns — so it finds RSA's, and the lock falls.</li>
+              <li><span>02</span>This new lock hides a <strong>location</strong> instead — one exact dot in a huge grid of dots. There's no pattern to repeat, so there's nothing for the quantum machine to lock onto.</li>
+              <li><span>03</span>Everything ahead is that one idea. The <strong>grid dots are all the possible locked messages</strong>; the <strong>◆ is YOUR message</strong>, knocked just off a dot by deliberate noise. The right key knows which dot it came from. A wrong key only guesses.</li>
+            </ol>
+            <button class="cx-btn solid" data-reticle-target="begin" onClick="{{ pqBeginTour }}">&gt; BEGIN // BUILD THE GRID</button>
+          </section>
+        </sc-if>
+
+        <section class="pq-chamber">
+          <div class="pq-chamber-grid">
+            <div class="pq-stage">
+              <canvas id="pq-canvas" width="1000" height="660" data-reticle-target="lattice" onPointerDown="{{ pqCanvasDown }}" onPointerMove="{{ pqCanvasMove }}" onPointerUp="{{ pqCanvasUp }}" onPointerLeave="{{ pqCanvasUp }}" aria-label="Interactive 3D lattice diagram"></canvas>
+              <div class="pq-stage-tag">{{ pqStageTag }}</div>
+              <div class="pq-stage-hud"><span>{{ pqDragHint }}</span><span>{{ pqCameraReadout }}</span></div>
+            </div>
+            <div class="pq-console">
+              <div class="pq-tabs">
+                <sc-for list="{{ pqChapters }}" as="ch" hint-placeholder-count="3">
+                  <button class="{{ ch.className }}" data-reticle-target="chapter" data-chapter="{{ ch.id }}" onClick="{{ pqPickChapter }}"><strong>{{ ch.label }}</strong><span>{{ ch.short }}</span></button>
+                </sc-for>
+              </div>
+              <div class="pq-readout"><strong>{{ pqChapterTitle }}</strong>{{ pqChapterCopy }}</div>
+              <div class="pq-todo"><span>DO THIS</span>{{ pqTodo }}</div>
+              <div class="pq-legend">
+                <span><i class="pq-lg diamond"></i> message</span>
+                <span><i class="pq-lg dot"></i> grid dot</span>
+                <span><i class="pq-lg key"></i> key arrow</span>
+                <span><i class="pq-lg true"></i> true nearest</span>
+              </div>
+
+              <sc-if value="{{ pqShowKeys }}" hint-placeholder-val="{{ false }}">
+                <div class="pq-control-row">
+                  <button class="{{ pqGoodClass }}" data-reticle-target="basis" onClick="{{ pqUseGood }}"><strong>PRIVATE KEY</strong><span>clean · easy</span></button>
+                  <button class="{{ pqBadClass }}" data-reticle-target="basis" onClick="{{ pqUseBad }}"><strong>PUBLIC KEY</strong><span>messy · hard</span></button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ pqShowSkew }}" hint-placeholder-val="{{ false }}">
+                <div class="pq-slider-block">
+                  <label><span>HOW MESSY THE PUBLIC KEY IS</span><span>{{ pqSkew }}</span></label>
+                  <input class="pq-slider" data-reticle-target="skew" type="range" min="0" max="6" step="1" value="{{ pqSkew }}" onChange="{{ pqSetSkew }}" aria-label="How messy the public key is">
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ pqShowAttack }}" hint-placeholder-val="{{ false }}">
+                <div class="pq-control-row">
+                  <button class="pq-pill solid" data-reticle-target="solve" onClick="{{ pqSnap }}"><strong>FIND NEAREST DOT</strong><span>{{ pqSolveButtonLabel }}</span></button>
+                  <button class="pq-pill" data-reticle-target="truth" onClick="{{ pqToggleTruth }}"><strong>SHOW TRUE ANSWER</strong><span>{{ pqTruthLabel }}</span></button>
+                </div>
+                <sc-if value="{{ pqGuessWrong }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">WRONG DOT // the public key rounded to a near-miss. Same grid, worse description of it.</div></sc-if>
+                <sc-if value="{{ pqDecoded }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">CORRECT // the private key landed on the true nearest dot — the message is readable.</div></sc-if>
+                <button class="cx-btn" data-reticle-target="qfizzle" onClick="{{ pqQuantumTry }}">&gt; TRY A QUANTUM ATTACK</button>
+                <sc-if value="{{ pqQuantumFizzled }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">QUANTUM: NO ADVANTAGE — RSA broke because it hid a repeating pattern a quantum computer could find. "Nearest dot on a grid" has no such pattern, so the machine has nothing to lock onto. The lock holds.</div></sc-if>
+              </sc-if>
+
+              <button class="pq-pill" data-reticle-target="reset" onClick="{{ pqResetLab }}" style="margin-top:2px;"><strong>RESET FIELD</strong><span>start the story over</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">BUILT TO SURVIVE WHAT BROKE THE LAST ONE.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">RSA bet its life on a problem with a hidden pattern, and quantum found the pattern. This lock bets on geometry: a closest-point problem that gets brutal as dimension rises, with no known efficient quantum shortcut.</p>
+          <button class="cx-btn solid" data-reticle-target="exit" onClick="{{ closeStub }}" style="margin-top:16px;">&gt; RETURN TO THE ATLAS</button>
+        </section>
+        <div class="bb-scope">HONESTY MANDATE // The 2D grid is the honest shadow of real lattices with hundreds of dimensions, where human intuition fails entirely. "Quantum has no advantage" means no KNOWN efficient quantum attack — the honest state of the field, not "provably impossible forever." This is real and current: lattice-based schemes are being standardized right now to replace RSA.</div>
+      </main>
+    </div>
+  </sc-if>

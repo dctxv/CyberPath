@@ -1,0 +1,71 @@
+  <sc-if value="{{ bitsOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="{{ bitsModuleClass }}">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span><span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FD-01 // SIGNAL ACQUISITION</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>TARGET {{ bitsTargetCode }} // {{ bitsTimerText }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ bitsStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">FLIPS {{ bitsFlips }}</div>
+      </div>
+
+      <div class="bbc-objective"><span>OBJECTIVE: {{ bitsObjective }}</span><span>STATE: {{ bitsState }}</span><span>LOCKS {{ bitsLocks }}/5</span><span>T+{{ bitsElapsedText }}</span></div>
+      <sc-if value="{{ bitsHasTarget }}" hint-placeholder-val="{{ false }}"><div class="bbc-target"><strong>{{ bitsTargetGlyph }}</strong><span>{{ bitsTargetState }}</span></div></sc-if>
+
+      <main class="bb-shell bbc-shell">
+        <div class="bb-kicker">ROUND {{ bitsRoundLabel }} // {{ bitsRoundName }}</div>
+        <div class="bbc-caption">{{ bitsCaption }}</div>
+
+        <sc-if value="{{ bitsRound4 }}" hint-placeholder-val="{{ false }}">
+          <div class="bbc-word"><sc-for list="{{ bitsWord }}" as="ch" hint-placeholder-count="3"><span class="{{ ch.className }}">{{ ch.glyph }}</span></sc-for></div>
+        </sc-if>
+
+        <sc-if value="{{ bitsRound5 }}" hint-placeholder-val="{{ false }}">
+          <div class="bb-kicker">SEND / {{ bitsOriginalMessage }}</div>
+          <div class="bb-kicker" style="margin-top:14px;">RECEIVED // SELECT THE CORRUPTED CHARACTER</div>
+          <div class="bbc-message"><sc-for list="{{ bitsMessageChars }}" as="ch" hint-placeholder-count="12"><button class="{{ ch.className }}" data-reticle-target="char" data-index="{{ ch.idx }}" onClick="{{ selectCorruptChar }}">{{ ch.glyph }}</button></sc-for></div>
+        </sc-if>
+
+        <sc-if value="{{ bitsShowBank }}" hint-placeholder-val="{{ true }}">
+          <div class="bbc-glyph">{{ bitsGlyph }}</div>
+          <div class="bbc-dec">DEC {{ bitsCodeText }} // {{ bitsBinary }}</div>
+          <div class="bbc-bank"><sc-for list="{{ bitsSwitches }}" as="bit" hint-placeholder-count="8"><button class="bbc-switch" style="{{ bit.style }}" data-reticle-target="bit" data-bit="{{ bit.idx }}" onClick="{{ flipBit }}" aria-label="{{ bit.aria }}"><strong>{{ bit.value }}</strong><span>{{ bit.state }}</span><em>{{ bit.weight }}</em></button></sc-for></div>
+          <div class="bbc-telemetry">{{ bitsTelemetry }}</div>
+        </sc-if>
+
+        <sc-if value="{{ bitsLost }}" hint-placeholder-val="{{ false }}">
+          <div class="bbc-diff">
+            <div style="font:900 22px 'Archivo',sans-serif;">SIGNAL LOST</div>
+            <div class="bbc-diff-row"><span>YOURS</span><sc-for list="{{ bitsCurrentDiff }}" as="b" hint-placeholder-count="8"><span class="{{ b.className }}">{{ b.value }}</span></sc-for></div>
+            <div class="bbc-diff-row"><span>TARGET</span><sc-for list="{{ bitsTargetDiff }}" as="b" hint-placeholder-count="8"><span class="{{ b.className }}">{{ b.value }}</span></sc-for></div>
+            <button class="bbc-next" data-reticle-target="reacquire" onClick="{{ reacquireBits }}">&gt; REACQUIRE</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ bitsLocked }}" hint-placeholder-val="{{ false }}">
+          <section class="bbc-lock">
+            <div class="bb-kicker">SIGNAL ACQUIRED // CONF 100%</div><h2>{{ bitsDebriefTitle }}</h2><p class="bb-friendly">{{ bitsDebrief }}</p>
+            <sc-if value="{{ bitsCaseLock }}" hint-placeholder-val="{{ false }}"><div class="sy-compare"><div class="sy-compare-card"><strong>A // DEC 65</strong><code>01000001</code></div><div class="sy-compare-card"><strong>a // DEC 97</strong><code>01100001</code></div></div><div class="bb-readout">DELTA: 1 BIT // WEIGHT: 32</div></sc-if>
+            <sc-if value="{{ bitsShowMeter }}" hint-placeholder-val="{{ false }}"><div class="bbc-meter"><div style="{{ bitsMeterStyle }}"></div></div><div style="display:flex;justify-content:space-between;color:var(--bb-hud);font-size:7px;margin-top:5px;"><span>0</span><span>255</span></div></sc-if>
+            <button class="bbc-next" data-reticle-target="next-round" onClick="{{ nextBitsRound }}">{{ bitsNextLabel }}</button>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ bitsEnd }}" hint-placeholder-val="{{ false }}">
+          <section class="bbc-end">
+            <div class="bb-kicker">ACQUISITION COMPLETE // INTEGRITY RESTORED</div><h2 class="bb-statement">ONE BIT CHANGED THE MEANING.</h2>
+            <p class="bb-friendly">Nothing screamed. A message, a bank balance, a photo — all just switches, and any switch can flip. So how would a machine know something was tampered with?</p>
+            <div class="bbc-score"><span>SIGNALS ACQUIRED</span><strong>5/5</strong></div><div class="bbc-score"><span>TIME</span><strong>{{ bitsElapsedText }}</strong></div><div class="bbc-score"><span>EFFICIENCY</span><strong>{{ bitsEfficiency }}%</strong></div><div class="bbc-score"><span>INTEGRITY</span><strong>RESTORED</strong></div>
+            <button class="bbc-next" data-reticle-target="next" data-node="hashing" onClick="{{ openBitsBridge }}">&gt; NEXT DETECTED NODE: HASHING // TAMPER DETECTION</button>
+            <button data-reticle-target="restart" onClick="{{ restartBits }}" style="width:100%;margin-top:8px;border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);padding:11px;font:8px 'IBM Plex Mono',monospace;">REPLAY SIGNAL ACQUISITION</button>
+          </section>
+          <div class="bb-scope">BYTE MODE // Simplified one-byte values from 0–255. Modern text may use several UTF-8 bytes per character. Corruption is simulated to teach why integrity checking exists; no real tampering occurs.</div>
+        </sc-if>
+      </main>
+    </div>
+  </sc-if>

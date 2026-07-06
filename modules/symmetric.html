@@ -1,0 +1,129 @@
+  <sc-if value="{{ symmetricOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module sy-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-01 // SHARED-KEY CHAMBER</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ symHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ symStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">KEY {{ symKeyId }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 02 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(45px,15vw,76px);">THE SAME<br>KEY</h1>
+        <p class="bb-friendly">One shared secret locks the message. The same shared secret brings it back.</p>
+
+        <div class="iw-control">
+          <div class="sy-inputs">
+            <div class="sy-field">
+              <label>PLAINTEXT // READABLE</label>
+              <input id="sy-message" data-reticle-target="input" value="{{ symMessage }}" onChange="{{ symMessageInput }}" maxlength="32" autocomplete="off" placeholder="meet me at 8">
+            </div>
+            <div class="sy-field">
+              <label>SHARED LEARNING KEY</label>
+              <input id="sy-key" data-reticle-target="input" value="{{ symKey }}" onChange="{{ symKeyInput }}" maxlength="24" autocomplete="off" spellcheck="false" placeholder="rose-742">
+            </div>
+          </div>
+          <button class="sy-seal" data-reticle-target="seal" onPointerDown="{{ startSymSeal }}" onPointerUp="{{ cancelSymSeal }}" onPointerLeave="{{ cancelSymSeal }}" onPointerCancel="{{ cancelSymSeal }}">
+            <span class="sy-seal-fill" style="{{ symSealStyle }}"></span><span class="sy-seal-label">{{ symSealLabel }}</span>
+          </button>
+        </div>
+
+        <section class="bb-section">
+          <div class="bb-kicker">KEY SCAN // {{ symKeyId }}</div>
+          <h2 class="bb-statement">THE KEY CHANGES THE MACHINE.</h2>
+          <p class="bb-friendly">Edit one character. The red lock profile re-snaps into a different shape.</p>
+          <div class="sy-keyprint">
+            <sc-for list="{{ symFingerprint }}" as="bar" hint-placeholder-count="16">
+              <span class="sy-keybar" style="{{ bar.style }}"></span>
+            </sc-for>
+          </div>
+          <div class="bb-readout">KEYPRINT GENERATED // DIFFUSION ARMED<br>KEY TEXT IS FOR LEARNING ONLY</div>
+        </section>
+
+        <sc-if value="{{ symHasMessage }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">PLAINTEXT INPUT // {{ symByteCount }} BYTES</div>
+            <div class="sy-tiles">
+              <sc-for list="{{ symTiles }}" as="tile" hint-placeholder-count="10"><span class="sy-tile">{{ tile.glyph }}</span></sc-for>
+            </div>
+            <p class="bb-friendly">Right now the secret is exposed. Anyone who can see it can read it.</p>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ symSealed }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">OUTPUT CLASS // CIPHERTEXT</div>
+            <h2 class="bb-statement">NOW THE MESSAGE IS UNREADABLE.</h2>
+            <p class="bb-friendly">Encryption did not put a curtain over the words. It transformed them using the key.</p>
+            <div class="{{ symCipherClass }}">{{ symCiphertext }}</div>
+            <button data-reticle-target="intercept" onClick="{{ interceptSymCipher }}" style="width:100%;margin-top:8px;border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);padding:12px;font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;">PASS THROUGH HOSTILE SCANNER</button>
+            <sc-if value="{{ symIntercepted }}" hint-placeholder-val="{{ false }}">
+              <div class="bb-readout">INTERCEPT_ATTEMPT // CONTENT_READABILITY: 0%<br>SCANNER OUTPUT / ?? {{ symCipherPreview }} ??</div>
+            </sc-if>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">DECRYPT CHAMBER // APPLY CURRENT KEY</div>
+            <h2 class="bb-statement">SAME KEY IN. MESSAGE BACK.</h2>
+            <p class="bb-friendly">The key field stays live. Keep it the same, or change one character and see what happens.</p>
+            <div class="sy-chamber">
+              <div class="sy-attempt"><strong>{{ symKey }}</strong><span>CURRENT KEY</span></div>
+              <div class="bb-arrow"></div>
+              <button class="sy-attempt" data-reticle-target="decrypt" onClick="{{ decryptSym }}"><strong>DECRYPT</strong><span>APPLY KEY</span></button>
+            </div>
+            <sc-if value="{{ symHasResult }}" hint-placeholder-val="{{ false }}">
+              <div class="{{ symResultClass }}">{{ symResult }}</div>
+              <div class="bb-readout">{{ symResultTelemetry }}</div>
+            </sc-if>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">AVALANCHE TOY // ONE-CHARACTER DELTA</div>
+            <h2 class="bb-statement">TINY KEY CHANGE. DIFFERENT LOCK.</h2>
+            <p class="bb-friendly">Move the dial by one tick. The message stays the same while nearly every ciphertext block changes.</p>
+            <input class="sy-dial" data-reticle-target="scrub" type="range" min="0" max="9" step="1" value="{{ symMutation }}" onChange="{{ mutateSymKey }}" aria-label="Mutate one key character">
+            <div class="sy-compare">
+              <div class="sy-compare-card"><strong>{{ symSealedKey }}</strong><code>{{ symCiphertext }}</code></div>
+              <div class="sy-compare-card"><strong>{{ symMutatedKey }}</strong><code>{{ symMutatedCipher }}</code></div>
+            </div>
+            <div class="bb-readout">SAME_PLAINTEXT: TRUE // KEY_DIFFERENCE: {{ symMutationLabel }}<br>CIPHERTEXT_DELTA: {{ symCipherDelta }}%</div>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">REVERSE MODE // FIND THE SHARED KEY</div>
+            <h2 class="bb-statement">CAN YOU BRING THE MESSAGE BACK?</h2>
+            <p class="bb-friendly">Start from the scrambled thing. Try each key card against it.</p>
+            <div class="sy-keys">
+              <sc-for list="{{ symKeyCards }}" as="card" hint-placeholder-count="3">
+                <button class="sy-keycard" data-reticle-target="keycard" data-key="{{ card.key }}" onClick="{{ trySymKey }}">{{ card.label }}</button>
+              </sc-for>
+            </div>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SHARED KEY HANDOFF</div>
+            <h2 class="bb-statement">BOTH SIDES NEED THE SECRET.</h2>
+            <div class="sy-handoff"><div class="sy-person">YOU</div><div class="sy-gap"></div><div class="sy-person">FRIEND</div></div>
+            <button class="{{ symFriendClass }}" data-reticle-target="handoff" onClick="{{ toggleSymFriend }}">FRIEND HAS KEY // {{ symFriendLabel }}</button>
+            <div class="bb-readout">{{ symFriendTelemetry }}</div>
+          </section>
+
+          <section class="bb-payoff">
+            <h2 class="bb-statement" style="max-width:12ch;">LOCK IT. SEND IT. UNLOCK IT.</h2>
+            <p class="bb-friendly" style="margin-bottom:0;">The message is what you protect. The shared key is what makes the transformation work. Close does not count. But both sides had to share that secret first — and the eavesdropper watched that conversation too.</p>
+            <button class="cx-btn solid" data-reticle-target="next" data-node="hashing" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: HASHING // TAMPER DETECTION</button>
+          </section>
+        </sc-if>
+
+        <div class="bb-scope">LEARNING SIMULATION // This is not real AES and must not be used to protect sensitive data. Real AES uses fixed 128, 192, or 256-bit keys and authenticated systems add integrity checks. No files, cracking, brute force, or live cryptographic operations happen here.</div>
+      </main>
+    </div>
+  </sc-if>

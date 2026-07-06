@@ -1,0 +1,67 @@
+  <sc-if value="{{ hashingOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module ha-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-02 // THE GRINDER</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ haHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ haStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">{{ haHud2 }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 03 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(52px,17vw,84px);">THE<br>GRINDER</h1>
+        <p class="bb-friendly">A hash is a meat-grinder for data. Whatever you feed it — a word, a whole book — falls through and comes out as one fixed-size fingerprint. Feed it something and watch.</p>
+
+        <div class="ha-compose">
+          <input id="ha-input" class="ha-msg" data-reticle-target="input" value="{{ haText }}" onChange="{{ haInput }}" maxlength="40" autocomplete="off" spellcheck="false" placeholder="pay bob $100">
+          <button class="ha-feed" data-reticle-target="grind" onClick="{{ haGrind }}">{{ haGrindLabel }}</button>
+        </div>
+
+        <section class="ha-stage-wrap">
+          <canvas id="ha-canvas" width="820" height="920" aria-label="A grinder turning your message into a fixed-size fingerprint"></canvas>
+          <div class="ha-stage-tag" id="ha-tag"></div>
+        </section>
+
+        <div class="ha-tabs"><sc-for list="{{ haTabs }}" as="t" hint-placeholder-count="3">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ haPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ haBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ haBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ haBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ haTodo }}</div>
+
+        <sc-if value="{{ haChapterGrind }}" hint-placeholder-val="{{ true }}">
+          <button class="cx-btn solid" data-reticle-target="grind" onClick="{{ haGrind }}" style="margin-top:12px;">&gt; GRIND IT</button>
+        </sc-if>
+
+        <sc-if value="{{ haChapterAval }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="nudge" onClick="{{ haNudge }}" style="margin-top:12px;">&gt; NUDGE ONE LETTER &amp; RE-GRIND</button>
+          <sc-if value="{{ haNudged }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">SAME MESSAGE, ONE LETTER MOVED // FINGERPRINT DELTA / <strong>{{ haAvalanche }}%</strong> OF THE PRINT FLIPPED. A tiny lie makes a totally different fingerprint — that is what makes it a tamper detector.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ haChapterOneWay }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="reverse" onClick="{{ haReverse }}" style="margin-top:12px;">&gt; RUN IT BACKWARDS</button>
+          <sc-if value="{{ haReversed }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">JAMMED // A FINGERPRINT REVEALS NOTHING ABOUT ITS INPUT. The grinder has no reverse. That is why passwords are stored as hashes — steal the prints, you still can't get the passwords back.</div></sc-if>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:13ch;">IT CATCHES ANY CHANGE.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But a fingerprint can't tell you WHO sent a message — an attacker could change it and grind a fresh print. You need a fingerprint only one specific person could have produced. Hold that thought.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="rsa" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: PUBLIC-KEY CRYPTOGRAPHY</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // This is an illustrative hash, not real SHA-256. Real hashes are longer and battle-tested; the behaviour you felt — avalanche, no inverse, no collisions — is identical.</div>
+      </main>
+    </div>
+  </sc-if>

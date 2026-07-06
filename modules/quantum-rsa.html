@@ -1,0 +1,80 @@
+  <sc-if value="{{ quantumRsaOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="{{ qrModuleClass }}">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FR-02 // THE BREAK</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ qrHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ qrStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">{{ qrTimerText }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">FRONTIER // QUANTUM</div>
+        <h1 class="bb-title" style="font-size:clamp(54px,18vw,88px);">THE<br>BREAK</h1>
+        <p class="bb-friendly">Point the quantum machine at the RSA lock you built — and discover RSA's security was a bet on one hard math problem. A bet quantum wins.</p>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 01 // OPEN THE LOCK'S SECRET</div>
+          <h2 class="bb-statement">YOUR LOCK. STILL HOLDING. WHAT KEEPS IT SHUT?</h2>
+          <div class="{{ qrLockClass }}">
+            <div class="pk-shackle"></div>
+            <div class="pk-body"><strong>{{ qrLockGlyph }}</strong></div>
+          </div>
+          <button class="cx-btn solid" data-reticle-target="inspect" onClick="{{ qrInspect }}">&gt; INSPECT THE LOCK</button>
+          <sc-if value="{{ qrRevealed }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-card"><div class="cx-lab">THE LOCK'S SECRET NUMBER</div>
+              <div style="font:900 34px 'Archivo',sans-serif;color:var(--bb-ink);letter-spacing:1px;">N = {{ qrN }}</div>
+              <div class="cx-lab" style="margin-top:8px;">STAYS SHUT WHILE NOBODY CAN FIND THE TWO PRIMES THAT MULTIPLY TO N</div>
+            </div>
+            <div class="bb-readout">RSA's strength was never magic. It's one arithmetic question nobody could answer fast.</div>
+          </sc-if>
+        </section>
+
+        <sc-if value="{{ qrRevealed }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 02 // TRY IT CLASSICALLY</div>
+            <h2 class="bb-statement">SAME WALL AS THE CIPHER.</h2>
+            <p class="bb-friendly">Find the two primes by brute force. Watch the time-to-crack balloon into geological time — same futility you hit in Symmetric.</p>
+            <button class="cx-btn" data-reticle-target="brute" onClick="{{ qrBruteStart }}">&gt; BRUTE-FORCE THE FACTORS</button>
+            <div class="cx-counter">{{ qrTries }}<span> CANDIDATES</span></div>
+            <div style="color:var(--bb-hud);font-size:8px;letter-spacing:1px;">EST. TIME TO FACTOR CLASSICALLY: {{ qrClassicalEst }}</div>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 03 // POINT THE QUANTUM MACHINE</div>
+            <h2 class="bb-statement">CANCEL THE WRONG PERIODS. THE RIGHT ONE RINGS OUT.</h2>
+            <p class="bb-friendly">The machine doesn't try factors one by one. It finds a hidden repeating pattern — a period — using the interference you just learned. Wrong periods cancel; the right one blooms.</p>
+            <div class="qr-bloom"><sc-for list="{{ qrBloom }}" as="b" hint-placeholder-count="24"><i class="{{ b.className }}" style="{{ b.style }}"></i></sc-for></div>
+            <button class="cx-btn solid" data-reticle-target="qfactor" onClick="{{ qrQuantum }}">&gt; RUN SHOR'S PERIOD-FINDING</button>
+            <sc-if value="{{ qrQuantumRun }}" hint-placeholder-val="{{ false }}">
+              <div class="cx-alarm">RSA BROKEN // N FACTORED // {{ qrN }} = {{ qrP }} × {{ qrQ }} — period found, factors fell out, the padlock sprang open. Your own lock, opened by the machine you learned to operate one node ago.</div>
+            </sc-if>
+          </section>
+
+          <sc-if value="{{ qrQuantumRun }}" hint-placeholder-val="{{ false }}">
+            <section class="bb-section" style="padding-top:28px;">
+              <div class="bb-kicker">SCAN 04 // THE BLAST RADIUS</div>
+              <h2 class="bb-statement">YOU DIDN'T BREAK ONE LOCK.</h2>
+              <p class="bb-friendly">RSA sat underneath the handshake, the certificate, the whole secure web. Pull that thread and it all comes apart.</p>
+              <button class="cx-btn" data-reticle-target="cascade" onClick="{{ qrCascadeRun }}">&gt; TRACE THE CHAIN REACTION</button>
+              <div class="qr-cascade"><sc-for list="{{ qrCascadeRows }}" as="r" hint-placeholder-count="4"><div class="{{ r.className }}">{{ r.name }}<span>{{ r.note }}</span></div></sc-for></div>
+            </section>
+
+            <section class="bb-payoff">
+              <h2 class="bb-statement" style="max-width:14ch;">THE SOBER PART.</h2>
+              <p class="bb-friendly" style="margin-bottom:0;">Quantum computers big enough to do this to real keys <strong>don't exist yet</strong> — but they might, and data stolen today could be cracked later ("harvest now, decrypt later"). So the world is already rebuilding the lock on a different hard problem — one where interference doesn't help the attacker.</p>
+              <button class="cx-btn solid" data-reticle-target="next" data-node="pqc" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: POST-QUANTUM // THE LOCK THAT SURVIVES</button>
+            </section>
+          </sc-if>
+        </sc-if>
+        <div class="bb-scope">HONESTY MANDATE // Real quantum computers CANNOT yet factor RSA-sized numbers — this demonstrates the principle, and "harvest now, decrypt later" is why it matters despite that. RSA is not broken today. Shor's is period-finding via interference (cancel wrong periods), NOT "tries all factors at once." Note: quantum only weakens symmetric keys like AES (double the key size), it does not shatter them the way it does RSA.</div>
+      </main>
+    </div>
+  </sc-if>

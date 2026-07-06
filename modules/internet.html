@@ -1,0 +1,67 @@
+  <sc-if value="{{ internetOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module iw-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FD-02 // MESSAGE TRACER</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ iwHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ iwStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">BEAT {{ iwBeatCount }}/06</div>
+      </div>
+
+      <main class="bb-shell iw-shell">
+        <div class="bb-kicker">MODULE 01 // FOUNDATIONS</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">SEND A<br>MESSAGE</h1>
+        <p class="bb-friendly">Type a message to a friend on the other side of the world. Then watch it actually get there — one machine at a time, in slow motion, with the internet narrating each step as the packet coasts to a stop.</p>
+
+        <div class="iw-compose">
+          <div class="iw-compose-row">
+            <input id="iw-msg" class="iw-msg" data-reticle-target="input" value="{{ iwMsg }}" onChange="{{ iwMsgInput }}" maxlength="40" autocomplete="off" spellcheck="false" placeholder="hi bob, meet at 8?">
+            <button class="iw-send" data-reticle-target="send" onClick="{{ iwSend }}">{{ iwSendLabel }}</button>
+          </div>
+          <div class="iw-to">TO&nbsp; <strong>bob.host</strong> <span>your friend's computer, somewhere far away</span></div>
+        </div>
+
+        <section class="iw-stage-wrap">
+          <canvas id="iw-canvas" width="1000" height="620" aria-label="Animated journey of a message across the internet"></canvas>
+          <div class="iw-speed" id="iw-speed"></div>
+        </section>
+
+        <div class="iw-dots"><sc-for list="{{ iwDots }}" as="d" hint-placeholder-count="7"><i class="{{ d.className }}"></i></sc-for></div>
+
+        <sc-if value="{{ iwStarted }}" hint-placeholder-val="{{ false }}">
+          <section class="iw-explain">
+            <div class="iw-explain-tag">{{ iwBeatTag }}</div>
+            <h2 class="iw-explain-title">{{ iwBeatTitle }}</h2>
+            <p class="iw-explain-body">{{ iwBeatBody }}</p>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ iwShowActions }}" hint-placeholder-val="{{ false }}">
+          <div class="iw-actions">
+            <button class="cx-btn solid" data-reticle-target="continue" onClick="{{ iwContinue }}">{{ iwContinueLabel }}</button>
+            <button class="cx-btn" data-reticle-target="replay" onClick="{{ iwReplay }}">RESTART</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ iwDone }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-payoff">
+            <h2 class="bb-statement" style="max-width:12ch;">THE INTERNET IS A RELAY RACE.</h2>
+            <p class="bb-friendly">No machine knew the whole route. Each one just knew a good next step and handed the packet on — your router, DNS the phone-book, your ISP, the backbone, and finally Bob's server. Secrecy, trust, and identity aren't part of this yet. Anyone relaying the packet could read it.</p>
+            <div class="iw-actions" style="margin-top:16px;">
+              <button class="cx-btn" data-reticle-target="replay" onClick="{{ iwReplay }}">&gt; RUN IT AGAIN</button>
+              <button class="cx-btn solid" data-reticle-target="next" data-node="crypto" onClick="{{ openInternetBridge }}">&gt; NEXT: LOCK IT DOWN</button>
+            </div>
+          </section>
+        </sc-if>
+
+        <div class="bb-scope">SIMULATION ONLY // No live DNS, requests, scanning, interception, or probing. The route and timing are simplified; real paths have far more hops and can differ each way. Addresses shown here are reserved for documentation.</div>
+      </main>
+    </div>
+  </sc-if>

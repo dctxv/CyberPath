@@ -1,0 +1,67 @@
+  <sc-if value="{{ sigOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module sg-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-04 // SIGN &amp; VERIFY</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ sgHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ sgStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">FORGERIES 0</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 05 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(50px,16vw,80px);">SIGN &amp;<br>VERIFY</h1>
+        <p class="bb-friendly">A signature proves two things at once: who wrote it, and that not one character changed. Try to forge one — every way — and get caught.</p>
+
+        <div class="iw-control">
+          <div class="cx-field">
+            <label>MESSAGE FROM ALICE</label>
+            <input id="sg-input" data-reticle-target="input" value="{{ sgMessage }}" onChange="{{ sgInput }}" maxlength="48" autocomplete="off" spellcheck="false">
+          </div>
+          <button class="cx-btn solid" data-reticle-target="sign" onClick="{{ sgSign }}">SIGN WITH ALICE'S PRIVATE KEY</button>
+        </div>
+
+        <sc-if value="{{ sgSigned }}" hint-placeholder-val="{{ false }}">
+          <div class="cx-card"><div class="cx-lab">SIGNATURE // BOUND TO THE MESSAGE FINGERPRINT</div>
+            <div class="cx-fp"><sc-for list="{{ sgSigNibbles }}" as="n" hint-placeholder-count="32"><span class="cx-nib">{{ n.ch }}</span></sc-for></div>
+          </div>
+        </sc-if>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 01 // VERIFY</div>
+          <h2 class="bb-statement">CHECK IT AGAINST A PUBLIC KEY.</h2>
+          <p class="bb-friendly">Two claims get checked at once: it really came from Alice, and nobody touched it. Pick a public key, then verify.</p>
+          <div class="pk-keys">
+            <button class="{{ sgAliceKeyClass }}" data-reticle-target="step" onClick="{{ sgPickAlice }}"><strong>ALICE'S PUBLIC KEY</strong><span>THE REAL SENDER</span></button>
+            <button class="{{ sgMalloryKeyClass }}" data-reticle-target="step" onClick="{{ sgPickMallory }}"><strong>MALLORY'S PUBLIC KEY</strong><span>THE IMPOSTER</span></button>
+          </div>
+          <button class="cx-btn" data-reticle-target="verify" onClick="{{ sgVerify }}">&gt; VERIFY SIGNATURE</button>
+          <sc-if value="{{ sgVerified }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">VERIFIED // ALICE // UNALTERED — identity and integrity confirmed in one move.</div></sc-if>
+          <sc-if value="{{ sgContentBad }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">SIGNATURE INVALID // CONTENT ALTERED — the message fingerprint no longer matches the one sealed in the signature. Change the content, break the seal.</div></sc-if>
+          <sc-if value="{{ sgIdentityBad }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">IDENTITY MISMATCH // KEY DOES NOT VERIFY — the signature made with Alice's private key won't verify against the imposter's public key.</div></sc-if>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 02 // FORGERY</div>
+          <h2 class="bb-statement">SIGN A FAKE MESSAGE AS ALICE.</h2>
+          <p class="bb-friendly">You only hold Alice's PUBLIC key, not her private one. Try to sign as her anyway.</p>
+          <button class="cx-btn" data-reticle-target="forge" onClick="{{ sgForge }}">&gt; FORGE ALICE'S SIGNATURE</button>
+          <sc-if value="{{ sgForgeTried }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">PRIVATE KEY REQUIRED // NOT HELD — only the holder of the private key can produce a signature. The public key can only <strong>check</strong> it. This is RSA run in reverse.</div></sc-if>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:13ch;">IDENTITY AND INTEGRITY, TOGETHER.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">You now have secrecy (encryption), a tamper-detector (hashing), and proof-of-identity (signatures). Real security stacks all three, live, in the first half-second of every secure connection. Want to watch them assemble?</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="tls" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: TLS / HTTPS // THE HANDSHAKE</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // Simplified sign/verify. Real signatures hash-then-encrypt with padding schemes and rely on certificate authorities. The two-claims-in-one-move behaviour you felt is the real thing.</div>
+      </main>
+    </div>
+  </sc-if>

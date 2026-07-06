@@ -1,0 +1,79 @@
+  <sc-if value="{{ tlsOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module tl-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">CR-05 // HANDSHAKE</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ tlHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ tlStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">ATTACKER {{ tlAttackerLabel }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 06 // CRYPTOGRAPHY</div>
+        <h1 class="bb-title" style="font-size:clamp(52px,17vw,84px);">THE<br>HANDSHAKE</h1>
+        <p class="bb-friendly">Build a secure channel from the four tools you now own — while an eavesdropper watches every step — and watch them walk away with static.</p>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 00 // PLAIN HTTP</div>
+          <h2 class="bb-statement">THIS IS WHERE WE STARTED.</h2>
+          <p class="bb-friendly">On plain http, the login flows past in the clear. Everyone on the path can read you.</p>
+          <div class="cx-alarm">GET /login&nbsp;&nbsp;user=clay&nbsp;&nbsp;pass=hunter2<br>&nbsp;&nbsp;↳ OBSERVER ON THE WIRE READS EVERYTHING</div>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 01 // BUILD THE HANDSHAKE</div>
+          <h2 class="bb-statement">PUT THE FOUR STEPS IN ORDER.</h2>
+          <p class="bb-friendly">You can't encrypt before you share a key. You can't trust a key before you verify identity. Tap them in the right order.</p>
+          <div class="tl-steps">
+            <sc-for list="{{ tlSteps }}" as="s" hint-placeholder-count="4">
+              <button class="{{ s.className }}" data-reticle-target="step" data-step="{{ s.id }}" onClick="{{ tlPick }}"><span class="tl-ord">{{ s.ord }}</span><strong>{{ s.title }}</strong><span>{{ s.sub }}</span></button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ tlFailed }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">{{ tlFailMsg }}</div></sc-if>
+          <sc-if value="{{ tlSecure }}" hint-placeholder-val="{{ false }}">
+            <div class="tl-lock">SECURE CHANNEL 🔒</div>
+            <div class="cx-ok">All four tools, stacked in the right order, negotiated over the open wire. The padlock snaps shut.</div>
+          </sc-if>
+          <button class="cx-btn" data-reticle-target="restart" onClick="{{ tlReset }}">RESET STEPS</button>
+        </section>
+
+        <sc-if value="{{ tlSecure }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 02 // BECOME THE EAVESDROPPER</div>
+            <h2 class="bb-statement">YOU WATCHED EVERYTHING. YOU HAVE NOTHING.</h2>
+            <p class="bb-friendly">Flip to the attacker's seat and read the traffic you just secured.</p>
+            <button class="cx-btn solid" data-reticle-target="attacker" onClick="{{ tlToggleAttacker }}">TOGGLE ATTACKER VIEW // {{ tlAttackerLabel }}</button>
+            <sc-if value="{{ tlAttacker }}" hint-placeholder-val="{{ false }}">
+              <div class="cx-card"><div class="cx-lab">CERTIFICATE EXCHANGE</div><div class="cx-hex">public info — you can read it, and it's useless to you</div></div>
+              <div class="cx-card"><div class="cx-lab">KEY AGREEMENT</div><div class="cx-hex">{{ tlNoise1 }}</div></div>
+              <div class="cx-card"><div class="cx-lab">ENCRYPTED DATA</div><div class="cx-hex">{{ tlNoise2 }}</div></div>
+              <div class="bb-readout">You saw every message. And you've got nothing but noise. <strong>That's HTTPS.</strong></div>
+            </sc-if>
+          </section>
+
+          <section class="bb-section" style="padding-top:28px;">
+            <div class="bb-kicker">SCAN 03 // MAN IN THE MIDDLE</div>
+            <h2 class="bb-statement">SWAP IN YOUR OWN CERTIFICATE.</h2>
+            <p class="bb-friendly">Try to impersonate the server — hand over your certificate instead of theirs.</p>
+            <button class="cx-btn" data-reticle-target="mitm" onClick="{{ tlMitmTry }}">&gt; IMPERSONATE THE SERVER</button>
+            <sc-if value="{{ tlMitm }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">CERTIFICATE INVALID // NOT SIGNED BY A TRUSTED AUTHORITY — the signature check catches you. The certificate is a signature vouching for the key. The RSA question — "how do I know it's really their key?" — is now answered.</div></sc-if>
+          </section>
+
+          <section class="bb-payoff">
+            <h2 class="bb-statement" style="max-width:14ch;">YOU BROKE IT, DEFENDED IT, REBUILT IT.</h2>
+            <p class="bb-friendly" style="margin-bottom:0;">That padlock in your browser bar is this exact handshake, happening in under a second, every time you load a secure page. Identity, key-exchange, a shared cipher, tamper-proofing — the four things you just learned, assembled while an attacker watched and walked away with static.</p>
+            <button class="cx-btn solid" data-reticle-target="exit" onClick="{{ closeStub }}" style="margin-top:16px;">&gt; RETURN TO THE ATLAS</button>
+          </section>
+        </sc-if>
+
+        <div class="bb-scope">LEARNING SIMULATION // Simplified handshake — real TLS 1.3 has more steps, session resumption, and cipher negotiation. The attacker view is a concept sim, never a real interception tool. These four steps are the essential shape.</div>
+      </main>
+    </div>
+  </sc-if>

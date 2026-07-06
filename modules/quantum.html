@@ -1,0 +1,84 @@
+  <sc-if value="{{ quantumOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module qb-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FR-01 // QUBIT</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ qbHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ qbStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">MEAS {{ qbMeasurements }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">FRONTIER // QUANTUM</div>
+        <h1 class="bb-title" style="font-size:clamp(52px,17vw,84px);">THE<br>QUBIT</h1>
+        <p class="bb-friendly">Operate a qubit until you've felt the truth: a quantum computer doesn't try every answer at once. It makes wrong answers cancel so the right one rings out.</p>
+
+        <section class="bb-section">
+          <div class="bb-kicker">SCAN 00 // THE HONEST COIN</div>
+          <h2 class="bb-statement">OLD FRIEND. OFF OR ON. NOTHING BETWEEN.</h2>
+          <p class="bb-friendly">A classical bit. Flip it a few times so the contrast lands.</p>
+          <button class="cx-btn solid" data-reticle-target="flipbit" onClick="{{ qbFlipBit }}" style="font:900 20px 'Archivo',sans-serif;padding:16px;">{{ qbBit }}</button>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 01 // THE POINTER</div>
+          <h2 class="bb-statement">A QUBIT ISN'T A SWITCH. IT'S AN ARROW.</h2>
+          <p class="bb-friendly">Aim it. The angle isn't the answer — it sets the odds. Measure, and it's forced to 0 or 1. Measure again and again; watch the tally match the aim.</p>
+          <div class="qb-dial"><b class="p1">1</b><b class="p0">0</b><div class="qb-arrow" style="{{ qbArrowStyle }}"></div></div>
+          <input class="qb-slider" data-reticle-target="angle" type="range" min="0" max="180" step="1" value="{{ qbAngle }}" onChange="{{ qbSetAngle }}" aria-label="Aim the qubit">
+          <div class="bb-readout">AIM / <strong>{{ qbAngleText }}</strong><br>ODDS OF MEASURING 1 / <strong>{{ qbP1 }}%</strong></div>
+          <button class="cx-btn solid" data-reticle-target="measure" onClick="{{ qbMeasure }}">&gt; MEASURE</button>
+          <div class="qb-hist">
+            <div class="qb-bar"><span>0 · {{ qbZeros }}</span><i style="{{ qbBar0Style }}"></i></div>
+            <div class="qb-bar"><span>1 · {{ qbOnes }}</span><i style="{{ qbBar1Style }}"></i></div>
+          </div>
+          <button class="cx-btn" data-reticle-target="resethist" onClick="{{ qbResetHist }}">CLEAR TALLY</button>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 01.5 // THE TRAP</div>
+          <h2 class="bb-statement">THINK YOU CAN READ THE EXACT ANGLE?</h2>
+          <p class="bb-friendly">Try it. Read the arrow's precise aim in one go.</p>
+          <button class="cx-btn" data-reticle-target="trap" onClick="{{ qbSpringTrap }}">&gt; READ THE EXACT ANGLE</button>
+          <sc-if value="{{ qbTrapSprung }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">SUPERPOSITION COLLAPSED // 1 BIT RETRIEVED — you didn't read the arrow, you knocked it down. Every measurement gives one bit and destroys the aim. This is exactly why "it tries all answers at once" is a lie: you could never read them out even if it did.</div></sc-if>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 02 // TWO ARROWS THAT CANCEL</div>
+          <h2 class="bb-statement">HERE'S THE THING A COIN CAN NEVER DO.</h2>
+          <p class="bb-friendly">Two ways to arrive at the outcome "0", each an arrow. Point them together and 0 is certain. Point them opposite and they <strong>cancel</strong> — 0 becomes impossible.</p>
+          <div class="qb-two">
+            <div class="qb-mini"><i style="transform:rotate(0deg);"></i></div>
+            <div class="qb-mini"><i style="{{ qbArrow2Style }}"></i></div>
+          </div>
+          <input class="qb-slider" data-reticle-target="phase" type="range" min="0" max="360" step="1" value="{{ qbPhase }}" onChange="{{ qbSetPhase }}" aria-label="Relative phase of the two arrows">
+          <div class="qb-amp"><i style="{{ qbAmpStyle }}"></i></div>
+          <div class="bb-readout">RELATIVE AIM / <strong>{{ qbPhase }}°</strong> // {{ qbInterfLabel }}<br>ODDS OF OUTCOME 0 / <strong>{{ qbP0 }}%</strong> &nbsp; (classical odds only add — these can subtract)</div>
+        </section>
+
+        <section class="bb-section" style="padding-top:28px;">
+          <div class="bb-kicker">SCAN 03 // THE RIGGED GAME</div>
+          <h2 class="bb-statement">DON'T CHECK BOTH. CANCEL THE WRONG ONE.</h2>
+          <p class="bb-friendly">A hidden setting to discover. Classically you probe and get a coin-flip of info each time. Quantumly you arrange the wrong answer to cancel — then one measurement is enough.</p>
+          <button class="cx-btn" data-reticle-target="ctry" onClick="{{ qbClassicalTry }}">CLASSICAL PROBE</button>
+          <sc-if value="{{ qbHasClassical }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">PROBE {{ qbClassicalTries }} // RESULT: {{ qbClassicalResult }} // STILL UNSURE — each probe is just a coin flip.</div></sc-if>
+          <button class="cx-btn solid" data-reticle-target="qrun" onClick="{{ qbQuantumRun }}">&gt; RUN QUANTUM ROUTINE</button>
+          <sc-if value="{{ qbQuantumSolved }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">WRONG ANSWER: AMPLITUDE 0 // RIGHT ANSWER: AMPLITUDE ~1 // SOLVED IN 1 MEASUREMENT. You didn't check both settings — you made the wrong one cancel, so the right one was all that was left to measure. That is what a quantum computer does.</div></sc-if>
+        </section>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">NOT "TRIES EVERYTHING." MAKES THE RIGHT ANSWER LOUD.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">For most problems that buys you nothing. But for a few specific ones — one being the exact math RSA hides behind — it changes everything. Want to point it at the lock you built?</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="quantum-rsa" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: QUANTUM vs RSA // SHOR'S ATTACK</button>
+        </section>
+        <div class="bb-scope">HONESTY MANDATE // Amplitudes are "arrows that can cancel," not probabilities — probabilities never cancel, and that is the whole distinction. This does NOT claim "tries all answers at once," "parallel universes computing," or "exponential speedup for everything" — those are the common myths. Real qubits live on a sphere (the Bloch sphere) and real algorithms use many linked qubits; this arrow is the honest 1-qubit shadow.</div>
+      </main>
+    </div>
+  </sc-if>

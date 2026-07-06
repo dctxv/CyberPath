@@ -1,0 +1,111 @@
+  <sc-if value="{{ bitsLegacyOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">FD-01 // BYTE ANALYZER</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ bitsHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ bitsStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">CONF {{ bitsConf }}%</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 00 // FOUNDATIONS</div>
+        <h1 class="bb-title">BITS &amp;<br>BYTES</h1>
+        <p class="bb-friendly">Type something. This little machine will show you what it stores underneath.</p>
+
+        <div class="bb-input-dock">
+          <div style="display:flex;justify-content:space-between;color:var(--bb-hud);font-size:8px;letter-spacing:1px;margin-bottom:7px;">
+            <span>INPUT CHANNEL</span><span>{{ bitsLength }}/8 BYTES</span>
+          </div>
+          <div class="bb-input-wrap">
+            <input id="bb-input" class="bb-input" data-reticle-target="input" value="{{ bitsText }}" onChange="{{ bitsInput }}" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="TYPE HERE">
+            <sc-if value="{{ bitsHasText }}" hint-placeholder-val="{{ false }}">
+              <button class="bb-clear" data-reticle-target="clear" onClick="{{ clearBits }}">CLEAR</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{ bitsHasNote }}" hint-placeholder-val="{{ false }}">
+            <div style="color:var(--bb-hud);font-size:8px;letter-spacing:1px;margin-top:8px;">{{ bitsNote }}</div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ bitsEmpty }}" hint-placeholder-val="{{ true }}">
+          <section class="bb-section" style="min-height:44vh;display:flex;align-items:center;">
+            <div>
+              <div class="bb-kicker">AWAITING SIGNAL // 000</div>
+              <h2 class="bb-statement">TYPE SOMETHING.</h2>
+              <p class="bb-friendly">One letter is enough. Try your name, or just tap a key.</p>
+            </div>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ bitsHasText }}" hint-placeholder-val="{{ false }}">
+          <section class="bb-section">
+            <div class="bb-kicker">SCAN 01 // CHARACTERS ACQUIRED</div>
+            <h2 class="bb-statement">TO A COMPUTER, THESE AREN'T LETTERS.</h2>
+            <p class="bb-friendly">Everything you type is secretly a number. Here's the number hiding behind each character.</p>
+            <div class="bb-targets">
+              <sc-for list="{{ bitsChars }}" as="ch" hint-placeholder-count="3">
+                <button class="{{ ch.className }}" data-reticle-target="char" data-index="{{ ch.idx }}" onClick="{{ selectBitChar }}">
+                  <span class="bb-target-glyph">{{ ch.glyph }}</span>
+                  <span class="bb-target-code">DEC {{ ch.code }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div class="bb-pipe">
+              <div class="bb-pipe-cell"><span class="bb-pipe-big">{{ bitsGlyph }}</span><span class="bb-pipe-label">CHARACTER</span></div>
+              <div class="bb-arrow"></div>
+              <div class="bb-pipe-cell"><span class="bb-pipe-big">{{ bitsCode }}</span><span class="bb-pipe-label">HIDDEN NUMBER</span></div>
+            </div>
+          </section>
+
+          <section class="bb-section">
+            <div class="bb-kicker">SCAN 02 // BYTE RESOLVED</div>
+            <h2 class="bb-statement">AND EVERY NUMBER IS JUST SWITCHES.</h2>
+            <p class="bb-friendly">Eight tiny switches. On or off. That's all a byte is. Tap one and watch the character change above.</p>
+            <div style="color:var(--bb-hud);font-size:10px;letter-spacing:3px;text-align:center;">{{ bitsBinary }}</div>
+            <div class="bb-bits">
+              <sc-for list="{{ bitsSwitches }}" as="bit" hint-placeholder-count="8">
+                <button class="bb-bit" style="{{ bit.style }}" data-reticle-target="bit" data-bit="{{ bit.idx }}" onClick="{{ flipBit }}" aria-label="{{ bit.aria }}">
+                  <span class="bb-bit-value">{{ bit.value }}</span>
+                  <span class="bb-bit-state">{{ bit.state }}</span>
+                  <span class="bb-bit-weight">{{ bit.weight }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div class="bb-readout">
+              SWITCH BANK / <strong>{{ bitsBinary }}</strong><br>
+              RESOLVES TO / <strong>{{ bitsCode }}</strong><br>
+              BECOMES / <strong>{{ bitsGlyph }}</strong>
+            </div>
+          </section>
+
+          <section class="bb-section">
+            <div class="bb-kicker">SCAN 03 // RANGE TEST</div>
+            <h2 class="bb-statement">WHY EIGHT?</h2>
+            <div class="bb-counter"><span>256</span></div>
+            <p class="bb-friendly">Eight switches make 256 possible patterns. They can count from 0 to 255. Your current pattern is <strong style="color:var(--bb-ink);">{{ bitsCode }}</strong>.</p>
+            <div style="height:8px;border:1px solid var(--bb-hud);margin-top:24px;position:relative;">
+              <div style="{{ bitsMeterStyle }}"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;color:var(--bb-hud);font-size:8px;margin-top:6px;"><span>000</span><span>255</span></div>
+          </section>
+
+          <sc-if value="{{ bitsHasFlips }}" hint-placeholder-val="{{ false }}">
+            <section class="bb-payoff">
+              <h2 class="bb-statement" style="max-width:11ch;">THE WHOLE DIGITAL WORLD.</h2>
+              <p class="bb-friendly" style="margin-bottom:0;">A message, a photo, a song — underneath, they're all millions of tiny switches doing exactly what you just did. On. Off. Over and over.</p>
+            </section>
+          </sc-if>
+
+          <div class="bb-scope">BYTE MODE // This first machine uses a simplified one-byte character map (values 0–255). Modern text uses encodings such as UTF-8 and may need several bytes for one character. That comes later; the switch logic you used here stays the same.</div>
+        </sc-if>
+      </main>
+    </div>
+  </sc-if>
