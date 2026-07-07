@@ -1,0 +1,124 @@
+  <sc-if value="{{ webvulnOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module at-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">AT-03 // INJECT</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ wvHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ wvStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">INJECTIONS {{ wvInjectionsLanded }}/2</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 19 // ATTACKS &amp; DEFENSE</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">BREAK IT<br>THEN FIX IT</h1>
+        <p class="bb-friendly">Feed a sandboxed app input it was never careful about — then flip to defender and watch the same input bounce off the patched version.</p>
+
+        <div class="ha-tabs"><sc-for list="{{ wvTabs }}" as="t" hint-placeholder-count="3">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ wvPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ wvBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ wvBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ wvBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ wvTodo }}</div>
+
+        <sc-if value="{{ wvChapter0 }}" hint-placeholder-val="{{ true }}">
+          <div class="wv-card">
+            <div class="wv-card-label">LOGIN // USERNAME: admin</div>
+            <div class="wv-field">
+              <label>PASSWORD ATTEMPT</label>
+              <input id="wv-sql-input" value="{{ wvSqlInput }}" onChange="{{ wvSqlInputChange }}" maxlength="60" autocomplete="off" spellcheck="false" placeholder="' OR '1'='1">
+            </div>
+            <button class="cx-btn solid" data-reticle-target="login" onClick="{{ wvSqlLogin }}" style="margin-top:10px;">&gt; LOG IN</button>
+
+            <sc-if value="{{ wvSqlPatchedReal }}" hint-placeholder-val="{{ false }}">
+              <div class="wv-query">SELECT * FROM users WHERE username=? AND password=?<br><span class="wv-bound">BOUND PARAMETER: "{{ wvSqlInput }}"</span></div>
+            </sc-if>
+            <sc-if value="{{ wvSqlUnpatchedReal }}" hint-placeholder-val="{{ true }}">
+              <div class="wv-query">SELECT * FROM users WHERE username='admin' AND password='{{ wvSqlSegBefore }}<span class="wv-inject">{{ wvSqlSegAfter }}</span>'</div>
+            </sc-if>
+
+            <sc-if value="{{ wvSqlAttempted }}" hint-placeholder-val="{{ false }}">
+              <div class="{{ wvSqlResultClass }}">{{ wvSqlResultText }}</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ wvChapter1 }}" hint-placeholder-val="{{ false }}">
+          <div class="wv-card">
+            <div class="wv-card-label">COMMENT BOX</div>
+            <div class="wv-field">
+              <label>YOUR COMMENT</label>
+              <input id="wv-xss-input" value="{{ wvXssInput }}" onChange="{{ wvXssInputChange }}" maxlength="120" autocomplete="off" spellcheck="false" placeholder="&lt;script&gt;alert(1)&lt;/script&gt;">
+            </div>
+            <button class="cx-btn solid" data-reticle-target="post" onClick="{{ wvXssPost }}" style="margin-top:10px;">&gt; POST COMMENT</button>
+
+            <div class="wv-victim">
+              <div class="wv-card-label">VISITOR'S BROWSER (SIMULATED)</div>
+              <sc-if value="{{ wvXssExecutes }}" hint-placeholder-val="{{ false }}">
+                <div class="wv-alert-banner">⚠ ALERT: SCRIPT EXECUTED (SIMULATED)<br>document.cookie sent to attacker.com</div>
+              </sc-if>
+              <div class="wv-comment">{{ wvXssInput }}</div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ wvChapter2 }}" hint-placeholder-val="{{ false }}">
+          <div class="wv-card">
+            <div class="wv-card-label">LOGIN QUERY // PATCH</div>
+            <div class="wv-patch-row">
+              <button class="{{ wvSqlOffClass }}" data-reticle-target="patch" data-patch="off" onClick="{{ wvSetSqlPatch }}">OFF</button>
+              <button class="{{ wvSqlNaiveClass }}" data-reticle-target="patch" data-patch="naive" onClick="{{ wvSetSqlPatch }}">NAIVE</button>
+              <button class="{{ wvSqlRealClass }}" data-reticle-target="patch" data-patch="real" onClick="{{ wvSetSqlPatch }}">REAL</button>
+            </div>
+            <sc-if value="{{ wvSqlPatchedReal }}" hint-placeholder-val="{{ false }}">
+              <div class="wv-query">SELECT * FROM users WHERE username=? AND password=?<br><span class="wv-bound">BOUND PARAMETER: "{{ wvSqlInput }}"</span></div>
+            </sc-if>
+            <sc-if value="{{ wvSqlUnpatchedReal }}" hint-placeholder-val="{{ true }}">
+              <div class="wv-query">SELECT * FROM users WHERE username='admin' AND password='{{ wvSqlSegBefore }}<span class="wv-inject">{{ wvSqlSegAfter }}</span>'</div>
+            </sc-if>
+            <button class="cx-btn" data-reticle-target="variant" onClick="{{ wvTrySqlVariant }}" style="margin-top:10px;">&gt; TRY VARIANT PAYLOAD</button>
+            <button class="cx-btn solid" data-reticle-target="login" onClick="{{ wvSqlLogin }}">&gt; LOG IN</button>
+          </div>
+
+          <div class="wv-card">
+            <div class="wv-card-label">COMMENT OUTPUT // PATCH</div>
+            <div class="wv-patch-row">
+              <button class="{{ wvXssOffClass }}" data-reticle-target="patch" data-patch="off" onClick="{{ wvSetXssPatch }}">OFF</button>
+              <button class="{{ wvXssNaiveClass }}" data-reticle-target="patch" data-patch="naive" onClick="{{ wvSetXssPatch }}">NAIVE</button>
+              <button class="{{ wvXssRealClass }}" data-reticle-target="patch" data-patch="real" onClick="{{ wvSetXssPatch }}">REAL</button>
+            </div>
+            <div class="wv-victim">
+              <sc-if value="{{ wvXssExecutes }}" hint-placeholder-val="{{ false }}">
+                <div class="wv-alert-banner">⚠ ALERT: SCRIPT EXECUTED (SIMULATED)</div>
+              </sc-if>
+              <div class="wv-comment">{{ wvXssInput }}</div>
+            </div>
+            <button class="cx-btn" data-reticle-target="variant" onClick="{{ wvTryXssVariant }}" style="margin-top:10px;">&gt; TRY VARIANT PAYLOAD</button>
+            <button class="cx-btn solid" data-reticle-target="post" onClick="{{ wvXssPost }}">&gt; POST COMMENT</button>
+          </div>
+
+          <sc-if value="{{ wvPatchComplete }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-ok">BOTH PATCHED // VARIANTS BLOCKED {{ wvVariantsBlocked }}/2 — your input stayed data. It never became a command.</div>
+          </sc-if>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">YOU'VE BROKEN CODE, TRICKED PEOPLE, AND READ MALWARE.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">Real attackers don't use these one at a time — they chain them into a path from outside to crown jewels. Want to watch a full attack unfold?</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="pentest" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: PENTESTING</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // Fully sandboxed and safe — no real exploitation occurs, payloads are illustrative and non-functional outside this toy app. The full OWASP Top 10, CSRF, and real payload crafting are left out; this teaches the concept of injection, not a working exploit.</div>
+      </main>
+    </div>
+  </sc-if>

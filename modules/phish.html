@@ -1,0 +1,82 @@
+  <sc-if value="{{ phishOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module at-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">AT-02 // THE TELL</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ phHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ phStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">CAUGHT {{ phCorrectCount }}/{{ phTotalCount }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 18 // ATTACKS &amp; DEFENSE</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">SPOT<br>THE FAKE</h1>
+        <p class="bb-friendly">Sort real messages from fakes. The tells are consistent — a mismatched domain, manufactured urgency, a link that doesn't go where it says — until a clock starts running and a good fake only needs you to be quick once.</p>
+
+        <section class="ha-stage-wrap ph-stage-wrap">
+          <div class="ph-card">
+            <div class="ph-row"><span class="ph-label">FROM</span><strong>{{ phFrom }}</strong></div>
+            <sc-if value="{{ phSenderRevealed }}" hint-placeholder-val="{{ false }}"><div class="ph-reveal">{{ phDomainReal }}</div></sc-if>
+            <div class="ph-subject">{{ phSubject }}</div>
+            <div class="{{ phUrgentClass }}">{{ phBody }}</div>
+            <div class="ph-row"><span class="ph-label">LINK</span><span class="ph-link">{{ phLinkText }}</span></div>
+            <sc-if value="{{ phLinkRevealed }}" hint-placeholder-val="{{ false }}"><div class="ph-reveal">{{ phLinkReal }}</div></sc-if>
+          </div>
+        </section>
+
+        <div class="ha-tabs"><sc-for list="{{ phTabs }}" as="t" hint-placeholder-count="3">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ phPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ phBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ phBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ phBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ phTodo }}</div>
+
+        <div class="bb-readout">{{ phMsgProgress }}</div>
+
+        <sc-if value="{{ phTimerActive }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">T-{{ phTimerText }} // CALL IT</div></sc-if>
+
+        <sc-if value="{{ phAnswered }}" hint-placeholder-val="{{ false }}">
+          <div class="{{ phDebriefClass }}">{{ phDebrief }}</div>
+        </sc-if>
+
+        <div class="pq-control-row" style="margin-top:12px;">
+          <button class="cx-btn" data-reticle-target="inspect" onClick="{{ phInspectSender }}">INSPECT SENDER</button>
+          <button class="cx-btn" data-reticle-target="inspect" onClick="{{ phInspectLink }}">INSPECT LINK</button>
+        </div>
+
+        <sc-if value="{{ phUnanswered }}" hint-placeholder-val="{{ true }}">
+          <div class="pq-control-row" style="margin-top:8px;">
+            <button class="cx-btn solid" data-reticle-target="verdict" data-verdict="fake" onClick="{{ phCallVerdict }}">CALL: FAKE</button>
+            <button class="cx-btn solid" data-reticle-target="verdict" data-verdict="real" onClick="{{ phCallVerdict }}">CALL: REAL</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ phShowNext }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn" data-reticle-target="next" onClick="{{ phNextMessage }}" style="margin-top:8px;">&gt; NEXT MESSAGE</button>
+        </sc-if>
+
+        <sc-if value="{{ phChapterDone }}" hint-placeholder-val="{{ false }}">
+          <div class="bb-readout">SET COMPLETE // CORRECT {{ phCorrectCount }}/{{ phTotalCount }}<br>MISSED UNDER PRESSURE {{ phMissedPressure }} // TELLS LEARNED {{ phTellsLearned }}</div>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:13ch;">PHISHING TRICKS A PERSON.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But some attacks skip the person entirely and trick the software — by feeding it input it was never careful about.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="webvuln" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: WEB VULNERABILITIES</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // Every message here is fictional and illustrative — no real brands, domains, or working links are used or produced. Email authentication (SPF/DKIM/DMARC) — the behind-the-scenes checks that catch some of these before you ever see them — is left out.</div>
+      </main>
+    </div>
+  </sc-if>

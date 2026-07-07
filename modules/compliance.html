@@ -1,0 +1,81 @@
+  <sc-if value="{{ complianceOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module gv-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">GV-04 // PROVE IT</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ coHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ coStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">FINDINGS {{ coFindings }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 28 // GOVERNANCE, RISK &amp; COMPLIANCE</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">PROVE<br>IT</h1>
+        <p class="bb-friendly">Survive an audit by producing the right evidence for each requirement — and discover that compliance isn't about being secure, it's about proving you did what you claimed.</p>
+
+        <div class="ha-tabs"><sc-for list="{{ coTabs }}" as="t" hint-placeholder-count="4">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ coPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ coBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ coBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ coBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ coTodo }}</div>
+
+        <sc-if value="{{ coChapter0 }}" hint-placeholder-val="{{ true }}">
+          <button class="cx-btn solid" data-reticle-target="claim" onClick="{{ coClaim }}" style="margin-top:12px;">&gt; CLAIM: "WE HAVE MFA"</button>
+          <sc-if value="{{ coClaimed }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">EVIDENCE REQUIRED // saying it isn't enough. The auditor doesn't trust claims — only evidence.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ coChapter1 }}" hint-placeholder-val="{{ false }}">
+          <div class="co-meter"><div class="co-meter-fill" style="width:{{ coCompliancePct }}%;"></div></div>
+          <div class="bb-readout">{{ coCompliancePct }}% COMPLIANT // {{ coMetCount }}/5 REQUIREMENTS MET</div>
+          <div class="gv-chip-row"><sc-for list="{{ coEvidenceChips }}" as="e" hint-placeholder-count="5">
+            <button class="{{ e.className }}" data-reticle-target="evidence" data-evidence="{{ e.id }}" onClick="{{ coSelectEvidence }}">{{ e.name }}</button>
+          </sc-for></div>
+          <sc-for list="{{ coReqCards }}" as="r" hint-placeholder-count="5">
+            <button class="{{ r.cellClass }}" data-reticle-target="requirement" data-requirement="{{ r.id }}" onClick="{{ coSubmitRequirement }}"><strong>{{ r.name }}</strong><span>{{ r.stateText }}</span></button>
+          </sc-for>
+        </sc-if>
+
+        <sc-if value="{{ coChapter2 }}" hint-placeholder-val="{{ false }}">
+          <div class="co-meter"><div class="co-meter-fill" style="width:{{ coCompliancePct }}%;"></div></div>
+          <div class="bb-readout">{{ coCompliancePct }}% COMPLIANT // {{ coMetCount }}/5 REQUIREMENTS MET // {{ coFindings }} FINDING(S)</div>
+          <sc-for list="{{ coReqCards }}" as="r" hint-placeholder-count="5">
+            <div class="{{ r.cellClass }}"><strong>{{ r.name }}</strong><span>{{ r.stateText }}</span></div>
+          </sc-for>
+        </sc-if>
+
+        <sc-if value="{{ coChapter3 }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ coVendorNotPassed }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">Match the VENDOR SECURITY REVIEWS CONDUCTED requirement in chapter 02 first to see this play out.</div></sc-if>
+          <sc-if value="{{ coVendorPassed }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn solid" data-reticle-target="incident" onClick="{{ coRunIncident }}" style="margin-top:12px;">&gt; SIMULATE INCIDENT</button>
+            <sc-if value="{{ coIncidentRun }}" hint-placeholder-val="{{ false }}">
+              <div class="cx-alarm">A vendor breach exploited exactly the review that passed your audit. The review existed — it just wasn't good enough. Evidence was real. Effectiveness wasn't.</div>
+              <div class="co-verdict-row">
+                <div class="co-verdict true">COMPLIANT: TRUE</div>
+                <div class="co-verdict false">SECURE: FALSE</div>
+              </div>
+            </sc-if>
+          </sc-if>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:18ch;">THAT LAST PART IS WHAT ALMOST NOBODY LEARNS UNTIL THEY'RE DEEP IN THE INDUSTRY.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">You started with a single switch, not knowing what a bit was. You've now encrypted messages, broken them with a quantum computer, rebuilt locks to survive it, attacked systems and models, and sat in the chair where security meets the boardroom — quantifying risk, mapping controls, and proving compliance while knowing exactly what compliance can't promise. Governance, risk, the judgment calls with no clean answer — you just did it as a series of games. That's the whole atlas.</p>
+          <button class="cx-btn solid" data-reticle-target="exit" onClick="{{ closeStub }}" style="margin-top:16px;">&gt; RETURN TO THE ATLAS</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // A simplified audit — real audits (SOC 2, ISO 27001, PCI-DSS) are heavy processes this models the concept of, not the standard itself. Continuous compliance tooling is left out.</div>
+      </main>
+    </div>
+  </sc-if>

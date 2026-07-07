@@ -1,0 +1,105 @@
+  <sc-if value="{{ leakageOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module ai-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">AI-04 // EXTRACTION</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ mlHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ mlStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">QUERIES {{ mlQueryCount }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 24 // AI SECURITY</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">EXTRACT<br>BY ASKING</h1>
+        <p class="bb-friendly">By only querying a model, recover clues about the private data it was trained on. Models can memorize and leak their inputs — and every defense against it costs something.</p>
+
+        <div class="ha-tabs"><sc-for list="{{ mlTabs }}" as="t" hint-placeholder-count="4">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ mlPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ mlBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ mlBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ mlBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ mlTodo }}</div>
+
+        <sc-if value="{{ mlChapter0 }}" hint-placeholder-val="{{ true }}">
+          <div class="ml-card">
+            <div class="ml-card-label">PROMPT // "Sarah Chen, SSN: 078-05-"</div>
+            <button class="cx-btn solid" data-reticle-target="complete" onClick="{{ mlComplete }}">&gt; COMPLETE THE PROMPT</button>
+            <sc-if value="{{ mlCompleted }}" hint-placeholder-val="{{ false }}">
+              <div class="ml-response">"...1120." <span style="opacity:.7;">(99% confidence, instant, zero hesitation)</span></div>
+              <div class="cx-alarm">MEMORIZED STRING RECOVERED // it didn't reason this out — a real SSN fragment from training data came straight back out.</div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mlChapter1 }}" hint-placeholder-val="{{ false }}">
+          <div class="ml-card">
+            <div class="ml-card-label">TWO CANDIDATE RECORDS</div>
+            <div class="ml-compare">
+              <div class="ml-record"><strong>RECORD A</strong>Marcus Webb, DOB 03/14/1985, lives in ___<sc-if value="{{ mlQueried }}" hint-placeholder-val="{{ false }}"><br><span>"Denver CO" — 97% confident, instant</span></sc-if></div>
+              <div class="ml-record"><strong>RECORD B</strong>Priya Anand, DOB 07/22/1990, lives in ___<sc-if value="{{ mlQueried }}" hint-placeholder-val="{{ false }}"><br><span>"...Chicago?" — 38% confident, hesitant</span></sc-if></div>
+            </div>
+            <button class="cx-btn solid" data-reticle-target="query" onClick="{{ mlQueryBoth }}" style="margin-top:10px;">&gt; QUERY BOTH</button>
+            <sc-if value="{{ mlQueried }}" hint-placeholder-val="{{ false }}">
+              <div class="pq-control-row" style="margin-top:10px;">
+                <button class="{{ mlGuessAClass }}" data-reticle-target="guess" data-record="a" onClick="{{ mlGuessRecord }}">RECORD A WAS TRAINED ON</button>
+                <button class="{{ mlGuessBClass }}" data-reticle-target="guess" data-record="b" onClick="{{ mlGuessRecord }}">RECORD B WAS TRAINED ON</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ mlHasGuess }}" hint-placeholder-val="{{ false }}">
+              <sc-if value="{{ mlGuessCorrect }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">CORRECT // Record A's speed and certainty gave it away. You never saw the training set — the model's confidence leaked it.</div></sc-if>
+              <sc-if value="{{ mlGuessWrong }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">NOT QUITE // Record A was the one it trained on — 97% confident and instant, versus Record B's hesitant, generic guess.</div></sc-if>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mlChapter2 }}" hint-placeholder-val="{{ false }}">
+          <div class="ml-card">
+            <div class="ml-card-label">THREE HARMLESS-LOOKING QUESTIONS</div>
+            <div class="ml-frag-row">
+              <button class="cx-btn" data-reticle-target="ask" onClick="{{ mlAskAgg }}">ASK: WHAT CITY?</button>
+              <button class="cx-btn" data-reticle-target="ask" onClick="{{ mlAskAgg }}">ASK: APPROX. AGE?</button>
+              <button class="cx-btn" data-reticle-target="ask" onClick="{{ mlAskAgg }}">ASK: WHAT COMPANY?</button>
+            </div>
+            <sc-if value="{{ mlAgg0Done }}" hint-placeholder-val="{{ false }}"><div class="ml-response">Fragment 1: "Denver, CO"</div></sc-if>
+            <sc-if value="{{ mlAgg1Done }}" hint-placeholder-val="{{ false }}"><div class="ml-response">Fragment 2: "around 39 years old"</div></sc-if>
+            <sc-if value="{{ mlAgg2Done }}" hint-placeholder-val="{{ false }}"><div class="ml-response">Fragment 3: "Acme Corp"</div></sc-if>
+            <sc-if value="{{ mlAggAllDone }}" hint-placeholder-val="{{ false }}">
+              <div class="ml-profile">ASSEMBLED PROFILE // Marcus Webb · ~39 · Denver, CO · Acme Corp<br><span style="opacity:.75;font-weight:400;">None of the three questions felt like a leak. Together, they are one.</span></div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ mlChapter3 }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ mlDetected }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">EXTRACTION PATTERN DETECTED // that many similar queries in a short window would flag a real system. Leakage attacks leave traces — if anyone's watching.</div></sc-if>
+          <div class="ml-card">
+            <div class="ml-card-label">PRIVACY DEFENSES</div>
+            <div class="ml-frag-row">
+              <button class="{{ mlDefNoiseClass }}" data-reticle-target="defense" data-defense="noise" onClick="{{ mlToggleDefense }}">TRAINING NOISE</button>
+              <button class="{{ mlDefLimitClass }}" data-reticle-target="defense" data-defense="limit" onClick="{{ mlToggleDefense }}">OUTPUT LIMITS</button>
+              <button class="{{ mlDefRateLimitClass }}" data-reticle-target="defense" data-defense="ratelimit" onClick="{{ mlToggleDefense }}">QUERY LIMITS</button>
+            </div>
+            <div class="bb-readout">LEAKAGE RISK {{ mlRisk }}% // MODEL ACCURACY {{ mlAccuracy }}%<br>Protecting the data makes the model a little worse at its job. That trade-off is a decision someone has to own — which is exactly what governance is for.</div>
+          </div>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:16ch;">YOU'VE BROKEN SYSTEMS, PEOPLE, CODE, AND MODELS.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But breaking things is only half of security. The other half — the half almost nobody in a student portfolio ever shows — is governing it: deciding what risk is acceptable, proving you're compliant, mapping controls to frameworks. That's where security meets the boardroom. Ready to switch from breaking to running the show?</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="fraud" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: PHASE 3 // GOVERN THE SYSTEM</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // A toy model with seeded fake "private" data — no real extraction, no real deployed model. Teaches the risk and its defenses, never a method to extract from real systems. Differential privacy (the mathematical way to bound this leakage) is left as optional depth.</div>
+      </main>
+    </div>
+  </sc-if>

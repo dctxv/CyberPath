@@ -1,0 +1,73 @@
+  <sc-if value="{{ grcOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module gv-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">GV-03 // MAP THE CONTROLS</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ gvHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ gvStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">COVERED {{ gvCoveredCount }}/5</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 27 // GOVERNANCE, RISK &amp; COMPLIANCE</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">MAP THE<br>CONTROLS</h1>
+        <p class="bb-friendly">Map your controls onto a recognized framework and discover the gaps you didn't know you had. "Are we secure?" is unanswerable — "which categories are covered?" isn't.</p>
+
+        <div class="ha-tabs"><sc-for list="{{ gvTabs }}" as="t" hint-placeholder-count="4">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ gvPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ gvBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ gvBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ gvBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ gvTodo }}</div>
+
+        <div class="gv-grid"><sc-for list="{{ gvCategoryCards }}" as="c" hint-placeholder-count="5">
+          <button class="{{ c.cellClass }}" data-reticle-target="category" data-category="{{ c.id }}" onClick="{{ gvPlaceControl }}"><strong>{{ c.name }}</strong><span>{{ c.stateText }}</span></button>
+        </sc-for></div>
+
+        <sc-if value="{{ gvChapter0 }}" hint-placeholder-val="{{ true }}">
+          <p class="bb-friendly">Right now you've got nothing mapped. Let's see where you actually stand.</p>
+        </sc-if>
+
+        <sc-if value="{{ gvChapter1 }}" hint-placeholder-val="{{ false }}">
+          <div class="gv-chip-row"><sc-for list="{{ gvControlChips }}" as="ch" hint-placeholder-count="4">
+            <button class="{{ ch.className }}" data-reticle-target="chip" data-control="{{ ch.id }}" onClick="{{ gvSelectControl }}">{{ ch.name }}</button>
+          </sc-for></div>
+          <div class="bb-readout">Select a control above, then tap a category to place it.</div>
+        </sc-if>
+
+        <sc-if value="{{ gvChapter2 }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="drill" onClick="{{ gvRunDrill }}" style="margin-top:12px;">&gt; RUN INCIDENT DRILL</button>
+          <sc-if value="{{ gvDrillRun }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">{{ gvCoveredCount }}/5 categories genuinely effective. The dark squares are what you're blind to — you can't fix a gap you can't see, and "are we secure?" never showed you these.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ gvChapter3 }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ gvHasGaps }}" hint-placeholder-val="{{ true }}">
+            <sc-for list="{{ gvGapCards }}" as="g" hint-placeholder-count="2">
+              <div class="gv-gap-row">{{ g.name }} // EXPOSURE {{ g.exposureText }}<button class="{{ g.closeClass }}" data-reticle-target="close" data-category="{{ g.id }}" onClick="{{ gvCloseGap }}">CLOSE GAP</button></div>
+            </sc-for>
+            <div class="bb-readout">You can only close one right now. Governance feeds risk management, and risk management feeds governance — close the highest-exposure gap first.</div>
+          </sc-if>
+          <sc-if value="{{ gvNoGaps }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">NO GAPS REMAINING // every category is genuinely covered.</div></sc-if>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">YOU'VE MAPPED YOUR CONTROLS AND CLOSED YOUR GAPS.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But saying you're covered isn't the same as proving it. When the auditor arrives, you need evidence for every single claim.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="compliance" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: COMPLIANCE</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // A simplified framework — real NIST CSF / ISO 27001 are extensive (this models what they do, not the full standard). Specific control catalogs and certification processes are left out.</div>
+      </main>
+    </div>
+  </sc-if>

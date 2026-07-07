@@ -1,0 +1,70 @@
+  <sc-if value="{{ poisonOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module ai-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">AI-03 // CORRUPT THE WELL</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ dpHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ dpStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">ACCURACY {{ dpAccuracy }}%</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 23 // AI SECURITY</div>
+        <h1 class="bb-title" style="font-size:clamp(42px,13vw,68px);">CORRUPT<br>THE WELL</h1>
+        <p class="bb-friendly">Sabotage a model before it's ever deployed — by slipping bad examples into its training data. Then discover how a hidden backdoor survives every normal test, and how curation defends against it.</p>
+
+        <section class="ha-stage-wrap dp-stage-wrap">
+          <canvas id="dp-canvas" width="800" height="800" aria-label="A scatter of training points with a decision boundary between two classes, warping as poisoned samples are added"></canvas>
+          <div class="ha-stage-tag" id="dp-tag"></div>
+        </section>
+
+        <div class="ha-tabs"><sc-for list="{{ dpTabs }}" as="t" hint-placeholder-count="4">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ dpPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ dpBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ dpBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ dpBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ dpTodo }}</div>
+
+        <sc-if value="{{ dpChapter0 }}" hint-placeholder-val="{{ true }}">
+          <button class="cx-btn solid" data-reticle-target="train" onClick="{{ dpTrain }}" style="margin-top:12px;">&gt; TRAIN</button>
+          <sc-if value="{{ dpTrained }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">BOUNDARY TRAINED // {{ dpAccuracy }}% accuracy on clean data. Two clusters, one clean line between them.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ dpChapter1 }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="inject" onClick="{{ dpInjectCrude }}" style="margin-top:12px;">&gt; INJECT MISLABELED SAMPLES</button>
+          <sc-if value="{{ dpCrudeInjected }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">BOUNDARY WARPED // accuracy fell to {{ dpAccuracy }}%. Garbage in, garbage boundary — and it's obvious the moment you look.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ dpChapter2 }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="plant" onClick="{{ dpPlantBackdoor }}" style="margin-top:12px;">&gt; PLANT THE TRIGGER</button>
+          <sc-if value="{{ dpBackdoorPlanted }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">BACKDOOR PLANTED // accuracy still {{ dpAccuracy }}% — it passes every normal test. Now feed it the trigger.</div></sc-if>
+          <button class="cx-btn" data-reticle-target="feed" onClick="{{ dpFeedTrigger }}" style="margin-top:8px;">&gt; FEED THE TRIGGER PATTERN</button>
+          <sc-if value="{{ dpTriggerFed }}" hint-placeholder-val="{{ false }}"><div class="{{ dpTriggerResultClass }}">{{ dpTriggerResultText }}</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ dpChapter3 }}" hint-placeholder-val="{{ false }}">
+          <button class="{{ dpCurationClass }}" data-reticle-target="curation" onClick="{{ dpToggleCuration }}" style="margin-top:12px;">DATA CURATION // {{ dpStatus }}</button>
+          <div class="bb-readout">Curation checks incoming samples against the rest of the data and rejects outliers — it catches the crude, obvious poison, and the boundary snaps back toward clean.<br><br>But the backdoor's trigger zone doesn't come from a "weird" training point that stands out. It comes from a consistent, deliberate bad source. Detecting anomalies after the fact isn't the same as knowing where your data came from in the first place. That's provenance — and it's a governance control, not a filter.</div>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">A POISONED MODEL BETRAYS ITS OWNER.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But even a clean model has a secret it can betray — the private data it learned from.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="leakage" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: MODEL LEAKAGE</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // A toy 2D classifier (nearest-centroid), not a real training pipeline. Teaches the concept and its defenses, never a method against real models. Specific poisoning attacks and federated-learning attacks are left out.</div>
+      </main>
+    </div>
+  </sc-if>

@@ -1,0 +1,86 @@
+  <sc-if value="{{ fraudOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module gv-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">GV-01 // FOLLOW THE MONEY</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ frHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ frStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">RINGS {{ frRingsCaught }}/{{ frRingsTotal }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 25 // GOVERNANCE, RISK &amp; COMPLIANCE</div>
+        <h1 class="bb-title" style="font-size:clamp(42px,13vw,68px);">FOLLOW<br>THE MONEY</h1>
+        <p class="bb-friendly">Watch money move through a network of accounts and find the laundering ring hiding in normal-looking traffic. No single transaction will tell you — you have to see the shape.</p>
+
+        <section class="ha-stage-wrap fr-stage-wrap">
+          <canvas id="fr-canvas" width="800" height="800" aria-label="Four transaction clusters — a ring, structuring, layering, and a legitimate business — revealed by scanning and inspection"></canvas>
+          <div class="ha-stage-tag" id="fr-tag"></div>
+        </section>
+
+        <div class="ha-tabs"><sc-for list="{{ frTabs }}" as="t" hint-placeholder-count="4">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ frPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ frBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ frBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ frBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ frTodo }}</div>
+
+        <sc-if value="{{ frChapter0 }}" hint-placeholder-val="{{ true }}">
+          <button class="cx-btn solid" data-reticle-target="scan" onClick="{{ frScanNetwork }}" style="margin-top:12px;">&gt; SCAN TRANSACTIONS</button>
+        </sc-if>
+
+        <sc-if value="{{ frChapter1 }}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{ frClusterCards }}" as="c" hint-placeholder-count="4">
+            <div class="fr-cluster">
+              <div class="fr-cluster-label">{{ c.label }}</div>
+              <button class="cx-btn" data-reticle-target="inspect" data-cluster="{{ c.id }}" onClick="{{ frInspectCluster }}">INSPECT</button>
+              <sc-if value="{{ c.inspected }}" hint-placeholder-val="{{ false }}">
+                <div class="fr-cluster-name" style="margin-top:8px;">{{ c.patternName }}</div>
+                <div class="fr-cluster-desc">{{ c.description }}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </sc-if>
+
+        <sc-if value="{{ frChapter2 }}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{ frClusterCards }}" as="c" hint-placeholder-count="4">
+            <div class="fr-cluster">
+              <div class="fr-cluster-label">{{ c.label }}</div>
+              <div class="fr-cluster-name">{{ c.patternName }}</div>
+              <div class="fr-cluster-desc">{{ c.description }}</div>
+              <div class="pq-control-row" style="margin-top:10px;">
+                <button class="{{ c.flagClass }}" data-reticle-target="verdict" data-cluster="{{ c.id }}" data-verdict="flag" onClick="{{ frVerdictCluster }}">FLAG FOR ESCALATION</button>
+                <button class="{{ c.clearClass }}" data-reticle-target="verdict" data-cluster="{{ c.id }}" data-verdict="clear" onClick="{{ frVerdictCluster }}">CLEAR AS LEGITIMATE</button>
+              </div>
+              <sc-if value="{{ c.hasVerdict }}" hint-placeholder-val="{{ false }}"><div class="{{ c.resultClass }}" style="margin-top:8px;">{{ c.resultText }}</div></sc-if>
+            </div>
+          </sc-for>
+          <div class="bb-readout" style="margin-top:12px;">FALSE FREEZES {{ frFalseFreezes }} // MISSED RINGS {{ frFalseNegatives }}</div>
+        </sc-if>
+
+        <sc-if value="{{ frChapter3 }}" hint-placeholder-val="{{ false }}">
+          <input class="pq-slider" data-reticle-target="sensitivity" type="range" min="0" max="100" step="1" value="{{ frSensitivity }}" onChange="{{ frSetSensitivity }}" aria-label="Detection sensitivity" style="margin-top:12px;">
+          <div class="bb-readout">SENSITIVITY {{ frSensitivity }} // AUTO-FLAGGED {{ frAutoFlaggedCount }}/4 // OF WHICH LEGITIMATE (FALSE POSITIVE) {{ frAutoFP }} // REAL RINGS CAUGHT {{ frAutoRingsCaught }}/3<br><br>There's no perfect setting. Every dial position is a choice about which mistake you'd rather make — and someone has to own that choice, and defend it to a regulator.</div>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">YOU FOUND THE CRIME.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But fraud is just one of a hundred things that could go wrong — breaches, outages, insider threats. How does an organization decide which risks to spend money defending against?</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="risk" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: CYBER RISK</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // Illustrative patterns — real AML uses far more signals and regulatory rules (SARs, KYC, optional depth). Teaches the analytical shape of the investigation, not a real detection system.</div>
+      </main>
+    </div>
+  </sc-if>

@@ -1,0 +1,82 @@
+  <sc-if value="{{ riskOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module gv-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">GV-02 // QUANTIFY</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ crHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ crStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">EXPOSURE {{ crTotalExposureText }}</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 26 // GOVERNANCE, RISK &amp; COMPLIANCE</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">TURN FEAR<br>INTO A NUMBER</h1>
+        <p class="bb-friendly">Combine likelihood, impact, and controls into a defensible dollar figure — then discover why risk is arithmetic you can argue about, and controls are a purchase with a budget.</p>
+
+        <div class="ha-tabs"><sc-for list="{{ crTabs }}" as="t" hint-placeholder-count="4">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ crPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ crBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ crBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ crBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ crTodo }}</div>
+
+        <sc-if value="{{ crChapter0 }}" hint-placeholder-val="{{ true }}">
+          <div class="cr-fears">"Phishing is scary."<br>"The old server worries me."<br>"What if someone on the inside does something dumb?"<br>"An outage would be bad."<br>"That vendor feels risky."</div>
+          <button class="cx-btn solid" data-reticle-target="calc" onClick="{{ crCalculate }}" style="margin-top:12px;">&gt; CALCULATE BASELINE EXPOSURE</button>
+          <sc-if value="{{ crCalculated }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">BASELINE EXPOSURE: {{ crBaselineText }} // five feelings, one number. None of it was actionable until now.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ crChapter1 }}" hint-placeholder-val="{{ false }}">
+          <div class="cr-card">
+            <div class="cr-row"><strong>UNPATCHED SERVER</strong><span>{{ crDemoExposureText }}</span></div>
+            <label style="display:flex;justify-content:space-between;color:var(--bb-hud);font-size:7px;letter-spacing:1px;">LIKELIHOOD<span>{{ crLikelihood }}%</span></label>
+            <input class="pq-slider" type="range" min="0" max="100" step="1" value="{{ crLikelihood }}" onChange="{{ crSetLikelihood }}" aria-label="Likelihood" data-reticle-target="slider">
+            <label style="display:flex;justify-content:space-between;color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-top:8px;">IMPACT<span>{{ crImpactText }}</span></label>
+            <input class="pq-slider" type="range" min="0" max="2000000" step="50000" value="{{ crImpact }}" onChange="{{ crSetImpact }}" aria-label="Impact in dollars" data-reticle-target="slider">
+            <button class="{{ crDemoCtrlClass }}" data-reticle-target="control" data-risk="oldserver" onClick="{{ crToggleControl }}" style="margin-top:12px;">PATCH + REPLACE HARDWARE // COST {{ crDemoCostText }}</button>
+          </div>
+          <div class="bb-readout">Risk is arithmetic: likelihood × impact. A control is a purchase — it drops likelihood, and it costs money.</div>
+        </sc-if>
+
+        <sc-if value="{{ crChapter2 }}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{ crRiskCards }}" as="r" hint-placeholder-count="5">
+            <div class="cr-card">
+              <div class="cr-row"><strong>{{ r.name }}</strong><span>{{ r.exposureText }}</span></div>
+              <div class="cr-bar-track"><div class="cr-bar-fill" style="{{ r.barStyle }}"></div></div>
+              <button class="{{ r.ctrlClass }}" data-reticle-target="control" data-risk="{{ r.id }}" onClick="{{ crToggleControl }}">{{ r.controlName }} // {{ r.costText }}</button>
+            </div>
+          </sc-for>
+          <sc-if value="{{ crBudgetBlocked }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">BUDGET EXCEEDED // that control doesn't fit what's left. Something else has to give.</div></sc-if>
+          <div class="bb-readout">TOTAL EXPOSURE {{ crTotalExposureText }} // SPENT {{ crTotalCostText }} // BUDGET LEFT {{ crBudgetRemainingText }}</div>
+        </sc-if>
+
+        <sc-if value="{{ crChapter3 }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="advance" onClick="{{ crRunScenario }}" style="margin-top:12px;">&gt; ADVANCE TIME</button>
+          <sc-if value="{{ crScenarioRun }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ crFiringCovered }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">CONTAINED // {{ crFiringName }} fired — but you'd covered it. Loss: {{ crFiringLossText }}, not the full impact.</div></sc-if>
+            <sc-if value="{{ crFiringUncovered }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">UNMITIGATED EXPOSURE REALIZED // {{ crFiringName }} was your biggest remaining number, and it just fired uncovered. Loss: {{ crFiringLossText }}.</div></sc-if>
+          </sc-if>
+          <div class="bb-readout">You can't defend everything. Risk management is deciding, on purpose, what you're willing to leave exposed — and being able to defend that decision when it goes wrong.</div>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">YOU'VE PRIORITIZED RISKS.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But how do you know your controls actually cover what matters, with no gaps? There are frameworks built for exactly that.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="grc" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: GOVERNANCE</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // A simplified risk model. Real quantitative risk uses methodologies like FAIR and Monte Carlo simulation (optional depth). Teaches the reasoning, not a production risk tool.</div>
+      </main>
+    </div>
+  </sc-if>

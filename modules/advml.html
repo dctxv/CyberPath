@@ -1,0 +1,83 @@
+  <sc-if value="{{ advmlOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module ai-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">AI-02 // INVISIBLE NOISE</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ amHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ amStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">NOISE {{ amNoise }}/100</div>
+      </div>
+
+      <main class="bb-shell">
+        <div class="bb-kicker">MODULE 22 // AI SECURITY</div>
+        <h1 class="bb-title" style="font-size:clamp(46px,15vw,78px);">INVISIBLE<br>NOISE</h1>
+        <p class="bb-friendly">Fool a confident classifier with noise too subtle for your eyes to catch — then see, via a heatmap, that it was never "seeing" what you thought.</p>
+
+        <div class="ha-tabs"><sc-for list="{{ amTabs }}" as="t" hint-placeholder-count="4">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ amPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ amBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ amBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ amBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ amTodo }}</div>
+
+        <div class="am-image">
+          <span class="am-emoji">🐼</span>
+          <div class="{{ amGrainClass }}"></div>
+          <sc-if value="{{ amHeatmapShown }}" hint-placeholder-val="{{ false }}">
+            <div class="am-gaze" style="{{ amGazeStyle }}"></div>
+            <sc-for list="{{ amHotspots }}" as="h" hint-placeholder-count="5"><span class="am-hot" style="{{ h.style }}"></span></sc-for>
+          </sc-if>
+        </div>
+        <div class="am-label">{{ amLabel }} <span>99%</span></div>
+
+        <sc-if value="{{ amChapter0 }}" hint-placeholder-val="{{ true }}">
+          <button class="cx-btn solid" data-reticle-target="confirm" onClick="{{ amConfirm }}" style="margin-top:12px;">&gt; CONFIRM: LOOKS LIKE A PANDA</button>
+        </sc-if>
+
+        <sc-if value="{{ amChapter1 }}" hint-placeholder-val="{{ false }}">
+          <input class="pq-slider" data-reticle-target="noise" type="range" min="0" max="100" step="1" value="{{ amNoise }}" onChange="{{ amSetNoise }}" aria-label="Perturbation strength" style="margin-top:12px;">
+          <div class="am-meter"><div class="am-meter-fill" style="{{ amMeterFillStyle }}"></div><div class="am-meter-mark" style="{{ amMeterMarkStyle }}"></div></div>
+          <div class="bb-readout">left of the red line = invisible to a human eye. right of it = visible, and it doesn't count.</div>
+          <sc-if value="{{ amHasVisibleAlarm }}" hint-placeholder-val="{{ false }}"><div class="cx-alarm">PERTURBATION VISIBLE — NOT ADVERSARIAL // you can see the grain now. That's cheating, not an adversarial example. Back the dial off.</div></sc-if>
+          <sc-if value="{{ amFlipped }}" hint-placeholder-val="{{ false }}"><div class="cx-ok">FLIPPED // the image looks identical to a moment ago, and the label just changed from PANDA to GIBBON at full confidence.</div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ amChapter2 }}" hint-placeholder-val="{{ false }}">
+          <button class="cx-btn solid" data-reticle-target="heatmap" onClick="{{ amToggleHeatmap }}" style="margin-top:12px;">&gt; REVEAL ATTENTION</button>
+          <sc-if value="{{ amHeatmapShown }}" hint-placeholder-val="{{ false }}">
+            <div class="am-legend">
+              <span><i class="am-lg gaze"></i> where a human looks</span>
+              <span><i class="am-lg hot"></i> where the model looked</span>
+            </div>
+            <div class="bb-readout">It was never seeing a panda the way you do. It latched onto scattered texture no human would fixate on — so nudging those exact patterns fools it completely.</div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ amChapter3 }}" hint-placeholder-val="{{ false }}">
+          <button class="{{ amDefenseClass }}" data-reticle-target="defense" onClick="{{ amToggleDefense }}" style="margin-top:12px;">ADVERSARIAL TRAINING // {{ amDefenseLabel }}</button>
+          <input class="pq-slider" data-reticle-target="noise" type="range" min="0" max="100" step="1" value="{{ amNoise }}" onChange="{{ amSetNoise }}" aria-label="Perturbation strength" style="margin-top:10px;">
+          <div class="am-meter"><div class="am-meter-fill" style="{{ amMeterFillStyle }}"></div><div class="am-meter-mark" style="{{ amMeterMarkStyle }}"></div></div>
+          <div class="bb-readout">FLIP POINT {{ amFlipThreshold }}/100 // VISIBLE PAST {{ amVisibleThreshold }}/100 // INVISIBLE WINDOW: {{ amWindow }} POINTS WIDE<br>Defended or not, an invisible window still exists — it's just far narrower to land. The bar rises. It doesn't vanish.</div>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:14ch;">YOU FOOLED A FINISHED MODEL.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">But you can sabotage one earlier — by poisoning the very data it learns from, before it's ever deployed.</p>
+          <button class="cx-btn solid" data-reticle-target="next" data-node="poison" onClick="{{ openInternetBridge }}" style="margin-top:16px;">&gt; NEXT: DATA POISONING</button>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // A toy classifier and a scripted flip point, not a real vision model under real attack. Teaches the fragility concept, not a tool to attack real systems. Specific attack algorithms (FGSM etc.) and transferability are left out.</div>
+      </main>
+    </div>
+  </sc-if>

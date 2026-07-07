@@ -101,6 +101,18 @@ Uniqueness ledger — each module owns ONE mechanic, no repeats:
 | FR-01 Qubit | Arrow stage (Bloch shadow) | Drag arrows tip-to-tail; interference |
 | FR-02 Quantum vs RSA | Period comb wall | Drag a comb across a signal to feel period-finding |
 | FR-03 Post-Quantum | 3D lattice (built) | Drag basis vectors; nearest-dot snap |
+| AT-01 Malware | Sandboxed detonation tree | Detonate; watch the tree grow node-by-node, red-boxed behaviors vs quiet benign |
+| AT-02 Phishing | One-message inbox card | Tap-to-reveal sender/link hotspots; timed verdict calls under pressure |
+| AT-03 Web Vulnerabilities | Live query / DOM x-ray | Type input, watch it cross from data (ink) to code (red) in the live query/output; naive vs real patch |
+| AT-04 Pentesting | Attack path tree | Chain foothold → escalate → pivot → crown jewel; defender severs one link, watches the downstream tree go dark |
+| AI-01 Prompt Injection | Document with a smuggled instruction | Pick a doc + defense combo; the sneakiest phrasing always evades pattern-based defenses, only capability-limiting holds |
+| AI-02 Adversarial ML | Classifier + perceptibility dial | Drag noise until the label flips while the image stays visually identical; heatmap reveals off-face attention; defense narrows but never closes the invisible window |
+| AI-03 Data Poisoning | Nearest-centroid scatter + boundary | Inject mislabeled points and watch the line warp; plant a dormant trigger zone that overrides classification on command while accuracy barely moves |
+| AI-04 Model Leakage | Toy model query console | Compare confidence between a trained and untrained record; assemble 3 harmless queries into one private profile; privacy/accuracy trade-off dial |
+| GV-01 Fraud & AML | Four-quadrant transaction graph | Inspect ring/structuring/layering/legit clusters, flag or clear each; sensitivity dial live-trades real rings caught against false freezes |
+| GV-02 Cyber Risk | Exposure bars + fixed budget | Build one risk's exposure from sliders, then allocate a real budget across 5 controls; the biggest remaining number fires as a scenario |
+| GV-03 Governance | 5-category coverage grid | Click-select a control, click-place onto a category; RESPOND has no available control — a drill exposes it and any mismatched placement as ineffective |
+| GV-04 Compliance | Evidence-to-requirement audit board | Match artifacts to requirements (one has no valid evidence, ever); a passed-on-paper control gets exploited by a simulated incident — COMPLIANT: TRUE / SECURE: FALSE, atlas finale |
 
 ---
 

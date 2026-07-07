@@ -407,6 +407,131 @@
   .zt-stage-wrap:before{content:'ACCESS ENGINE // EVERY REQUEST, EVERY TIME';}
   .zt-stage-wrap canvas{aspect-ratio:1000/620;}
 
+  /* ---- AT-01 malware: sandboxed detonation tree ---- */
+  .mw-stage-wrap:before{content:'SANDBOX CHAMBER // BEHAVIOR, NOT NAME';}
+  .mw-stage-wrap canvas{aspect-ratio:1000/640;}
+
+  /* ---- AT-02 phishing: one message, hotspots to inspect ---- */
+  .ph-stage-wrap:before{content:'INBOX // ONE MESSAGE AT A TIME';}
+  .ph-card{padding:18px 16px;min-height:200px;}
+  .ph-row{display:flex;gap:8px;align-items:baseline;font-size:11px;color:var(--bb-ink);margin-bottom:2px;}
+  .ph-label{color:var(--bb-hud);font-size:7px;letter-spacing:1px;min-width:40px;flex:0 0 auto;}
+  .ph-reveal{color:#ff2a22;font:700 10px 'IBM Plex Mono',monospace;margin:2px 0 12px 48px;letter-spacing:.3px;word-break:break-all;}
+  .ph-subject{font:800 15px 'Archivo',sans-serif;color:var(--bb-ink);margin:12px 0 6px;}
+  .ph-body{font-size:11px;line-height:1.6;color:var(--bb-muted);margin-bottom:12px;}
+  .ph-body.urgent{color:#ff2a22;font-weight:600;}
+  .ph-link{color:var(--bb-hud);font:700 10px 'IBM Plex Mono',monospace;text-decoration:underline;word-break:break-all;}
+
+  /* ---- AT-03 web vulnerabilities: live query / DOM x-ray ---- */
+  .wv-card{border:1px solid var(--bb-hud);background:var(--bb-bg);padding:14px;margin-top:14px;}
+  .wv-card-label{color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-bottom:10px;}
+  .wv-field{border:1px solid var(--bb-hud);padding:8px;background:var(--bb-bg);margin-top:8px;}
+  .wv-field label{display:block;color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin:0 0 6px 4px;}
+  .wv-field input, .wv-field textarea{display:block;width:100%;border:0;outline:0;background:var(--bb-bg);color:var(--bb-ink);font:600 13px 'IBM Plex Mono',monospace;padding:6px;caret-color:var(--bb-hud);resize:vertical;}
+  .wv-query{border-left:2px solid var(--bb-hud);padding:12px 14px;margin-top:12px;font:600 11px 'IBM Plex Mono',monospace;line-height:1.8;color:var(--bb-ink);word-break:break-all;}
+  .wv-inject{color:#ff2a22;background:rgba(255,42,34,.1);}
+  .wv-bound{color:var(--bb-muted);font-style:italic;}
+  .wv-result{margin-top:10px;font:800 11px 'IBM Plex Mono',monospace;letter-spacing:.5px;}
+  .wv-result.bad{color:#ff2a22;}
+  .wv-result.ok{color:var(--bb-hud);}
+  .wv-victim{border-left:2px solid var(--bb-hud);padding:12px 14px;margin-top:12px;}
+  .wv-comment{font-size:11px;color:var(--bb-ink);line-height:1.6;word-break:break-all;}
+  .wv-alert-banner{border:1px solid #ff2a22;background:rgba(255,42,34,.08);color:#ff2a22;padding:10px 12px;font:700 10px 'IBM Plex Mono',monospace;line-height:1.6;}
+  .wv-patch-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;}
+
+  /* ---- AT-04 pentesting: attack path tree ---- */
+  .pn-stage-wrap:before{content:'ATTACK TREE // RECON, FOOTHOLD, ESCALATE, PIVOT, CROWN JEWEL';}
+  .pn-stage-wrap canvas{aspect-ratio:1000/640;}
+
+  /* ---- AI-01 prompt injection: document with a smuggled instruction ---- */
+  .pi-card{border:1px solid var(--bb-hud);background:var(--bb-bg);padding:14px;margin-top:14px;}
+  .pi-card-label{color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-bottom:10px;}
+  .pi-doc{font-size:11px;line-height:1.7;color:var(--bb-ink);}
+  .pi-inject{color:#ff2a22;background:rgba(255,42,34,.1);}
+  .pi-response{border-left:2px solid var(--bb-hud);padding:10px 12px;margin-top:12px;font-size:11px;line-height:1.6;color:var(--bb-ink);}
+  .pi-leak{color:#ff2a22;font-weight:700;}
+  .pi-doc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;}
+  .pi-tier-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;}
+  .pi-def-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;}
+
+  /* ---- AI-02 adversarial ML: imperceptible noise flips a classifier ---- */
+  .am-image{position:relative;border:1px solid var(--bb-hud);background:var(--bb-bg);height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-top:14px;}
+  .am-emoji{font-size:104px;line-height:1;filter:grayscale(.15);}
+  .am-grain{position:absolute;inset:0;opacity:0;pointer-events:none;background-image:radial-gradient(circle,rgba(255,42,34,.55) 1px,transparent 1.6px);background-size:6px 6px;transition:opacity .15s steps(3);}
+  .am-grain.on{opacity:1;}
+  .am-label{text-align:center;font:900 22px 'Archivo',sans-serif;color:var(--bb-ink);margin-top:12px;letter-spacing:.5px;}
+  .am-label span{color:var(--bb-hud);font-size:.6em;}
+  .am-meter{height:10px;border:1px solid var(--bb-hud);position:relative;margin-top:14px;overflow:visible;}
+  .am-meter-fill{position:absolute;left:0;top:0;bottom:0;background:var(--bb-hud);opacity:.7;transition:width .1s steps(3);}
+  .am-meter-mark{position:absolute;top:-4px;bottom:-4px;width:2px;background:#ff2a22;}
+  .am-hot{position:absolute;width:9px;height:9px;border-radius:50%;background:#ff2a22;box-shadow:0 0 6px rgba(255,42,34,.7);}
+  .am-gaze{position:absolute;border:1.5px dashed var(--bb-ink);border-radius:6px;}
+  .am-legend{display:flex;gap:16px;color:var(--bb-muted);font-size:8px;letter-spacing:.5px;margin-top:10px;}
+  .am-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .am-lg{display:inline-block;width:9px;height:9px;flex:0 0 auto;}
+  .am-lg.hot{background:#ff2a22;border-radius:50%;}
+  .am-lg.gaze{border:1.5px dashed var(--bb-ink);background:transparent;}
+
+  /* ---- AI-03 data poisoning: nearest-centroid boundary + backdoor trigger ---- */
+  .dp-stage-wrap:before{content:'DECISION BOUNDARY // NEAREST-CENTROID CLASSIFIER';}
+  .dp-stage-wrap canvas{aspect-ratio:1/1;}
+
+  /* ---- AI-04 model leakage: membership inference + aggregation ---- */
+  .ml-card{border:1px solid var(--bb-hud);background:var(--bb-bg);padding:14px;margin-top:14px;}
+  .ml-card-label{color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-bottom:10px;}
+  .ml-response{border-left:2px solid var(--bb-hud);padding:10px 12px;margin-top:10px;font-size:11px;line-height:1.6;color:var(--bb-ink);}
+  .ml-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+  .ml-record{border:1px solid var(--bb-hud);padding:10px;font-size:10px;line-height:1.6;}
+  .ml-record strong{display:block;font:800 11px 'Archivo',sans-serif;color:var(--bb-ink);margin-bottom:6px;}
+  .ml-record span{color:var(--bb-hud);}
+  .ml-frag-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px;}
+  .ml-profile{border:1px solid #ff2a22;color:#ff2a22;padding:12px;margin-top:12px;font:700 11px 'IBM Plex Mono',monospace;line-height:1.6;}
+
+  /* ---- GV-01 fraud & AML: transaction cluster graph ---- */
+  .fr-stage-wrap:before{content:'TRANSACTION GRAPH // FOUR CLUSTERS';}
+  .fr-stage-wrap canvas{aspect-ratio:1/1;}
+  .fr-cluster{border:1px solid var(--bb-hud);background:var(--bb-bg);padding:12px;margin-top:12px;}
+  .fr-cluster-label{color:var(--bb-hud);font-size:7px;letter-spacing:1px;margin-bottom:8px;}
+  .fr-cluster-name{font:800 13px 'Archivo',sans-serif;color:var(--bb-ink);margin-bottom:6px;}
+  .fr-cluster-desc{font-size:10px;line-height:1.6;color:var(--bb-muted);}
+
+  /* ---- GV-02 cyber risk: exposure bars + budget allocation ---- */
+  .cr-card{border:1px solid var(--bb-hud);background:var(--bb-bg);padding:12px;margin-top:12px;}
+  .cr-row{display:flex;justify-content:space-between;align-items:baseline;font-size:10px;color:var(--bb-ink);margin-bottom:6px;}
+  .cr-row strong{font:800 12px 'Archivo',sans-serif;}
+  .cr-bar-track{height:10px;border:1px solid var(--bb-hud);position:relative;overflow:hidden;margin-bottom:8px;}
+  .cr-bar-fill{position:absolute;left:0;top:0;bottom:0;background:var(--bb-hud);opacity:.75;transition:width .15s steps(4);}
+  .cr-fears{border-left:2px solid var(--bb-hud);padding:10px 14px;margin-top:12px;color:var(--bb-muted);font-size:11px;line-height:1.9;font-style:italic;}
+
+  /* ---- GV-03 governance: framework coverage grid ---- */
+  .gv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-top:12px;}
+  .gv-cell{border:1px dashed var(--bb-muted);background:var(--bb-bg);padding:12px 8px;min-height:78px;text-align:center;cursor:pointer;}
+  .gv-cell strong{display:block;font:800 11px 'Archivo',sans-serif;color:var(--bb-ink);margin-bottom:8px;}
+  .gv-cell span{display:block;font-size:8px;color:var(--bb-muted);letter-spacing:.3px;line-height:1.4;}
+  .gv-cell.placed{border:1px solid var(--bb-hud);}
+  .gv-cell.placed span{color:var(--bb-hud);}
+  .gv-cell.ok{border:1px solid var(--bb-hud);background:rgba(245,21,14,.06);}
+  .gv-cell.ok span{color:var(--bb-hud);}
+  .gv-cell.gap{border:1px dashed #ff2a22;background:rgba(255,42,34,.06);}
+  .gv-cell.gap span{color:#ff2a22;}
+  .gv-chip-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:6px;margin-top:12px;}
+  .gv-gap-row{display:flex;justify-content:space-between;align-items:center;border:1px solid #ff2a22;padding:10px 12px;margin-top:8px;font-size:10px;color:#ff2a22;}
+
+  /* ---- GV-04 compliance: evidence-to-requirement audit ---- */
+  .co-req{border:1px solid var(--bb-muted);background:var(--bb-bg);padding:10px 12px;margin-top:8px;text-align:left;width:100%;cursor:pointer;}
+  .co-req strong{display:block;font:800 11px 'Archivo',sans-serif;color:var(--bb-ink);margin-bottom:6px;}
+  .co-req span{display:block;font-size:8px;color:var(--bb-muted);letter-spacing:.4px;}
+  .co-req.ok{border-color:var(--bb-hud);}
+  .co-req.ok span{color:var(--bb-hud);}
+  .co-req.bad{border-color:#ff2a22;}
+  .co-req.bad span{color:#ff2a22;}
+  .co-meter{height:12px;border:1px solid var(--bb-hud);position:relative;overflow:hidden;margin-top:12px;}
+  .co-meter-fill{position:absolute;left:0;top:0;bottom:0;background:var(--bb-hud);opacity:.75;transition:width .2s steps(4);}
+  .co-verdict-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+  .co-verdict{border:1px solid;padding:14px;text-align:center;font:900 13px 'Archivo',sans-serif;letter-spacing:.5px;}
+  .co-verdict.true{border-color:var(--bb-hud);color:var(--bb-hud);}
+  .co-verdict.false{border-color:#ff2a22;color:#ff2a22;}
+
   /* the reticle already tracks the pointer — hide the OS cursor on fine pointers */
   @media (pointer:fine){ html,html *{cursor:none !important;} }
 
