@@ -1,0 +1,156 @@
+  <sc-if value="{{ mitmOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="bb-module iw-module">
+      <div class="bb-hud">
+        <span class="bb-corner tl"></span><span class="bb-corner tr"></span>
+        <span class="bb-corner bl"></span><span class="bb-corner br"></span>
+        <div style="position:absolute;left:22px;top:20px;">NW-04 // THE INTERCEPT SEAT</div>
+        <div style="position:absolute;right:22px;top:18px;text-align:right;line-height:1.6;">
+          <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:3px;">
+            <button data-reticle-target="theme" onClick="{{ toggleTheme }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">{{ themeLabel }}</button>
+            <button data-reticle-target="exit" onClick="{{ closeStub }}" style="border:1px solid var(--bb-hud);background:var(--bb-bg);color:var(--bb-hud);font:8px 'IBM Plex Mono',monospace;letter-spacing:1px;padding:7px 9px;">[ EXIT ]</button>
+          </div>
+          <div>{{ mmHud }}</div>
+        </div>
+        <div style="position:absolute;left:22px;bottom:20px;">{{ mmStatus }}<span style="animation:mv-blink 1s steps(1) infinite;">_</span></div>
+        <div style="position:absolute;right:22px;bottom:20px;text-align:right;">BEAT {{ mmChapterPad }}/05</div>
+      </div>
+
+      <main class="bb-shell iw-shell">
+        <div class="bb-kicker">MODULE 29 // NETWORKS</div>
+        <h1 class="bb-title" style="font-size:clamp(44px,15vw,76px);">INTERCEPT<br>SEAT</h1>
+        <p class="bb-friendly">Take the seat between two people who think they're talking privately. Read everything they send. Silently change it. Pretend to be either one. Then watch every power die the instant encryption and identity checks come on.</p>
+
+        <section class="iw-stage-wrap mm-stage-wrap">
+          <canvas id="mm-canvas" width="1000" height="620" aria-label="Alice and Bob's channel bending through your intercepted position in the middle"></canvas>
+          <div class="ha-stage-tag" id="mm-tag"></div>
+        </section>
+
+        <div class="ha-tabs mm-tabs"><sc-for list="{{ mmTabs }}" as="t" hint-placeholder-count="6">
+          <button class="{{ t.className }}" data-reticle-target="chapter" data-chapter="{{ t.id }}" onClick="{{ mmPickChapter }}"><strong>{{ t.label }}</strong><span>{{ t.short }}</span></button>
+        </sc-for></div>
+
+        <section class="iw-explain">
+          <div class="iw-explain-tag">{{ mmBeatTag }}</div>
+          <h2 class="iw-explain-title">{{ mmBeatTitle }}</h2>
+          <p class="iw-explain-body">{{ mmBeatBody }}</p>
+        </section>
+
+        <div class="pq-todo"><span>DO THIS</span>{{ mmTodo }}</div>
+
+        <sc-if value="{{ mmChapter0 }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ mmNotSeated }}" hint-placeholder-val="{{ true }}">
+            <button class="cx-btn solid" data-reticle-target="seat" onClick="{{ mmTakeSeat }}" style="margin-top:12px;">&gt; TAKE THE SEAT</button>
+          </sc-if>
+          <sc-if value="{{ mmSeated }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-ok">POSITION: IN-PATH // MODE: RELAY — every message between Alice and Bob now passes through you first. They have no idea.</div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ mmChapter1 }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ mmNotSeated }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">Take the seat in chapter 00 first — nothing routes through you until you do.</div></sc-if>
+          <sc-if value="{{ mmCanIntercept }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn solid" data-reticle-target="intercept" onClick="{{ mmIntercept }}" style="margin-top:12px;">&gt; INTERCEPT</button>
+          </sc-if>
+          <sc-if value="{{ mmHeldReadable }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-plain">{{ mmEditText }}</div>
+            <button class="cx-btn solid" data-reticle-target="relay" onClick="{{ mmRelay }}" style="margin-top:8px;">RELAY ▶</button>
+          </sc-if>
+          <sc-if value="{{ mmHeldBlind }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-alarm">DECODE FAILED // NO KEY</div>
+            <button class="cx-btn" data-reticle-target="relay" onClick="{{ mmRelay }}" style="margin-top:8px;">RELAY (BLIND) ▶</button>
+          </sc-if>
+          <sc-if value="{{ mmHasRelayed }}" hint-placeholder-val="{{ false }}">
+            <div class="bb-readout">READ: {{ mmReadFlag }} // ALTER: {{ mmAlterFlag }} — Bob received it {{ mmReceivedNote }}.</div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ mmChapter2 }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ mmNotSeated }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">Take the seat in chapter 00 first.</div></sc-if>
+          <sc-if value="{{ mmCanIntercept }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn solid" data-reticle-target="intercept" onClick="{{ mmIntercept }}" style="margin-top:12px;">&gt; INTERCEPT</button>
+          </sc-if>
+          <sc-if value="{{ mmHeldReadable }}" hint-placeholder-val="{{ false }}">
+            <div class="wv-field">
+              <label>EDIT BEFORE RELAY</label>
+              <input value="{{ mmEditText }}" onChange="{{ mmEditMsg }}" maxlength="40" autocomplete="off" spellcheck="false">
+            </div>
+            <button class="cx-btn solid" data-reticle-target="relay" onClick="{{ mmRelay }}" style="margin-top:8px;">RELAY ▶</button>
+          </sc-if>
+          <sc-if value="{{ mmHeldBlind }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-alarm">ALTER BLOCKED // CIPHERTEXT</div>
+            <button class="cx-btn" data-reticle-target="relay" onClick="{{ mmRelay }}" style="margin-top:8px;">RELAY (BLIND) ▶</button>
+          </sc-if>
+          <sc-if value="{{ mmLastAltered }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-alarm">MESSAGE ALTERED // visible only to you — nobody screamed.</div>
+          </sc-if>
+          <sc-if value="{{ mmHasRelayed }}" hint-placeholder-val="{{ false }}">
+            <div class="ml-compare">
+              <div class="ml-record"><strong>ALICE SENT</strong>{{ mmAliceSent }}</div>
+              <div class="ml-record"><strong>BOB RECEIVED</strong>{{ mmBobReceived }}</div>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ mmChapter3 }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ mmNotSeated }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">Take the seat in chapter 00 first.</div></sc-if>
+          <sc-if value="{{ mmSeated }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn solid" data-reticle-target="impersonate" onClick="{{ mmImpersonate }}" style="margin-top:12px;">&gt; IMPERSONATE BOTH SIDES</button>
+          </sc-if>
+          <sc-if value="{{ mmImpersonated }}" hint-placeholder-val="{{ false }}">
+            <div class="pk-keys">
+              <div class="pk-key"><strong>AS &quot;BOB&quot;</strong><span>what Alice sees</span></div>
+              <div class="pk-key"><strong>AS &quot;ALICE&quot;</strong><span>what Bob sees</span></div>
+            </div>
+            <div class="cx-ok">IMPERSONATING: ALICE ⇄ BOB — two conversations, one puppeteer. Neither side knows the other is you.</div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ mmChapter4 }}" hint-placeholder-val="{{ false }}">
+          <button class="{{ mmHttpsToggleClass }}" data-reticle-target="https" onClick="{{ mmToggleHttps }}" style="margin-top:12px;">{{ mmHttpsLabel }}</button>
+          <sc-if value="{{ mmNotSeated }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">Take the seat in chapter 00 first.</div></sc-if>
+          <sc-if value="{{ mmCanIntercept }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn solid" data-reticle-target="intercept" onClick="{{ mmIntercept }}" style="margin-top:12px;">&gt; INTERCEPT</button>
+          </sc-if>
+          <sc-if value="{{ mmHeldReadable }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-plain">{{ mmEditText }}</div>
+            <button class="cx-btn solid" data-reticle-target="relay" onClick="{{ mmRelay }}" style="margin-top:8px;">RELAY ▶</button>
+          </sc-if>
+          <sc-if value="{{ mmHeldBlind }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-alarm">DECODE FAILED // NO KEY</div>
+            <button class="cx-btn" data-reticle-target="relay" onClick="{{ mmRelay }}" style="margin-top:8px;">RELAY (BLIND) ▶</button>
+          </sc-if>
+          <sc-if value="{{ mmHttps }}" hint-placeholder-val="{{ false }}">
+            <div class="bb-readout">READ: NO // ALTER: NO — same seat, same messages passing through your hands. They're just noise now.</div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ mmChapter5 }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ mmNotSeatedFresh }}" hint-placeholder-val="{{ false }}"><div class="bb-readout">You need the seat to attempt this — press TAKE THE SEAT in chapter 00.</div></sc-if>
+          <sc-if value="{{ mmCanCert }}" hint-placeholder-val="{{ false }}">
+            <button class="cx-btn solid" data-reticle-target="cert" onClick="{{ mmPresentCert }}" style="margin-top:12px;">&gt; PRESENT FAKE CERT</button>
+          </sc-if>
+          <sc-if value="{{ mmCertRejected }}" hint-placeholder-val="{{ false }}">
+            <div class="cx-alarm">CERTIFICATE INVALID // NOT SIGNED BY TRUSTED CA</div>
+            <div class="bb-readout">EJECTED — the wire snaps back to a direct line. Alice's browser checked your certificate against a signature you can't fake, and threw you out of the chair. In the real world this only protects you if the warning is heeded, not clicked through.</div>
+          </sc-if>
+        </sc-if>
+
+        <section class="bb-payoff">
+          <h2 class="bb-statement" style="max-width:15ch;">THE MIDDLE SEAT IS ONLY DANGEROUS IN THE DARK.</h2>
+          <p class="bb-friendly" style="margin-bottom:0;">You read, you tampered, you impersonated — with nothing but a position on the wire. Then two things took every power away: encryption made the words unreadable, and certificates made "who you are" unfakeable. That padlock in your browser bar isn't decoration. It's the reason the person in the middle — and there's always someone in the middle — gets nothing.</p>
+          <div class="bbc-end">
+            <div class="bbc-score"><span>MESSAGES INTERCEPTED</span><span>{{ mmInterceptCount }}</span></div>
+            <div class="bbc-score"><span>MESSAGES ALTERED (UNDETECTED)</span><span>{{ mmAlterCount }}</span></div>
+            <div class="bbc-score"><span>IMPERSONATIONS</span><span>{{ mmImpersonateCount }}</span></div>
+            <div class="bbc-score"><span>ENCRYPTION ENGAGED</span><span>{{ mmEncryptedLine }}</span></div>
+            <div class="bbc-score"><span>CERT FORGERY</span><span>{{ mmCertLine }}</span></div>
+          </div>
+          <div class="iw-actions" style="margin-top:16px;">
+            <button class="cx-btn" data-reticle-target="replay" onClick="{{ mmReplay }}">&gt; RUN IT AGAIN</button>
+            <button class="cx-btn solid" data-reticle-target="next" data-node="idam" onClick="{{ openInternetBridge }}">&gt; NEXT: WHO ARE YOU REALLY?</button>
+          </div>
+        </section>
+        <div class="bb-scope">LEARNING SIMULATION // Simulated positions only — this teaches why an interception position is defeated by encryption and identity checks, not how an attacker gets into the middle in the first place (ARP spoofing, rogue Wi-Fi, DNS tricks). Certificates stop impersonation only if the browser's warning is heeded; ignoring it is how real MITM still succeeds.</div>
+      </main>
+    </div>
+  </sc-if>

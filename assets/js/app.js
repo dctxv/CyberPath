@@ -20,6 +20,9 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
     ptText:'hi bob, meet at 8?', ptChapter:0, ptChopped:false, ptRaced:false, ptDropped:false, ptNumbering:true, ptRetransmit:true, ptBusy:false,
     dnDomain:'bob.host', dnChapter:0, dnResolved:false, dnCached:false, dnBusy:false, dnPoisonShown:false, dnPoisonChoice:null, dnLookups:0,
     vpChapter:0, vpOn:false, vpSeat:'observer',
+    mmChapter:0, mmSeated:false, mmHeld:false, mmEditText:'', mmLastAltered:false, mmLastRelayedText:'',
+    mmInterceptCount:0, mmAlterCount:0, mmImpersonated:false, mmImpersonateCount:0,
+    mmHttps:false, mmCertTried:false, mmCertRejected:false, mmEjected:false,
     pwChapter:0, pwDictRun:false, pwCrackedCount:0, pwUserPassword:'', pwSaltOn:false, pwBusy:false,
     mfChapter:0, mfAttackedA:false, mfAttackedB:null,
     oaChapter:0, oaRequested:false, oaGranted:false, oaScopeEmail:false, oaOverBroad:false, oaRevoked:false, oaBusy:false,
@@ -74,7 +77,7 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
       ['packets','node',64,1185,'PACKETS / TCP-IP','packet journey simulator','live',100,'NETWORKS'],
       ['dns','node',296,1185,'DNS','DNS lookup visualizer','live',100,'NETWORKS'],
       ['vpn','node',64,1285,'VPNS','tunnel routing visualizer','live',100,'NETWORKS'],
-      ['mitm','node',296,1285,'MITM','interception demo','signal',15,'NETWORKS'],
+      ['mitm','node',296,1285,'MITM','interception demo','live',100,'NETWORKS'],
 
       ['idam','head',180,1400,'IDENTITY & ACCESS','who you are & what you can do','detected',100,'IDENTITY'],
       ['pw','node',64,1495,'PASSWORDS & HASHING','credential storage / cracking','live',100,'IDENTITY'],
@@ -380,6 +383,7 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
       if (this.state.stubId === 'packets') this.drawPtCanvas();
       if (this.state.stubId === 'dns') this.drawDnCanvas();
       if (this.state.stubId === 'vpn') this.drawVpCanvas();
+      if (this.state.stubId === 'mitm') this.drawMmCanvas();
       if (this.state.stubId === 'pw') this.drawPwCanvas();
       if (this.state.stubId === 'mfa') this.drawMfCanvas();
       if (this.state.stubId === 'oauth') this.drawOaCanvas();
@@ -476,7 +480,7 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
   // the seven modules that render their own full-screen interactive UI (vs. the
   // generic "pending analysis" stub) — kept in one place so the loop, reticle,
   // and stub gate all agree
-  isLiveModule(id) { return id === 'bits' || id === 'internet' || id === 'symmetric' || id === 'hashing' || id === 'rsa' || id === 'sig' || id === 'tls' || id === 'quantum' || id === 'quantum-rsa' || id === 'pqc' || id === 'packets' || id === 'dns' || id === 'vpn' || id === 'pw' || id === 'mfa' || id === 'oauth' || id === 'ztrust' || id === 'malware' || id === 'phish' || id === 'webvuln' || id === 'pentest' || id === 'pinj' || id === 'advml' || id === 'poison' || id === 'leakage' || id === 'fraud' || id === 'risk' || id === 'grc' || id === 'compliance'; }
+  isLiveModule(id) { return id === 'bits' || id === 'internet' || id === 'symmetric' || id === 'hashing' || id === 'rsa' || id === 'sig' || id === 'tls' || id === 'quantum' || id === 'quantum-rsa' || id === 'pqc' || id === 'packets' || id === 'dns' || id === 'vpn' || id === 'mitm' || id === 'pw' || id === 'mfa' || id === 'oauth' || id === 'ztrust' || id === 'malware' || id === 'phish' || id === 'webvuln' || id === 'pentest' || id === 'pinj' || id === 'advml' || id === 'poison' || id === 'leakage' || id === 'fraud' || id === 'risk' || id === 'grc' || id === 'compliance'; }
   // illustrative 32-hex-char digest with strong avalanche — every output byte
   // depends on the whole input, so a one-character change scrambles ~half of it
   learningDigest(text) {
@@ -897,6 +901,24 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
     ];
     const vpCur = vpBeatDefs[vpChapter];
     const vpTabs = vpBeatDefs.map((c,i) => ({ id:i, label:c[0], short:c[1], className:'ha-tab' + (i===vpChapter?' on':'') }));
+
+    // ---- MITM (NW-04) ----
+    const mmChapter = Math.max(0, Math.min(5, Number(st.mmChapter) || 0));
+    const mmBeatDefs = [
+      ['00','SEAT','ONE MACHINE IN THE MIDDLE.','Alice and Bob think they’re talking straight to each other. They’re not — every word runs through one machine on the wire. Today, that machine is you.','Press TAKE THE SEAT and watch the line bend to route through your position.'],
+      ['01','READ','YOU DIDN’T HACK ANYTHING.','You didn’t break a password or guess a secret. You just sat where the message has to pass — and now you can read every word before Bob ever sees it.','Press INTERCEPT to catch Alice’s message at your seat, then RELAY ▶ to pass it on unchanged.'],
+      ['02','ALTER','CHANGE THE TRUTH IN TRANSIT.','Nobody screams. Edit the message before you relay it and neither party notices — Alice thinks she sent one thing, Bob acts on another. This is worse than reading.','Intercept the next message, change it in the field, then RELAY ▶ — watch whose readout reacts.'],
+      ['03','PUPPET','PLAY BOTH PARTS.','Position doesn’t just let you listen — it lets you become both ends of the conversation. Alice is really talking to you. So is Bob. Neither knows the other is a puppet.','Press IMPERSONATE BOTH SIDES and watch your seat claim two identities at once.'],
+      ['04','BLIND','THE LIGHTS GO OUT.','Same seat, same messages passing through your hands — but now they’re encrypted. You’re holding an envelope you can’t open and can’t forge. Your position just stopped mattering.','Flip HTTPS ON, then try INTERCEPT again.'],
+      ['05','EJECT','PRETENDING TO BE BOB.','Last move: present a certificate claiming to be Bob. Alice’s side checks it against a signature you can’t fake — and throws you out of the chair.','Press PRESENT FAKE CERT and watch the identity check catch it.'],
+    ];
+    const mmCur = mmBeatDefs[mmChapter];
+    const mmTabs = mmBeatDefs.map((c,i) => ({ id:i, label:c[0], short:c[1], className:'ha-tab' + (i===mmChapter?' on':'') }));
+    const mmOriginal = 'bob, transfer $10 to sam';
+    const mmSeated = !!st.mmSeated, mmHeld = !!st.mmHeld, mmHttps = !!st.mmHttps, mmEjected = !!st.mmEjected;
+    const mmEditText = st.mmEditText != null && st.mmEditText !== '' ? st.mmEditText : mmOriginal;
+    const mmHasRelayed = (st.mmInterceptCount || 0) > 0;
+    const mmLastAltered = !!st.mmLastAltered;
 
     // ---- PASSWORDS & HASHING (ID-01) ----
     const pwChapter = Math.max(0, Math.min(3, Number(st.pwChapter) || 0));
@@ -1618,6 +1640,39 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
       vpPickChapter:(e) => this.setState({ vpChapter:Math.max(0, Math.min(2, Number(e.currentTarget.dataset.chapter) || 0)) }),
       vpToggleOn:() => this.setState({ vpOn:!this.state.vpOn, vpChapter:1 }),
       vpSwitchSeat:() => this.setState({ vpSeat: this.state.vpSeat === 'relay' ? 'observer' : 'relay', vpChapter:2 }),
+
+      // ---- MITM ----
+      mitmOpen: st.stubId === 'mitm',
+      mmTabs, mmBeatTag: mmCur[0] + ' // ' + mmCur[1], mmBeatTitle: mmCur[2], mmBeatBody: mmCur[3], mmTodo: mmCur[4],
+      mmChapter0: mmChapter === 0, mmChapter1: mmChapter === 1, mmChapter2: mmChapter === 2,
+      mmChapter3: mmChapter === 3, mmChapter4: mmChapter === 4, mmChapter5: mmChapter === 5,
+      mmSeated, mmNotSeated: !mmSeated, mmNotSeatedFresh: !mmSeated && !st.mmCertRejected, mmEjected,
+      mmCanIntercept: mmSeated && !mmHeld && !mmEjected,
+      mmHeldReadable: mmHeld && !mmHttps, mmHeldBlind: mmHeld && mmHttps,
+      mmEditText, mmAliceSent: mmOriginal,
+      mmHasRelayed, mmLastAltered,
+      mmReadFlag: mmHttps ? 'NO' : 'YES', mmAlterFlag: mmLastAltered ? 'YES' : 'NO',
+      mmReceivedNote: mmLastAltered ? 'changed' : 'exactly as Alice sent it',
+      mmBobReceived: st.mmLastRelayedText || mmOriginal,
+      mmInterceptCount: st.mmInterceptCount || 0, mmAlterCount: st.mmAlterCount || 0,
+      mmImpersonated: !!st.mmImpersonated, mmImpersonateCount: st.mmImpersonateCount || 0,
+      mmHttps, mmHttpsLabel: mmHttps ? 'HTTPS ON' : 'HTTPS OFF',
+      mmHttpsToggleClass: 'sy-toggle' + (mmHttps ? ' on' : ''),
+      mmCanCert: mmSeated && !st.mmCertTried, mmCertRejected: !!st.mmCertRejected,
+      mmEncryptedLine: mmHttps ? 'ALL POWERS LOST' : 'NOT YET',
+      mmCertLine: st.mmCertRejected ? 'REJECTED' : 'NOT TRIED',
+      mmChapterPad: String(mmChapter).padStart(2,'0'),
+      mmStatus: mmEjected ? 'EJECTED FROM SEAT' : (mmHeld ? (mmHttps ? 'HOLDING CIPHERTEXT' : 'HOLDING MESSAGE') : (mmSeated ? 'SEATED // AWAITING TRAFFIC' : 'NOT IN PATH')),
+      mmHud: (mmSeated ? 'SEATED' : 'NOT SEATED') + ' · ' + (mmHttps ? 'HTTPS ON' : 'HTTPS OFF'),
+      mmPickChapter:(e) => this.setState({ mmChapter:Math.max(0, Math.min(5, Number(e.currentTarget.dataset.chapter) || 0)) }),
+      mmTakeSeat:() => this.mmTakeSeat(),
+      mmIntercept:() => this.mmIntercept(),
+      mmEditMsg:(e) => this.setState({ mmEditText:e.currentTarget.value }),
+      mmRelay:() => this.mmRelay(),
+      mmImpersonate:() => this.mmImpersonate(),
+      mmToggleHttps:() => this.mmToggleHttps(),
+      mmPresentCert:() => this.mmPresentCert(),
+      mmReplay:() => this.mmReplay(),
 
       // ---- PASSWORDS & HASHING ----
       pwOpen: st.stubId === 'pw',
@@ -2596,6 +2651,7 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
     clearInterval(this._mwIv);
     clearInterval(this._phIv);
     this._pqDrag = null;
+    this._mmSeat = null; this._mmEject = null; this._mmMsg = null; this._mmCert = null; this._mmSelfAlarm = 0;
     this.setStatus('TRACKING'); this.setState({ stubId: null, symSealProgress:this.state.symSealed ? 100 : 0, qrBruteActive:false });
   }
   verifySignature() {
@@ -3264,6 +3320,201 @@ window.CyberPathComponent = (DCLogic) => class CyberPathApp extends DCLogic {
 
     const tag = document.getElementById('vp-tag');
     if (tag) tag.textContent = seat === 'relay' ? 'RELAY VIEW' : (on ? 'BLINDED' : 'SEES ALL');
+  }
+
+  // ---------- NW-04 // mitm: the intercept seat ----------
+  mmNow() { return (typeof performance !== 'undefined' ? performance.now() : Date.now()); }
+  mmTakeSeat() {
+    if (this.state.mmSeated) return;
+    this._mmSeat = { t0: this.mmNow(), dur: 550 };
+    this.setState({ mmSeated:true, mmEjected:false, mmCertTried:false, mmCertRejected:false });
+  }
+  mmIntercept() {
+    if (!this.state.mmSeated || this.state.mmHeld || this.state.mmEjected) return;
+    this._mmMsg = { phase:'toSeat', t0:this.mmNow(), dur:420 };
+    this.setState({ mmHeld:true, mmEditText:'bob, transfer $10 to sam', mmLastAltered:false });
+  }
+  mmRelay() {
+    if (!this.state.mmHeld) return;
+    const original = 'bob, transfer $10 to sam';
+    const editText = this.state.mmEditText != null && this.state.mmEditText !== '' ? this.state.mmEditText : original;
+    const altered = !this.state.mmHttps && editText.trim() !== original.trim();
+    const relayedText = this.state.mmHttps ? original : (altered ? editText : original);
+    this._mmMsg = { phase:'toBob', t0:this.mmNow(), dur:420 };
+    if (altered) this._mmSelfAlarm = this.mmNow();
+    this.setState({
+      mmHeld:false, mmLastAltered:altered, mmLastRelayedText:relayedText,
+      mmInterceptCount:(this.state.mmInterceptCount || 0) + 1,
+      mmAlterCount:(this.state.mmAlterCount || 0) + (altered ? 1 : 0),
+    });
+  }
+  mmImpersonate() {
+    if (!this.state.mmSeated) return;
+    this.setState({ mmImpersonated:true, mmImpersonateCount:(this.state.mmImpersonateCount || 0) + 1 });
+  }
+  mmToggleHttps() {
+    this._mmMsg = null;
+    this.setState({ mmHttps:!this.state.mmHttps, mmHeld:false, mmEditText:'' });
+  }
+  mmPresentCert() {
+    if (!this.state.mmSeated || this.state.mmEjected) return;
+    this._mmCert = { t0: this.mmNow(), dur: 420 };
+    this.setState({ mmCertTried:true });
+    setTimeout(() => {
+      this._mmEject = { t0: this.mmNow(), dur: 550 };
+      this.setState({ mmCertRejected:true, mmEjected:true, mmSeated:false, mmHeld:false });
+    }, 480);
+  }
+  mmReplay() {
+    this._mmSeat = null; this._mmEject = null; this._mmMsg = null; this._mmCert = null; this._mmSelfAlarm = 0;
+    this.setState({
+      mmChapter:0, mmSeated:false, mmHeld:false, mmEditText:'', mmLastAltered:false, mmLastRelayedText:'',
+      mmInterceptCount:0, mmAlterCount:0, mmImpersonated:false, mmImpersonateCount:0,
+      mmHttps:false, mmCertTried:false, mmCertRejected:false, mmEjected:false,
+    });
+  }
+  mmColor(canvas, name, fallback) { const v = getComputedStyle(canvas).getPropertyValue(name).trim(); return v || fallback; }
+  mmBezierPt(a, c, b, t) {
+    const u = 1 - t;
+    return [u*u*a[0] + 2*u*t*c[0] + t*t*b[0], u*u*a[1] + 2*u*t*c[1] + t*t*b[1]];
+  }
+  drawMmCanvas() {
+    const canvas = document.getElementById('mm-canvas');
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const W = Math.max(320, rect.width || 1000), H = Math.max(240, rect.height || W*0.62);
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    const wantW = Math.round(W*dpr), wantH = Math.round(H*dpr);
+    if (canvas.width !== wantW || canvas.height !== wantH) { canvas.width = wantW; canvas.height = wantH; }
+    const ctx = canvas.getContext('2d'); if (!ctx) return;
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+    const hud = this.mmColor(canvas,'--bb-hud','#F5150E');
+    const ink = this.mmColor(canvas,'--bb-ink','#171717');
+    const bg = this.mmColor(canvas,'--bb-bg','#F7F7F4');
+    const muted = this.mmColor(canvas,'--bb-muted','#555');
+    const st = this.state;
+    const now = this.mmNow();
+    const alice = [W*0.1, H*0.52], bob = [W*0.9, H*0.52];
+
+    // seat-bend progress: 0 = straight wire, 1 = fully bent through the seat
+    let bend = 0;
+    if (this._mmEject) {
+      const k = Math.max(0, Math.min(1, (now - this._mmEject.t0)/this._mmEject.dur));
+      bend = 1 - (Math.floor(k*4)/4);
+      if (k >= 1) { bend = 0; this._mmEject = null; }
+    } else if (this._mmSeat) {
+      const k = Math.max(0, Math.min(1, (now - this._mmSeat.t0)/this._mmSeat.dur));
+      bend = Math.floor(k*4)/4;
+      if (k >= 1) bend = 1;
+    } else if (st.mmSeated) bend = 1;
+
+    const ctrl = [W*0.5, H*0.52 - 100*bend];
+    const seatPt = this.mmBezierPt(alice, ctrl, bob, 0.5);
+
+    // the wire
+    ctx.save(); ctx.strokeStyle = hud; ctx.globalAlpha = .35; ctx.lineWidth = 1.5; ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(alice[0],alice[1]); ctx.quadraticCurveTo(ctrl[0],ctrl[1],bob[0],bob[1]); ctx.stroke(); ctx.restore();
+
+    // endpoints — always calm, never alarm-colored
+    const endpoint = (pos, label, sub) => {
+      const rw = Math.max(46, W*0.07), rh = Math.max(34, W*0.05);
+      ctx.save(); ctx.fillStyle = bg; ctx.strokeStyle = hud; ctx.lineWidth = 1.5;
+      ctx.fillRect(pos[0]-rw/2, pos[1]-rh/2, rw, rh); ctx.strokeRect(pos[0]-rw/2, pos[1]-rh/2, rw, rh);
+      ctx.fillStyle = ink; ctx.font = "800 12px 'Archivo', sans-serif"; ctx.textAlign = 'center';
+      ctx.fillText(label, pos[0], pos[1]+4);
+      ctx.fillStyle = hud; ctx.font = "6px 'IBM Plex Mono', monospace";
+      ctx.fillText(sub, pos[0], pos[1]+rh/2+13); ctx.restore();
+    };
+    endpoint(alice, 'ALICE', 'sender'); endpoint(bob, 'BOB', 'receiver');
+
+    // the seat
+    if (bend > 0.01) {
+      const rw = Math.max(52, W*0.08), rh = Math.max(38, W*0.055);
+      ctx.save(); ctx.globalAlpha = bend; ctx.translate(seatPt[0], seatPt[1]);
+      ctx.fillStyle = hud; ctx.strokeStyle = hud; ctx.lineWidth = 1.5;
+      ctx.fillRect(-rw/2,-rh/2,rw,rh); ctx.strokeRect(-rw/2,-rh/2,rw,rh);
+      ctx.fillStyle = bg; ctx.font = "900 11px 'Archivo', sans-serif"; ctx.textAlign = 'center';
+      ctx.fillText('YOU', 0, 4); ctx.restore();
+
+      if (this._mmSeat && !st.mmEjected) {
+        const k = Math.max(0, Math.min(1, (now - this._mmSeat.t0)/this._mmSeat.dur));
+        if (k < 1) {
+          const spread = (1-k) * 40;
+          ctx.save(); ctx.strokeStyle = hud; ctx.lineWidth = 1.5; ctx.globalAlpha = 1-k;
+          [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sy]) => {
+            const bx = seatPt[0]+sx*(rw/2+spread), by = seatPt[1]+sy*(rh/2+spread);
+            ctx.beginPath(); ctx.moveTo(bx,by); ctx.lineTo(bx-sx*8,by); ctx.moveTo(bx,by); ctx.lineTo(bx,by-sy*8); ctx.stroke();
+          });
+          ctx.restore();
+        }
+      }
+
+      if (this._mmSelfAlarm) {
+        const age = now - this._mmSelfAlarm;
+        if (age < 1600) {
+          const pulse = 0.5 + 0.5*Math.sin(age/110);
+          ctx.save(); ctx.strokeStyle = '#ff2a22'; ctx.globalAlpha = .4 + .4*pulse; ctx.lineWidth = 2;
+          ctx.strokeRect(seatPt[0]-rw/2-8-pulse*4, seatPt[1]-rh/2-8-pulse*4, rw+16+pulse*8, rh+16+pulse*8);
+          ctx.restore();
+        } else this._mmSelfAlarm = 0;
+      }
+
+      if (st.mmImpersonated) {
+        ctx.save(); ctx.fillStyle = hud; ctx.font = "7px 'IBM Plex Mono', monospace"; ctx.textAlign = 'center'; ctx.globalAlpha = bend;
+        ctx.fillText('AS "BOB" →', seatPt[0]-rw/2-4, seatPt[1]-rh/2-10);
+        ctx.fillText('← AS "ALICE"', seatPt[0]+rw/2+4, seatPt[1]-rh/2-10);
+        ctx.restore();
+      }
+    }
+
+    // the traveling / held message
+    const lerp = (a,b,t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+    const seg = this._mmMsg;
+    let msgPos = null;
+    if (seg) {
+      const k = Math.max(0, Math.min(1, (now - seg.t0)/seg.dur));
+      const e = 1 - Math.pow(1-k, 3);
+      msgPos = seg.phase === 'toSeat' ? lerp(alice, seatPt, e) : lerp(seatPt, bob, e);
+      if (k >= 1) { if (seg.phase === 'toBob') this._mmMsg = null; else msgPos = seatPt; }
+    } else if (st.mmHeld) msgPos = seatPt;
+
+    if (msgPos) {
+      const pw = 44, ph = 24;
+      ctx.save(); ctx.translate(msgPos[0], msgPos[1]);
+      const blind = !!st.mmHttps;
+      ctx.fillStyle = bg; ctx.strokeStyle = blind ? muted : hud; ctx.lineWidth = 2;
+      ctx.fillRect(-pw/2,-ph/2,pw,ph); ctx.strokeRect(-pw/2,-ph/2,pw,ph);
+      ctx.fillStyle = blind ? muted : ink; ctx.font = "700 8px 'IBM Plex Mono', monospace"; ctx.textAlign = 'center';
+      let label;
+      if (blind) {
+        const glyphs = '#%&$?@!*^~';
+        const seed = Math.floor(now/80);
+        let s = ''; for (let i=0;i<7;i++) s += glyphs[(seed*7 + i*13) % glyphs.length];
+        label = s;
+      } else label = (st.mmEditText || 'bob, transfer $10 to sam').slice(0,20);
+      ctx.fillText(label, 0, 3); ctx.restore();
+    }
+
+    // the fake certificate
+    if (this._mmCert) {
+      const k = Math.max(0, Math.min(1, (now - this._mmCert.t0)/this._mmCert.dur));
+      ctx.save(); ctx.translate(seatPt[0], seatPt[1]+44);
+      const cw = 50, ch = 30, bad = k > 0.5;
+      ctx.strokeStyle = bad ? '#ff2a22' : hud; ctx.lineWidth = 1.5; ctx.fillStyle = bg;
+      ctx.fillRect(-cw/2,-ch/2,cw,ch); ctx.strokeRect(-cw/2,-ch/2,cw,ch);
+      ctx.fillStyle = bad ? '#ff2a22' : hud; ctx.font = "6px 'IBM Plex Mono', monospace"; ctx.textAlign = 'center';
+      ctx.fillText('CERT', 0, 3);
+      if (bad) {
+        ctx.strokeStyle = '#ff2a22'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(-cw/2+6,-ch/2); ctx.lineTo(-2,0); ctx.lineTo(6,ch/2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cw/2-4,-ch/2+4); ctx.lineTo(2,2); ctx.lineTo(cw/2-8,ch/2); ctx.stroke();
+      }
+      ctx.restore();
+      if (k >= 1) this._mmCert = null;
+    }
+
+    const tag = document.getElementById('mm-tag');
+    if (tag) tag.textContent = st.mmEjected ? 'EJECTED' : (st.mmHeld ? (st.mmHttps ? 'CIPHERTEXT HELD' : 'MESSAGE HELD') : (st.mmSeated ? 'IN-PATH' : 'OUT OF PATH'));
   }
 
   // ---------- ID-01 // passwords: crack the vault, then defend one ----------

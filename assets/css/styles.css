@@ -388,6 +388,11 @@
   .vp-stage-wrap:before{content:'THE WIRE // WHO CAN SEE WHAT';}
   .vp-stage-wrap canvas{aspect-ratio:1000/560;}
 
+  /* ---- NW-04 mitm: the intercept seat ---- */
+  .mm-stage-wrap:before{content:'THE INTERCEPT SEAT // EVERYTHING ROUTES THROUGH YOU';}
+  .mm-stage-wrap canvas{aspect-ratio:1000/620;}
+  .ha-tabs.mm-tabs{grid-template-columns:repeat(3,1fr);}
+
   /* ---- ID-01 passwords: credential vault + crack-time readout ---- */
   .pw-stage-wrap:before{content:'CREDENTIAL VAULT // HASHES, NOT PASSWORDS';}
   .pw-stage-wrap canvas{aspect-ratio:820/640;}
